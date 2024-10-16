@@ -1,0 +1,57 @@
+services:
+  db:
+    image: postgres:14-alpine
+    user: ${DB_USER}
+    restart: always
+    healthcheck:
+      test: "pg_isready -U ${DB_USER} --dbname=${DB_NAME}"
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    container_name: db_colombina
+    ports:
+      - ${DB_PORT}:5432
+    environment:
+      POSTGRES_DB: ${DB_NAME}
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+    volumes:
+      - db_volume:/var/lib/postgresql/data
+    env_file:
+      - .env
+  minio:
+    image: minio/minio:latest
+    container_name: minio
+    ports:
+      - "${MINIO_PORT}:9000"
+    environment:
+      MINIO_ACCESS_KEY: ${MINIO_ACCESS_KEY}
+      MINIO_SECRET_KEY: ${MINIO_SECRET_KEY}
+    volumes:
+      - minio_data:/data
+    command: server /data
+  backend:
+    build: ./colombina
+    ports:
+      - ${BACKEND_PORT}:8080
+    restart: always
+    container_name: backend_colombina
+    depends_on:
+      - db
+      - minio
+    env_file:
+      - .env
+  frontend:
+    build: ./Frontend
+    ports:
+      - ${FRONTEND_PORT}:80
+    restart: always
+    container_name: frontend_colombina
+    depends_on:
+      - backend
+    env_file:
+      - .env
+
+volumes:
+  db_volume:
+  minio_volume:
