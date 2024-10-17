@@ -22,7 +22,7 @@ public class Tramite {
 
     private int numeroRegistro;
     private String tipoTramite;
-    private boolean estadoTramite;
+    private String estadoTramite;
     private Date fechaRadicacion;
     private Date fechaEjecucion;
     private String observaciones;
@@ -76,7 +76,7 @@ public class Tramite {
     public Tramite() {
     }
 
-    public Tramite(int numeroRegistro, String tipoTramite, boolean estadoTramite, Date fechaRadicacion, Date fechaEjecucion, String observaciones, Date plazoRespuesta, Usuario usuario, Fecha fecha) {
+    public Tramite(int numeroRegistro, String tipoTramite, String estadoTramite, Date fechaRadicacion, Date fechaEjecucion, String observaciones, Date plazoRespuesta, Usuario usuario, Fecha fecha) {
         this.numeroRegistro = numeroRegistro;
         this.tipoTramite = tipoTramite;
         this.estadoTramite = estadoTramite;
@@ -88,7 +88,7 @@ public class Tramite {
         this.fecha = fecha;
     }
 
-    public Tramite(Long idTramite, int numeroRegistro, String tipoTramite, boolean estadoTramite, Date fechaRadicacion,
+    public Tramite(Long idTramite, int numeroRegistro, String tipoTramite, String estadoTramite, Date fechaRadicacion,
             Date fechaEjecucion, String observaciones, Date plazoRespuesta, Usuario usuario, Fecha fecha,
             List<Documento> documentos, List<Notificacion> notificaciones) {
         this.idTramite = idTramite;
@@ -131,11 +131,11 @@ public class Tramite {
         this.tipoTramite = tipoTramite;
     }
 
-    public boolean isEstadoTramite() {
+    public String getEstadoTramite() {
         return estadoTramite;
     }
 
-    public void setEstadoTramite(boolean estadoTramite) {
+    public void setEstadoTramite(String estadoTramite) {
         this.estadoTramite = estadoTramite;
     }
 

@@ -30,7 +30,7 @@ public class ArchivoControlDeTramites {
         this.estadoTramite = estadoTramite;
         this.historialDeModificaciones = historialDeModificaciones;
     }
-    
+
     public ArchivoControlDeTramites(Long idArchivoControlDeTramites, Date fechaCreacion, boolean estadoTramite, String historialDeModificaciones) {
         this.idArchivoControlDeTramites = idArchivoControlDeTramites;
         this.fechaCreacion = fechaCreacion;
@@ -77,5 +77,6 @@ public class ArchivoControlDeTramites {
     public void setTramites(List<Tramite> tramites) {
         this.tramites = tramites;
     }
-}
 
+
+}

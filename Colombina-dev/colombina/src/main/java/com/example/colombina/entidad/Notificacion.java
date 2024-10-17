@@ -10,36 +10,46 @@ public class Notificacion {
     // Atributos
     @Id
     @GeneratedValue
-    private Long notificacionId;
+    private Long idNotificacion;
 
     private String mensaje;
+    private boolean estado;
+    private String tipoNotificacion;
+    
 
     // Relaciones
     @ManyToOne
     private Tramite tramite;
 
     // Constructores
-    public Notificacion(Long notificacionId, String mensaje, Tramite tramite) {
-        this.notificacionId = notificacionId;
+
+    public Notificacion() {}
+
+    public Notificacion(String mensaje, boolean estado, String tipoNotificacion, Tramite tramite) {
         this.mensaje = mensaje;
+        this.estado = estado;
+        this.tipoNotificacion = tipoNotificacion;
         this.tramite = tramite;
     }
 
-    public Notificacion() {
-    }
-
-    public Notificacion(String mensaje, Tramite tramite) {
+    public Notificacion(Long idNotificacion, String mensaje, boolean estado, String tipoNotificacion, Tramite tramite) {
+        this.idNotificacion = idNotificacion;
         this.mensaje = mensaje;
+        this.estado = estado;
+        this.tipoNotificacion = tipoNotificacion;
         this.tramite = tramite;
     }
 
-    // Getters y Setters
-    public Long getNotificacionId() {
-        return notificacionId;
+    
+    // Getters y setters
+
+
+    public Long getIdNotificacion() {
+        return idNotificacion;
     }
 
-    public void setNotificacionId(Long notificacionId) {
-        this.notificacionId = notificacionId;
+    public void setIdNotificacion(Long idNotificacion) {
+        this.idNotificacion = idNotificacion;
     }
 
     public String getMensaje() {
@@ -50,6 +60,22 @@ public class Notificacion {
         this.mensaje = mensaje;
     }
 
+    public boolean isEstado() {
+        return estado;
+    }
+
+    public void setEstado(boolean estado) {
+        this.estado = estado;
+    }
+
+    public String getTipoNotificacion() {
+        return tipoNotificacion;
+    }
+
+    public void setTipoNotificacion(String tipoNotificacion) {
+        this.tipoNotificacion = tipoNotificacion;
+    }
+
     public Tramite getTramite() {
         return tramite;
     }
@@ -57,5 +83,5 @@ public class Notificacion {
     public void setTramite(Tramite tramite) {
         this.tramite = tramite;
     }
-}
     
+}

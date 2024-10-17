@@ -1,6 +1,7 @@
 package com.example.colombina.entidad;
 
 import java.sql.Date;
+import java.util.List;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -15,7 +16,7 @@ public class SeguimientoTramite {
     private Long idSeguimiento;
     private Date fechaSeguimiento;
     private String estadoActual;
-    private String accionesRealizadas;
+    private List<String> accionesRealizadas;
     private String observaciones;
 
     @OneToOne
@@ -25,19 +26,21 @@ public class SeguimientoTramite {
     public SeguimientoTramite() {
     }
 
-    public SeguimientoTramite(Date fechaSeguimiento, String estadoActual, String accionesRealizadas, String observaciones) {
-        this.fechaSeguimiento = fechaSeguimiento;
-        this.estadoActual = estadoActual;
-        this.accionesRealizadas = accionesRealizadas;
-        this.observaciones = observaciones;
-    }
-
-    public SeguimientoTramite(Long idSeguimiento, Date fechaSeguimiento, String estadoActual, String accionesRealizadas, String observaciones) {
+    public SeguimientoTramite(Long idSeguimiento, Date fechaSeguimiento, String estadoActual, List<String> accionesRealizadas, String observaciones, Tramite tramite) {
         this.idSeguimiento = idSeguimiento;
         this.fechaSeguimiento = fechaSeguimiento;
         this.estadoActual = estadoActual;
         this.accionesRealizadas = accionesRealizadas;
         this.observaciones = observaciones;
+        this.tramite = tramite;
+    }
+
+    public SeguimientoTramite(Date fechaSeguimiento, String estadoActual, List<String> accionesRealizadas, String observaciones, Tramite tramite) {
+        this.fechaSeguimiento = fechaSeguimiento;
+        this.estadoActual = estadoActual;
+        this.accionesRealizadas = accionesRealizadas;
+        this.observaciones = observaciones;
+        this.tramite = tramite;
     }
 
     public Long getIdSeguimiento() {
@@ -64,11 +67,11 @@ public class SeguimientoTramite {
         this.estadoActual = estadoActual;
     }
 
-    public String getAccionesRealizadas() {
+    public List<String> getAccionesRealizadas() {
         return accionesRealizadas;
     }
 
-    public void setAccionesRealizadas(String accionesRealizadas) {
+    public void setAccionesRealizadas(List<String> accionesRealizadas) {
         this.accionesRealizadas = accionesRealizadas;
     }
 
