@@ -5,60 +5,27 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class Documento {
-    // Atributos
+
     @Id
     @GeneratedValue
     private Long documentoId;
 
-    private String informacion;
+    // Aquí guardamos la ubicación del archivo temporalmente
+    private String informacion;  // Este campo almacenará la ruta temporal del archivo
 
-    // Relaciones
+    // Relación con Tramite
     @ManyToOne
     @JoinColumn(name = "tramiteId", nullable = false)
     private Tramite tramite;
-
-    // Constructores
-
-    public Documento(Long documentoId, String informacion, Tramite tramite) {
-        this.documentoId = documentoId;
-        this.informacion = informacion;
-        this.tramite = tramite;
-    }
-
-    public Documento() {}
-
-    public Documento(String informacion, Tramite tramite) {
-        this.informacion = informacion;
-        this.tramite = tramite;
-    }
-
-    // Getters y setters
-    public Long getDocumentoId() {
-        return documentoId;
-    }
-
-    public void setDocumentoId(Long documentoId) {
-        this.documentoId = documentoId;
-    }
-
-    public String getInformacion() {
-        return informacion;
-    }
-
-    public void setInformacion(String informacion) {
-        this.informacion = informacion;
-    }
-
-    public Tramite getTramite() {
-        return tramite;
-    }
-
-    public void setTramite(Tramite tramite) {
-        this.tramite = tramite;
-    }
-
-    
 }

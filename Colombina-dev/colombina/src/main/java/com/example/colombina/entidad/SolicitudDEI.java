@@ -2,118 +2,39 @@ package com.example.colombina.entidad;
 
 
 import java.sql.Date;
+import java.util.ArrayList;
+import java.util.List;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.OneToOne;
+import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class SolicitudDEI {
-    // Atributos
+
     @Id
     @GeneratedValue
     private Long idSolicitud;
-    private String nombreSolicitante;
+
     private Date fechaSolicitud;
     private String descripcion;
     private String tipoDeProducto;
-    private String documentacionTecnica;
+    private String documentacionTecnica;  // Se refiere a una descripción general, no es la lista de documentos
     private String tipoDeRegistro;
 
-    //Relaciones
+    // Relación con Usuario
+    @ManyToOne
+    @JoinColumn(name = "usuarioId", nullable = false)
+    private Usuario usuario;  // Ya no es el nombre del solicitante en String, sino el Usuario
+
+    // Relación con Tramite
     @OneToOne
-    @JoinColumn(name = "tramiteId")
+    @JoinColumn(name = "tramiteId", nullable = false)
     private Tramite tramite;
-
-    // Constructores
-    public SolicitudDEI() {
-    }
-
-    public SolicitudDEI(String nombreSolicitante, Date fechaSolicitud, String descripcion, String tipoDeProducto, String documentacionTecnica, String tipoDeRegistro) {
-        this.nombreSolicitante = nombreSolicitante;
-        this.fechaSolicitud = fechaSolicitud;
-        this.descripcion = descripcion;
-        this.tipoDeProducto = tipoDeProducto;
-        this.documentacionTecnica = documentacionTecnica;
-        this.tipoDeRegistro = tipoDeRegistro;
-    }
-
-    public SolicitudDEI(Long idSolicitud, String nombreSolicitante, Date fechaSolicitud, String descripcion, String tipoDeProducto, String documentacionTecnica, String tipoDeRegistro) {
-        this.idSolicitud = idSolicitud;
-        this.nombreSolicitante = nombreSolicitante;
-        this.fechaSolicitud = fechaSolicitud;
-        this.descripcion = descripcion;
-        this.tipoDeProducto = tipoDeProducto;
-        this.documentacionTecnica = documentacionTecnica;
-        this.tipoDeRegistro = tipoDeRegistro;
-    }
-
-    
-    // Getters y setters
-
-    public Long getIdSolicitud() {
-        return idSolicitud;
-    }
-
-    public void setIdSolicitud(Long idSolicitud) {
-        this.idSolicitud = idSolicitud;
-    }
-
-    public String getNombreSolicitante() {
-        return nombreSolicitante;
-    }
-
-    public void setNombreSolicitante(String nombreSolicitante) {
-        this.nombreSolicitante = nombreSolicitante;
-    }
-
-    public Date getFechaSolicitud() {
-        return fechaSolicitud;
-    }
-
-    public void setFechaSolicitud(Date fechaSolicitud) {
-        this.fechaSolicitud = fechaSolicitud;
-    }
-
-    public String getDescripcion() {
-        return descripcion;
-    }
-
-    public void setDescripcion(String descripcion) {
-        this.descripcion = descripcion;
-    }
-
-    public String getTipoDeProducto() {
-        return tipoDeProducto;
-    }
-
-    public void setTipoDeProducto(String tipoDeProducto) {
-        this.tipoDeProducto = tipoDeProducto;
-    }
-
-    public String getDocumentacionTecnica() {
-        return documentacionTecnica;
-    }
-
-    public void setDocumentacionTecnica(String documentacionTecnica) {
-        this.documentacionTecnica = documentacionTecnica;
-    }
-
-    public String getTipoDeRegistro() {
-        return tipoDeRegistro;
-    }
-
-    public void setTipoDeRegistro(String tipoDeRegistro) {
-        this.tipoDeRegistro = tipoDeRegistro;
-    }
-
-    public Tramite getTramite() {
-        return tramite;
-    }
-
-    public void setTramite(Tramite tramite) {
-        this.tramite = tramite;
-    }
 }

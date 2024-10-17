@@ -9,8 +9,16 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class AsuntoRegulatorio {
 
     @Id
@@ -21,62 +29,7 @@ public class AsuntoRegulatorio {
     private boolean estadoAsunto;
     private Date fechaAsunto;
 
+    // Relación con Solicitudes DEI
     @OneToMany(mappedBy = "asuntoRegulatorio")
-    private List<Tramite> tramites = new ArrayList<>();
-
-    public AsuntoRegulatorio() {
-    }
-
-    public AsuntoRegulatorio(String responsable, boolean estadoAsunto, Date fechaAsunto) {
-        this.responsable = responsable;
-        this.estadoAsunto = estadoAsunto;
-        this.fechaAsunto = fechaAsunto;
-    }
-    
-    public AsuntoRegulatorio(Long idAsuntoRegulatorio, String responsable, boolean estadoAsunto, Date fechaAsunto) {
-        this.idAsuntoRegulatorio = idAsuntoRegulatorio;
-        this.responsable = responsable;
-        this.estadoAsunto = estadoAsunto;
-        this.fechaAsunto = fechaAsunto;
-    }
-
-    public Long getIdAsuntoRegulatorio() {
-        return idAsuntoRegulatorio;
-    }
-
-    public void setIdAsuntoRegulatorio(Long idAsuntoRegulatorio) {
-        this.idAsuntoRegulatorio = idAsuntoRegulatorio;
-    }
-
-    public String getResponsable() {
-        return responsable;
-    }
-
-    public void setResponsable(String responsable) {
-        this.responsable = responsable;
-    }
-
-    public boolean isEstadoAsunto() {
-        return estadoAsunto;
-    }
-
-    public void setEstadoAsunto(boolean estadoAsunto) {
-        this.estadoAsunto = estadoAsunto;
-    }
-
-    public Date getFechaAsunto() {
-        return fechaAsunto;
-    }
-
-    public void setFechaAsunto(Date fechaAsunto) {
-        this.fechaAsunto = fechaAsunto;
-    }
-
-    public List<Tramite> getTramites() {
-        return tramites;
-    }
-
-    public void setTramites(List<Tramite> tramites) {
-        this.tramites = tramites;
-    }
-}   
+    private List<SolicitudDEI> solicitudesDEI = new ArrayList<>();
+}

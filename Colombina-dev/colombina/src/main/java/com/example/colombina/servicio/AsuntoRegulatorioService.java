@@ -1,5 +1,6 @@
 package com.example.colombina.servicio;
 
+import com.example.colombina.entidad.SolicitudDEI;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.example.colombina.entidad.AsuntoRegulatorio;
@@ -14,6 +15,9 @@ public class AsuntoRegulatorioService {
 
     @Autowired
     private AsuntoRegulatorioRepository asuntoRegulatorioRepository;
+
+    @Autowired
+    private SolicitudDEIService solicitudDEIService;
 
     // Crear un nuevo asunto regulatorio
     public AsuntoRegulatorio crearAsuntoRegulatorio(AsuntoRegulatorio asuntoRegulatorio) {
@@ -54,5 +58,21 @@ public class AsuntoRegulatorioService {
     // Buscar asuntos regulatorios por fecha
     public List<AsuntoRegulatorio> buscarPorFechaAsunto(Date fechaAsunto) {
         return asuntoRegulatorioRepository.findByFechaAsunto(fechaAsunto);
+    }
+
+    //CU 1 Solicitud trámite nacional--------------------------------------------------
+    public List<String> obtenerDocumentosDeSolicitudEnAsunto(Long asuntoId, Long solicitudId) {
+        // Buscar el AsuntoRegulatorio por ID
+        AsuntoRegulatorio asuntoRegulatorio = asuntoRegulatorioRepository.findById(asuntoId)
+                .orElseThrow(() -> new IllegalArgumentException("Asunto Regulatorio no encontrado"));
+
+        // Buscar la solicitud dentro del AsuntoRegulatorio
+        SolicitudDEI solicitud = asuntoRegulatorio.getSolicitudesDEI().stream()
+                .filter(s -> s.getIdSolicitud().equals(solicitudId))
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException("Solicitud no encontrada en el asunto"));
+
+        // Delegar al servicio de solicitudes para obtener los documentos de la solicitud
+        return solicitudDEIService.obtenerDocumentosDeSolicitud(solicitudId);
     }
 }

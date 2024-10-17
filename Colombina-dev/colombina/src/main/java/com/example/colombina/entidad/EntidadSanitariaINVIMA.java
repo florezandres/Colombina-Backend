@@ -7,7 +7,15 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToOne;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 @Entity
 public class EntidadSanitariaINVIMA {
     @Id
@@ -20,60 +28,4 @@ public class EntidadSanitariaINVIMA {
     @OneToOne
     @JoinColumn(name = "idTramite")
     private Tramite tramite;
-
-    public EntidadSanitariaINVIMA() {
-    }
-
-    public EntidadSanitariaINVIMA(boolean resultadoTramite, Date fechaRadicacion, String comentarios) {
-        this.resultadoTramite = resultadoTramite;
-        this.fechaRadicacion = fechaRadicacion;
-        this.comentarios = comentarios;
-    }
-
-    public EntidadSanitariaINVIMA(Long idEntidad, boolean resultadoTramite, Date fechaRadicacion, String comentarios) {
-        this.idEntidad = idEntidad;
-        this.resultadoTramite = resultadoTramite;
-        this.fechaRadicacion = fechaRadicacion;
-        this.comentarios = comentarios;
-    }
-
-    public Long getIdEntidad() {
-        return idEntidad;
-    }
-
-    public void setIdEntidad(Long idEntidad) {
-        this.idEntidad = idEntidad;
-    }
-
-    public boolean isResultadoTramite() {
-        return resultadoTramite;
-    }
-
-    public void setResultadoTramite(boolean resultadoTramite) {
-        this.resultadoTramite = resultadoTramite;
-    }
-
-    public Date getFechaRadicacion() {
-        return fechaRadicacion;
-    }
-
-    public void setFechaRadicacion(Date fechaRadicacion) {
-        this.fechaRadicacion = fechaRadicacion;
-    }
-
-    public String getComentarios() {
-        return comentarios;
-    }
-
-    public void setComentarios(String comentarios) {
-        this.comentarios = comentarios;
-    }
-
-    public Tramite getTramite() {
-        return tramite;
-    }
-
-    public void setTramite(Tramite tramite) {
-        this.tramite = tramite;
-    }    
 }

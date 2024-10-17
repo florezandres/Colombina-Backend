@@ -1,12 +1,19 @@
 package com.example.colombina.controlador;
 
+import com.example.colombina.entidad.Documento;
+import com.example.colombina.entidad.Tramite;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import com.example.colombina.entidad.SolicitudDEI;
 import com.example.colombina.servicio.SolicitudDEIService;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -14,6 +21,7 @@ import java.util.Optional;
 @RestController
 @RequestMapping("/api/solicitudes")
 public class SolicitudDEIController {
+    private final String DIRECTORIO_UPLOAD = System.getProperty("java.io.tmpdir");
 
     @Autowired
     private SolicitudDEIService solicitudDEIService;
@@ -73,6 +81,21 @@ public class SolicitudDEIController {
     public ResponseEntity<List<SolicitudDEI>> buscarPorFechaSolicitud(@PathVariable Date fechaSolicitud) {
         List<SolicitudDEI> solicitudes = solicitudDEIService.buscarPorFechaSolicitud(fechaSolicitud);
         return new ResponseEntity<>(solicitudes, HttpStatus.OK);
+    }
+
+    //CU 1 SOLICITUD DE TRÁMITE NACIONAL------------------------------------
+    // Subida de archivos para una solicitud
+    @PostMapping("/{solicitudId}/subir-archivos")
+    public ResponseEntity<String> subirArchivos(@PathVariable Long solicitudId, @RequestParam("archivos") MultipartFile[] archivos) {
+        String mensaje = solicitudDEIService.subirArchivos(solicitudId, archivos);
+        return ResponseEntity.ok(mensaje);
+    }
+
+    // Obtener los documentos de una solicitud
+    @GetMapping("/{solicitudId}/documentos")
+    public ResponseEntity<List<String>> obtenerDocumentos(@PathVariable Long solicitudId) {
+        List<String> documentos = solicitudDEIService.obtenerDocumentosDeSolicitud(solicitudId);
+        return ResponseEntity.ok(documentos);
     }
 }
 
