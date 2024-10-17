@@ -58,9 +58,9 @@ public class SolicitudDEIService {
     }
 
     // Buscar solicitudes por el nombre del solicitante
-    public List<SolicitudDEI> buscarPorNombreSolicitante(String nombreSolicitante) {
+    /*public List<SolicitudDEI> buscarPorNombreSolicitante(String nombreSolicitante) {
         return solicitudDEIRepository.findByNombreSolicitante(nombreSolicitante);
-    }
+    }*/
 
     // Buscar solicitudes por tipo de producto
     public List<SolicitudDEI> buscarPorTipoDeProducto(String tipoDeProducto) {

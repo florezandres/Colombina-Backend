@@ -61,7 +61,7 @@ public class AsuntoRegulatorioService {
     }
 
     //CU 1 Solicitud trámite nacional--------------------------------------------------
-    public List<String> obtenerDocumentosDeSolicitudEnAsunto(Long asuntoId, Long solicitudId) {
+   /* public List<String> obtenerDocumentosDeSolicitudEnAsunto(Long asuntoId, Long solicitudId) {
         // Buscar el AsuntoRegulatorio por ID
         AsuntoRegulatorio asuntoRegulatorio = asuntoRegulatorioRepository.findById(asuntoId)
                 .orElseThrow(() -> new IllegalArgumentException("Asunto Regulatorio no encontrado"));
@@ -74,5 +74,5 @@ public class AsuntoRegulatorioService {
 
         // Delegar al servicio de solicitudes para obtener los documentos de la solicitud
         return solicitudDEIService.obtenerDocumentosDeSolicitud(solicitudId);
-    }
+    }*/
 }

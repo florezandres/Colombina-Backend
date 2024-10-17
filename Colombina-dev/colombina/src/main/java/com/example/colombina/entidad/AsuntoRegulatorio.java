@@ -31,5 +31,5 @@ public class AsuntoRegulatorio {
 
     // Relación con Solicitudes DEI
     @OneToMany(mappedBy = "asuntoRegulatorio")
-    private List<SolicitudDEI> solicitudesDEI = new ArrayList<>();
+    private List<Tramite> tramites = new ArrayList<>();
 }

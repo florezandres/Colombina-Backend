@@ -32,7 +32,7 @@ public class DocumentoTecnicoService {
 
     // Actualizar un documento técnico
     public DocumentoTecnico actualizarDocumentoTecnico(Long id, DocumentoTecnico documentoTecnicoActualizado) {
-        documentoTecnicoActualizado.setIdDocumento(id);
+        documentoTecnicoActualizado.setIdDocumentoTecnico(id);
         return documentoTecnicoRepository.save(documentoTecnicoActualizado);
     }
 

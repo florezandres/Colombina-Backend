@@ -36,7 +36,7 @@ public class PagoPSEService {
         
         if (pagoExistente.isPresent()) {
             // Asigna el ID al objeto que se va a actualizar
-            pagoActualizado.setIdTramite(id);
+            //pagoActualizado.setIdTramite(id);
             return pagoPSERepository.save(pagoActualizado);
         } else {
             // Lanza una excepción o maneja el caso en que el ID no existe

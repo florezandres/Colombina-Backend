@@ -3,90 +3,102 @@ package com.example.colombina.controlador;
 import java.util.List;
 import java.util.Optional;
 
+import com.example.colombina.config.TokenProvider;
+import com.example.colombina.dto.UsuarioDTO;
+import com.example.colombina.entidad.AuthToken;
+import com.example.colombina.entidad.LoginUser;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.web.bind.annotation.*;
 
 import com.example.colombina.entidad.Usuario;
 import com.example.colombina.servicio.UsuarioService;
 
+@CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
 @RequestMapping("/api/usuarios")
-public class UsuarioController {   
+public class UsuarioController {
+
+    @Autowired
+    private AuthenticationManager authenticationManager;
+
+    @Autowired
+    private TokenProvider jwtTokenUtil;
     
     @Autowired
     UsuarioService usuarioService;
 
-    @GetMapping
-    public ResponseEntity<List<Usuario>> getAllUsuarios() {
-        List<Usuario> usuarios = usuarioService.getAllUsuarios();
-        return new ResponseEntity<>(usuarios, HttpStatus.OK);
+
+    @RequestMapping(value = "/autenticacion", method = RequestMethod.POST)
+    public ResponseEntity<?> generateToken(@RequestBody LoginUser loginUser) throws AuthenticationException {
+        final Authentication authentication = authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(
+                        loginUser.getCorreo(),
+                        loginUser.getContrasenia()
+                )
+        );
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+        final String token = jwtTokenUtil.generateToken(authentication);
+        return ResponseEntity.ok(new AuthToken(token));
     }
 
-    // GET: Obtener un usuario por ID
-    @GetMapping("/{id}")
-    public ResponseEntity<Usuario> getUsuarioById(@PathVariable Long id) {
-        Optional<Usuario> usuario = usuarioService.getUsuarioById(id);
-        return usuario.map(value -> new ResponseEntity<>(value, HttpStatus.OK))
-                      .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
+    /**
+     * Saves a new user.
+     *
+     //* @param usuario The user to be saved.
+     * @return The saved user.
+     */
+    @RequestMapping(value="/crear-usuario", method = RequestMethod.POST)
+    public Usuario saveUser(@RequestBody UsuarioDTO usuario){
+        return usuarioService.save(usuario);
     }
 
-    // GET: Obtener un usuario por credencial
-    @GetMapping("/credencial/{credencial}")
-    public ResponseEntity<Usuario> getUsuarioByCredencial(@PathVariable String credencial) {
-        Optional<Usuario> usuario = usuarioService.getUsuarioByCredencial(credencial);
-        return usuario.map(value -> new ResponseEntity<>(value, HttpStatus.OK))
-                      .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
+    /**
+     * Returns a message that can only be accessed by users with the 'ADMIN' role.
+     *
+     * @return A message that can only be accessed by admins.
+     */
+    @PreAuthorize("hasRole('ADMIN')")
+    @RequestMapping(value="/adminping", method = RequestMethod.GET)
+    public String adminPing(){
+        return "Only Admins Can Read This";
     }
 
-    // GET: Obtener usuarios por tipo
-    @GetMapping("/tipo/{tipo}")
-    public ResponseEntity<List<Usuario>> getUsuariosByTipo(@PathVariable String Rol) {
-        List<Usuario> usuarios = usuarioService.getUsuariosByRol(Rol);
-        return new ResponseEntity<>(usuarios, HttpStatus.OK);
+    /**
+     * Returns a message that can be accessed by any user.
+     *
+     * @return A message that can be accessed by any user.
+     */
+    @PreAuthorize("hasRole('USER')")
+    @RequestMapping(value="/userping", method = RequestMethod.GET)
+    public String userPing(){
+        return "Any User Can Read This";
     }
 
-    // POST: Crear un nuevo usuario
-    @PostMapping
-    public ResponseEntity<Usuario> createUsuario(@RequestBody Usuario usuario) {
-        Usuario nuevoUsuario = usuarioService.saveUsuario(usuario);
-        return new ResponseEntity<>(nuevoUsuario, HttpStatus.CREATED);
+    @PreAuthorize("hasRole('ADMIN')")
+    @RequestMapping(value="/crear/empleado", method = RequestMethod.POST)
+    public Usuario crearEmpleado(@RequestBody UsuarioDTO usuario){
+        return usuarioService.crearEmpleado(usuario);
     }
 
-    // PUT: Actualizar un usuario existente
-    @PutMapping("/Update/{id}")
-    public ResponseEntity<Usuario> updateUsuario(@PathVariable Long id, @RequestBody Usuario usuarioActualizado) {
-        Optional<Usuario> usuarioOptional = usuarioService.getUsuarioById(id);
-        if (usuarioOptional.isPresent()) {
-            Usuario usuario = usuarioOptional.get();
-            usuario.setUsuario(usuarioActualizado.getUsuario());
-            usuario.setCorreo(usuarioActualizado.getCorreo());
-            usuario.setRol(usuarioActualizado.getRol());
-            usuario.setContraseña(usuarioActualizado.getContraseña());
-            Usuario usuarioGuardado = usuarioService.saveUsuario(usuario);
-            return new ResponseEntity<>(usuarioGuardado, HttpStatus.OK);
-        } else {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
+    @PreAuthorize("hasRole('ADMIN')")
+    @RequestMapping(value="/find/all", method = RequestMethod.GET)
+    public List<Usuario> getAllList(){
+        return usuarioService.findAll();
     }
 
-    // DELETE: Eliminar un usuario por ID
-    @DeleteMapping("/Delete/{id}")
-    public ResponseEntity<Void> deleteUsuarioById(@PathVariable Long id) {
-        Optional<Usuario> usuarioOptional = usuarioService.getUsuarioById(id);
-        if (usuarioOptional.isPresent()) {
-            usuarioService.deleteUsuarioById(id);
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-        } else {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
+    @PreAuthorize("hasRole('ADMIN')")
+    @RequestMapping(value="/find/by/username", method = RequestMethod.GET)
+    public Optional<Usuario> getAllList(@RequestParam String correo){
+        return usuarioService.findOne(correo);
     }
 }

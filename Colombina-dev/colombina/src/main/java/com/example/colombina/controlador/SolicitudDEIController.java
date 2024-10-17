@@ -63,11 +63,11 @@ public class SolicitudDEIController {
     }
 
     // Buscar solicitudes por el nombre del solicitante
-    @GetMapping("/nombre/{nombreSolicitante}")
+   /* @GetMapping("/nombre/{nombreSolicitante}")
     public ResponseEntity<List<SolicitudDEI>> buscarPorNombreSolicitante(@PathVariable String nombreSolicitante) {
         List<SolicitudDEI> solicitudes = solicitudDEIService.buscarPorNombreSolicitante(nombreSolicitante);
         return new ResponseEntity<>(solicitudes, HttpStatus.OK);
-    }
+    }*/
 
     // Buscar solicitudes por tipo de producto
     @GetMapping("/tipo/{tipoDeProducto}")

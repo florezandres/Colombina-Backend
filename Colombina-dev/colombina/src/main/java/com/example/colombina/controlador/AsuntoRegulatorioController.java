@@ -77,10 +77,10 @@ public class AsuntoRegulatorioController {
 
     //CU 1 Solicitud trámite nacional--------------------------------------------------
     // Obtener documentos de una solicitud dentro de un asunto
-    @GetMapping("/{asuntoId}/solicitudes/{solicitudId}/documentos")
+   /* @GetMapping("/{asuntoId}/solicitudes/{solicitudId}/documentos")
     public ResponseEntity<List<String>> obtenerDocumentosDeSolicitud(@PathVariable Long asuntoId, @PathVariable Long solicitudId) {
         List<String> documentos = asuntoRegulatorioService.obtenerDocumentosDeSolicitudEnAsunto(asuntoId, solicitudId);
         return ResponseEntity.ok(documentos);
-    }
+    }*/
 }
 
