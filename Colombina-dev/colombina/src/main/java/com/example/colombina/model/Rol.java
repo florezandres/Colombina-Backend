@@ -18,8 +18,13 @@ public class Rol {
     private long id;
 
     @Column
-    private String name; //ADMIN, ASUNTOSREG, EMPLEADO
+    private String name; //ADMIN, ASUNTOSREG, SOLICITANTE, EXPORTACIONES, MERCADEO
 
-    @Column
-    private String description;
+    public Rol(String name) {
+        this.name = name;
+    }
 }
+
+
+
+
