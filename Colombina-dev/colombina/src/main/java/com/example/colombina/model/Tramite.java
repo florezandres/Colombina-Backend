@@ -10,14 +10,10 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-public class TramiteRegulatorio {
+public class Tramite {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(nullable = false)
-    private Long consecutivo;
 
     @Column(nullable = false, unique = true)
     private String numeroRadicado;
@@ -29,10 +25,6 @@ public class TramiteRegulatorio {
     @Temporal(TemporalType.DATE)
     @Column(nullable = false)
     private Date fechaRadicacion;
-
-    @ManyToOne
-    @JoinColumn(name = "solicitante_id", nullable = false)
-    private Usuario solicitante;
 
     @ManyToOne
     @JoinColumn(name = "entidad_sanitaria_id", nullable = false)
@@ -56,11 +48,12 @@ public class TramiteRegulatorio {
 
     // Enum definido dentro de TramiteRegulatorio (opcional)
     public enum EstadoTramite {
-        EN_REVISION,
-        APROBADO,
-        RECHAZADO
+        EN_REVISION, // Asuntos regulatorios revisando
+        APROBADO, // Aprobado
+        RECHAZADO, // Rechazado
+        PENDIENTE, // Pendiente a procesar la solicitud
     }
     public void setNumeroRadicado() {
-        this.numeroRadicado = "AR-"+numeroRadicado;
+        this.numeroRadicado = "AR-"+id;
     }
 }

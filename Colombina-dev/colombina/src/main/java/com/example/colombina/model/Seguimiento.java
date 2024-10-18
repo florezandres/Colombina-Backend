@@ -27,5 +27,5 @@ public class Seguimiento {
 
     @ManyToOne
     @JoinColumn(name = "tramite_id", nullable = false)
-    private TramiteRegulatorio tramite;
+    private Tramite tramite;
 }

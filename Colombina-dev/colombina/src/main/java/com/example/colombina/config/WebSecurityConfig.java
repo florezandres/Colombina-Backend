@@ -1,4 +1,4 @@
-package com.example.colombina.config;
+/*package com.example.colombina.config;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -45,3 +45,4 @@ public class WebSecurityConfig {
         return authenticationConfiguration.getAuthenticationManager();
     }
 }
+*/

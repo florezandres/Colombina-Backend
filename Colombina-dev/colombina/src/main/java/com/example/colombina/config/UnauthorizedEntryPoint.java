@@ -1,4 +1,4 @@
-package com.example.colombina.config;
+/*package com.example.colombina.config;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -18,4 +18,4 @@ public class UnauthorizedEntryPoint implements AuthenticationEntryPoint, Seriali
     public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException) throws IOException, ServletException {
         response.sendError(javax.servlet.http.HttpServletResponse.SC_UNAUTHORIZED, "Unauthenticated");
     }
-}
+}*/

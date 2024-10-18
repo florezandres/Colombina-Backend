@@ -30,5 +30,5 @@ public class Pago {
 
     @ManyToOne
     @JoinColumn(name = "tramite_id", nullable = false)
-    private TramiteRegulatorio tramite;
+    private Tramite tramite;
 }

@@ -1,4 +1,4 @@
-package com.example.colombina.config;
+/*package com.example.colombina.config;
 
 import javax.servlet.*;
 import javax.servlet.http.HttpServletResponse;
@@ -21,4 +21,4 @@ public class CORSFilter implements Filter {
 
     public void destroy() {}
 
-}
+}*/

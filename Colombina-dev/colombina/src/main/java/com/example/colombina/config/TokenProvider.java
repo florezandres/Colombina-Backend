@@ -1,4 +1,4 @@
-package com.example.colombina.config;
+/*package com.example.colombina.config;
 
 import io.jsonwebtoken.*;
 import org.springframework.beans.factory.annotation.Value;
@@ -88,4 +88,4 @@ public class TokenProvider implements Serializable {
         return new UsernamePasswordAuthenticationToken(userDetails, "", authorities);
     }
 
-}
+}*/

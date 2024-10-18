@@ -30,6 +30,6 @@ public class Solicitud {
     private Usuario solicitante;
 
     @OneToOne(mappedBy = "solicitud")
-    private TramiteRegulatorio tramite;
+    private Tramite tramite;
 }
 

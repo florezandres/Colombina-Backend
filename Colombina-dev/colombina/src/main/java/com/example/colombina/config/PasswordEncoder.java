@@ -1,4 +1,4 @@
-package com.example.colombina.config;
+/*package com.example.colombina.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -11,4 +11,4 @@ public class PasswordEncoder {
     public BCryptPasswordEncoder encoder(){
         return new BCryptPasswordEncoder();
     }
-}
+}*/

@@ -25,5 +25,5 @@ public class EntidadSanitaria {
     private String pais;
 
     @OneToMany(mappedBy = "entidadSanitaria", cascade = CascadeType.ALL)
-    private List<TramiteRegulatorio> tramites;
+    private List<Tramite> tramites;
 }

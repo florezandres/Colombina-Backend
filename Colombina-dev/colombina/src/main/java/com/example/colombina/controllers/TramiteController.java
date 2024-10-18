@@ -1,34 +1,30 @@
 package com.example.colombina.controllers;
 
-import com.example.colombina.DTOs.SolicitudDTO;
-import com.example.colombina.model.Solicitud;
-import com.example.colombina.model.TramiteRegulatorio;
-import com.example.colombina.services.TramiteRegulatorioService;
+import com.example.colombina.DTOs.TramiteDTO;
+import com.example.colombina.services.TramiteService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestPart;
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.multipart.MultipartFile;
-
-import java.util.List;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/tramites")
 public class TramiteController {
     @Autowired
-    private TramiteRegulatorioService tramiteRegulatorioService;
+    private TramiteService tramiteService;
 
-    @PostMapping("/crear-solicitud")
-    public ResponseEntity<?> crearSolicitud(
-            @RequestPart("solicitud") SolicitudDTO solicitud,
-            @RequestPart("documentos") List<MultipartFile> documentos) {
+    // Apertura de un trámite por su ID -> ASUNTOS REGULATORIOS
+    @CrossOrigin
+    @PostMapping("/{idTramite}/apertura")
+    public ResponseEntity<?> abrirTramite(@PathVariable Long idTramite) {
         try {
-            TramiteRegulatorio tramite = tramiteRegulatorioService.crearSolicitudTramite(solicitud, documentos);
-            return ResponseEntity.ok("Solicitud generada correctamente. Id de solicitud: " + solicitud.getId());
+            // Llamar al servicio para abrir el trámite
+            tramiteService.abrirTramite(idTramite);
+            return ResponseEntity.ok("Trámite abierto correctamente.");
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(404).body(e.getMessage()); // Error si el trámite no se encuentra
         } catch (Exception e) {
-            return ResponseEntity.badRequest().body("Error al procesar la solicitud: " + e.getMessage());
+            return ResponseEntity.status(500).body("Error al abrir el trámite.");
         }
     }
 }
