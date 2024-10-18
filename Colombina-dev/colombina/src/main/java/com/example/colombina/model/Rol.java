@@ -18,10 +18,10 @@ public class Rol {
     private long id;
 
     @Column
-    private String name; //ADMIN, ASUNTOSREG, SOLICITANTE, EXPORTACIONES, MERCADEO
+    private String tipoRol; //ADMIN, ASUNTOSREG, SOLICITANTE, EXPORTACIONES, MERCADEO
 
-    public Rol(String name) {
-        this.name = name;
+    public Rol(String tipoRol) {
+        this.tipoRol = tipoRol;
     }
 }
 
