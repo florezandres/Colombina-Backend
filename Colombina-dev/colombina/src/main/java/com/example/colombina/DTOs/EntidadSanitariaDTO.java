@@ -1,4 +1,4 @@
-package com.example.colombina.dto;
+package com.example.colombina.DTOs;
 
 
 import lombok.Getter;

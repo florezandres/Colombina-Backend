@@ -1,6 +1,6 @@
-package com.example.colombina.dto;
+package com.example.colombina.DTOs;
 
-import com.example.colombina.entidad.Rol;
+import com.example.colombina.model.Rol;
 import lombok.Getter;
 import lombok.Setter;
 

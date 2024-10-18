@@ -1,4 +1,4 @@
-package com.example.colombina.entidad;
+package com.example.colombina.model;
 
 import jakarta.persistence.*;
 import lombok.*;

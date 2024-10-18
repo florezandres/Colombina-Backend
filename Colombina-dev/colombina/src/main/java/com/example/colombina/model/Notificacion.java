@@ -1,4 +1,4 @@
-package com.example.colombina.entidad;
+package com.example.colombina.model;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -6,26 +6,26 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.Date;
+
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-public class Permiso {
+public class Notificacion {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private TipoPermiso tipoPermiso;
+    private String mensaje;
+
+    @Temporal(TemporalType.DATE)
+    @Column(nullable = false)
+    private Date fecha;
 
     @ManyToOne
-    @JoinColumn(name = "usuario_id", nullable = false)
-    private Usuario usuario;
-
-    @ManyToOne
-    @JoinColumn(name = "documento_id", nullable = false)
-    private Documento documento;
+    @JoinColumn(name = "destinatario_id", nullable = false)
+    private Usuario destinatario;
 }
-

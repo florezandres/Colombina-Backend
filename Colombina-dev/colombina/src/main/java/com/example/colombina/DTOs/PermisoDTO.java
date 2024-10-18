@@ -1,6 +1,6 @@
-package com.example.colombina.dto;
+package com.example.colombina.DTOs;
 
-import com.example.colombina.entidad.TipoPermiso;
+import com.example.colombina.model.TipoPermiso;
 import lombok.Getter;
 import lombok.Setter;
 

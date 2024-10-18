@@ -1,4 +1,4 @@
-package com.example.colombina.entidad;
+package com.example.colombina.model;
 
 import jakarta.persistence.*;
 import lombok.*;
@@ -14,6 +14,9 @@ public class TramiteRegulatorio {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @Column(nullable = false)
+    private Long consecutivo;
 
     @Column(nullable = false, unique = true)
     private String numeroRadicado;
@@ -55,5 +58,13 @@ public class TramiteRegulatorio {
         EN_REVISION,
         APROBADO,
         RECHAZADO
+    }
+
+    public void aumentarConsecutivo() {
+        this.consecutivo++;
+    }
+
+    public void setNumeroRadicado() {
+        this.numeroRadicado = "AR-"+numeroRadicado;
     }
 }

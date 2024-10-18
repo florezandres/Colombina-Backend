@@ -1,15 +1,17 @@
-package com.example.colombina.dto;
+package com.example.colombina.DTOs;
 
 import lombok.Getter;
 import lombok.Setter;
 
 import java.util.Date;
 
-@Getter
 @Setter
-public class HistorialCambioDTO {
+@Getter
+public class PagoDTO {
     private Long id;
-    private String descripcion;
-    private Date fechaCambio;
+    private float monto;
+    private String referencia;
+    private Date fechaPago;
     private Long tramiteId;  // Referencia al Trámite
 }
+

@@ -1,4 +1,4 @@
-package com.example.colombina.entidad;
+package com.example.colombina.model;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -11,21 +11,21 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-public class Documento {
+public class Permiso {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private String tipo;
-
-    @Column
-    private boolean aprobado;
-
-    @Column(nullable = false)
-    private String tempUrl;
+    private TipoPermiso tipoPermiso;
 
     @ManyToOne
-    @JoinColumn(name = "tramite_id", nullable = false)
-    private TramiteRegulatorio tramite;
+    @JoinColumn(name = "usuario_id", nullable = false)
+    private Usuario usuario;
+
+    @ManyToOne
+    @JoinColumn(name = "documento_id", nullable = false)
+    private Documento documento;
 }
+

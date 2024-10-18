@@ -1,6 +1,5 @@
-package com.example.colombina.dto;
+package com.example.colombina.DTOs;
 
-import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 

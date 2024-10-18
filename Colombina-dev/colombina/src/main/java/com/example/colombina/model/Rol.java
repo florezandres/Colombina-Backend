@@ -1,4 +1,4 @@
-package com.example.colombina.entidad;
+package com.example.colombina.model;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -18,7 +18,7 @@ public class Rol {
     private long id;
 
     @Column
-    private String name;
+    private String name; //ADMIN, ASUNTOSREG, EMPLEADO
 
     @Column
     private String description;
