@@ -28,8 +28,4 @@ public class Administrador {
     @Column(nullable = false, unique = true)
     private String correoElectronico;
 
-    @Column(nullable = false)
-    private TipoPermiso tipoPermiso;
-
-
 }
