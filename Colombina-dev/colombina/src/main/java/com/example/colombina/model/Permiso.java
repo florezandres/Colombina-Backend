@@ -27,5 +27,10 @@ public class Permiso {
     @ManyToOne
     @JoinColumn(name = "documento_id", nullable = false)
     private Documento documento;
+
+    public enum TipoPermiso {
+        LECTURA, ESCRITURA, ADMIN
+    }
+
 }
 
