@@ -15,6 +15,7 @@ public class TramiteRegulatorio {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(nullable = false)
     private Long consecutivo;
 
@@ -59,11 +60,6 @@ public class TramiteRegulatorio {
         APROBADO,
         RECHAZADO
     }
-
-    public void aumentarConsecutivo() {
-        this.consecutivo++;
-    }
-
     public void setNumeroRadicado() {
         this.numeroRadicado = "AR-"+numeroRadicado;
     }
