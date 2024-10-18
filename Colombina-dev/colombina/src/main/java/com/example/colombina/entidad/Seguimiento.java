@@ -13,19 +13,19 @@ import java.util.Date;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-public class Notificacion {
+public class Seguimiento {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(nullable = false)
-    private String mensaje;
+    private String estadoActual;
 
     @Temporal(TemporalType.DATE)
     @Column(nullable = false)
-    private Date fecha;
+    private Date fechaSeguimiento;
 
     @ManyToOne
-    @JoinColumn(name = "destinatario_id", nullable = false)
-    private Usuario destinatario;
+    @JoinColumn(name = "tramite_id", nullable = false)
+    private TramiteRegulatorio tramite;
 }

@@ -1,15 +1,14 @@
 package com.example.colombina.dto;
 
-import lombok.AllArgsConstructor;
+import com.example.colombina.entidad.Rol;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Getter
 @Setter
-@AllArgsConstructor
-@NoArgsConstructor
 public class UsuarioDTO {
-    private String correo;
-    private String contrasenia;
+    private Long id;
+    private String nombre;
+    private String correoElectronico;
+    private Rol rol;  // ADMIN, AGENTE, SOLICITANTE
 }

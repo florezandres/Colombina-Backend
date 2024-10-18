@@ -6,26 +6,26 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.util.Date;
-
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-public class Notificacion {
+public class Permiso {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private String mensaje;
-
-    @Temporal(TemporalType.DATE)
-    @Column(nullable = false)
-    private Date fecha;
+    private TipoPermiso tipoPermiso;
 
     @ManyToOne
-    @JoinColumn(name = "destinatario_id", nullable = false)
-    private Usuario destinatario;
+    @JoinColumn(name = "usuario_id", nullable = false)
+    private Usuario usuario;
+
+    @ManyToOne
+    @JoinColumn(name = "documento_id", nullable = false)
+    private Documento documento;
 }
+

@@ -1,10 +1,7 @@
 package com.example.colombina.entidad;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.util.Date;
 
@@ -13,19 +10,26 @@ import java.util.Date;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-public class Notificacion {
+public class Solicitud {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(nullable = false)
-    private String mensaje;
+    private String descripcionProducto;
+
+    @Column(nullable = false)
+    private String tipoProducto;
 
     @Temporal(TemporalType.DATE)
     @Column(nullable = false)
-    private Date fecha;
+    private Date fechaSolicitud;
 
     @ManyToOne
-    @JoinColumn(name = "destinatario_id", nullable = false)
-    private Usuario destinatario;
+    @JoinColumn(name = "solicitante_id", nullable = false)
+    private Usuario solicitante;
+
+    @OneToOne(mappedBy = "solicitud")
+    private TramiteRegulatorio tramite;
 }
+

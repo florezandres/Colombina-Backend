@@ -6,26 +6,24 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.util.Date;
+import java.util.List;
 
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-public class Notificacion {
+public class EntidadSanitaria {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
-    private String mensaje;
+    @Column(nullable = false, unique = true)
+    private String nombre;
 
-    @Temporal(TemporalType.DATE)
     @Column(nullable = false)
-    private Date fecha;
+    private String pais;
 
-    @ManyToOne
-    @JoinColumn(name = "destinatario_id", nullable = false)
-    private Usuario destinatario;
+    @OneToMany(mappedBy = "entidadSanitaria", cascade = CascadeType.ALL)
+    private List<TramiteRegulatorio> tramites;
 }

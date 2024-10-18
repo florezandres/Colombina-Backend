@@ -1,13 +1,9 @@
 package com.example.colombina.entidad;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @Setter
@@ -15,29 +11,30 @@ import lombok.Setter;
 @AllArgsConstructor
 @Entity
 public class Usuario {
-    //Atributos
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String correo;
-    private String contrasenia;
 
-    //RELACIONES E-R ANTERIOR
-    @OneToMany(mappedBy="usuario", cascade=CascadeType.ALL, orphanRemoval=true)
-    private List<Tramite> tramites = new ArrayList<>();
+    @Column(nullable = false, unique = true)
+    private String nombre;
 
-    //RELACIONES E-R NUEVO
-    @OneToMany(mappedBy="usuario")
-    private List<ExpedienteRegulatorio> expedientesRegulatorios = new ArrayList<>();
+    @Column(nullable = false)
+    private String contrasena;
 
+    @Column(nullable = false, unique = true)
+    private String correoElectronico;
 
-    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    @JoinTable(name = "USER_ROLES",
-            joinColumns = {
-                    @JoinColumn(name = "USER_ID")
-            },
-            inverseJoinColumns = {
-                    @JoinColumn(name = "ROLE_ID") })
-    private Set<Role> roles;
+    @ManyToOne
+    @JoinColumn(name = "rol_id", nullable = false)
+    private Rol rol;
+
+    // El resto de tu código permanece igual
+    @OneToMany(mappedBy = "solicitante", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Solicitud> solicitudes = new ArrayList<>();
+
+    @OneToMany(mappedBy = "destinatario", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Notificacion> notificaciones = new ArrayList<>();
+
+    @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Permiso> permisos = new ArrayList<>();
 }
-
