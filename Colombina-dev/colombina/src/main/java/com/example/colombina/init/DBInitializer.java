@@ -1,7 +1,9 @@
 package com.example.colombina.init;
 
+import com.example.colombina.model.EntidadSanitaria;
 import com.example.colombina.model.Rol;
 import com.example.colombina.model.Usuario;
+import com.example.colombina.repositories.EntidadSanitariaRepository;
 import com.example.colombina.repositories.RolRepository;
 import com.example.colombina.repositories.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,8 +21,15 @@ public class DBInitializer implements CommandLineRunner {
     @Autowired
     private RolRepository rolRepository;
 
+    @Autowired
+    private EntidadSanitariaRepository entidadSanitariaRepository;
+
     @Override
     public void run(String... args) throws Exception {
+        //Crear entidad
+        EntidadSanitaria entidadSanitaria1 = new EntidadSanitaria(1L, "Entidad Sanitaria", "Colombia", new ArrayList<>());
+        entidadSanitariaRepository.save(entidadSanitaria1);
+
         // Crear los roles
         Rol rolAdmin = new Rol("ADMIN");
         Rol rolAsuntosReg = new Rol("ASUNTOSREG");

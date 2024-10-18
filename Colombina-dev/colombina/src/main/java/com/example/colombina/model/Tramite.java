@@ -43,7 +43,7 @@ public class Tramite {
     private List<HistorialCambio> historialCambios;
 
     @OneToOne
-    @JoinColumn(name = "solicitud_id", nullable = false)
+    @JoinColumn(name = "solicitud_id")
     private Solicitud solicitud;
 
     // Enum definido dentro de TramiteRegulatorio (opcional)

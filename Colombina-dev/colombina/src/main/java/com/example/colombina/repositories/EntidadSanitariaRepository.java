@@ -6,4 +6,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface EntidadSanitariaRepository extends JpaRepository<EntidadSanitaria, Long> {
+
 }
