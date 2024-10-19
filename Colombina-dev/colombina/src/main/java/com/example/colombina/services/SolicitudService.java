@@ -1,6 +1,5 @@
 package com.example.colombina.services;
 
-import com.example.colombina.DTOs.EntidadSanitariaDTO;
 import com.example.colombina.DTOs.SolicitudDTO;
 import com.example.colombina.DTOs.TramiteDTO;
 import com.example.colombina.model.EntidadSanitaria;

@@ -46,6 +46,9 @@ public class Tramite {
     @JoinColumn(name = "solicitud_id")
     private Solicitud solicitud;
 
+    @Column(nullable = false)
+    private String tipoTramite;
+
     // Enum definido dentro de TramiteRegulatorio (opcional)
     public enum EstadoTramite {
         EN_REVISION, // Asuntos regulatorios revisando

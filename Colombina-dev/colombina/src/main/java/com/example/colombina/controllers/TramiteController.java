@@ -1,9 +1,11 @@
 package com.example.colombina.controllers;
 
-import com.example.colombina.DTOs.TramiteDTO;
+import com.example.colombina.model.EstadisticasDTO;
 import com.example.colombina.services.TramiteService;
+
+import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.MediaType;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -27,4 +29,50 @@ public class TramiteController {
             return ResponseEntity.status(500).body("Error al abrir el trámite.");
         }
     }
+
+    // Obtener estadísticas de trámites nacionales agrupados por mes
+    @CrossOrigin
+    @GetMapping("/estadisticas/nacionales")
+    public ResponseEntity<List<EstadisticasDTO>> obtenerTramitesNacionalesPorMes() {
+        List<EstadisticasDTO> estadisticas = tramiteService.obtenerTramitesNacionalesPorMes();
+        return ResponseEntity.ok(estadisticas);
+    }
+
+    // Obtener estadísticas de trámites internacionales agrupados por mes
+    @CrossOrigin
+    @GetMapping("/estadisticas/internacionales")
+    public ResponseEntity<List<EstadisticasDTO>> obtenerTramitesInternacionalesPorMes() {
+        List<EstadisticasDTO> estadisticas = tramiteService.obtenerTramitesInternacionalesPorMes();
+        return ResponseEntity.ok(estadisticas);
+    }
+
+    // Obtener estadísticas de documentos devueltos agrupados por tipo de documento
+    @CrossOrigin
+    @GetMapping("/estadisticas/documentos-devueltos")
+    public ResponseEntity<List<EstadisticasDTO>> obtenerDocumentosDevueltosPorTipo() {
+        List<EstadisticasDTO> estadisticas = tramiteService.obtenerDocumentosDevueltosPorTipo();
+        return ResponseEntity.ok(estadisticas);
+    }
+    //Estadisticas de tramite por periodo
+    @GetMapping("/estadisticas/tramites")
+    public ResponseEntity<List<EstadisticasDTO>> obtenerTramitesPorPeriodo(@RequestParam String tipo, @RequestParam String periodo) {
+        List<EstadisticasDTO> estadisticas = tramiteService.obtenerTramitesPorPeriodo(tipo, periodo);
+        return ResponseEntity.ok(estadisticas);
+    }
+    
+
+    //Filtros por fecha, tipo de trámite y país
+    @GetMapping("/estadisticas/filtrados")
+    public ResponseEntity<List<EstadisticasDTO>> obtenerTramitesFiltrados(
+            @RequestParam(required = false) String tipo,
+            @RequestParam(required = false) String pais,
+            @RequestParam(required = false) String fechaInicio,
+            @RequestParam(required = false) String fechaFin) {
+        List<EstadisticasDTO> tramitesFiltrados = tramiteService.obtenerTramitesFiltrados(tipo, pais, fechaInicio, fechaFin);
+        return ResponseEntity.ok(tramitesFiltrados);
+    }
+
+
+
+
 }
