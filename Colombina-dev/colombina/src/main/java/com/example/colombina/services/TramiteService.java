@@ -1,8 +1,11 @@
 package com.example.colombina.services;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.example.colombina.DTOs.TramiteDTO;
 import com.example.colombina.model.Tramite;
 import com.example.colombina.repositories.TramiteRepository;
 
@@ -45,4 +48,10 @@ public class TramiteService {
         // Elimina el trámite
         tramiteRepository.delete(tramite);
     }
+
+    //HU-39 - Filtrar tramites por estado
+    public List<TramiteDTO> filtrarTramitesPorEstado(Tramite.EstadoTramite estado) {
+        return tramiteRepository.findByEstado(estado);
+    }
+
 }
