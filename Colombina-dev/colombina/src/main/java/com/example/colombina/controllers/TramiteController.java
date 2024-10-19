@@ -1,9 +1,7 @@
 package com.example.colombina.controllers;
 
-import com.example.colombina.DTOs.TramiteDTO;
 import com.example.colombina.services.TramiteService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 

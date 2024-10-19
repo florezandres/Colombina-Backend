@@ -1,6 +1,5 @@
 package com.example.colombina.controllers;
 
-import com.example.colombina.DTOs.EntidadSanitariaDTO;
 import com.example.colombina.DTOs.RequestTramiteSolicitudDTO;
 import com.example.colombina.DTOs.SolicitudDTO;
 import com.example.colombina.DTOs.TramiteDTO;
