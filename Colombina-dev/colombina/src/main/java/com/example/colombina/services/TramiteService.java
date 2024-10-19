@@ -1,10 +1,10 @@
 package com.example.colombina.services;
 
-import com.example.colombina.DTOs.TramiteDTO;
-import com.example.colombina.model.Tramite;
-import com.example.colombina.repositories.TramiteRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import com.example.colombina.model.Tramite;
+import com.example.colombina.repositories.TramiteRepository;
 
 @Service
 public class TramiteService {
@@ -28,5 +28,21 @@ public class TramiteService {
 
         // 4. Guardar los cambios en la base de datos
         tramiteRepository.save(tramite);
+    }
+    
+    //HU-43 - Elimina un tramite que este incompleto
+    //Rol que utiliza el metodo: ASUNTOSREG (Agente de la Agencia de Asuntos Regulatorios)
+    public void eliminarTramite(Long idTramite) {
+        // Buscar el trámite por su ID
+        Tramite tramite = tramiteRepository.findById(idTramite)
+                .orElseThrow(() -> new IllegalArgumentException("El trámite con ID " + idTramite + " no existe."));
+        
+        // Verificar que el trámite no esté en proceso (EN_REVISION o APROBADO)
+        if (tramite.getEstado() == Tramite.EstadoTramite.EN_REVISION || tramite.getEstado() == Tramite.EstadoTramite.APROBADO) {
+            throw new IllegalArgumentException("El trámite está en proceso y no puede ser eliminado.");
+        }
+
+        // Elimina el trámite
+        tramiteRepository.delete(tramite);
     }
 }

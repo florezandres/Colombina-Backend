@@ -25,4 +25,18 @@ public class TramiteController {
             return ResponseEntity.status(500).body("Error al abrir el trámite.");
         }
     }
+    
+    //HU-43 - Elimina un tramite que este incompleto
+    //Rol que utiliza el metodo: ASUNTOSREG
+    @DeleteMapping("/{idTramite}/eliminar")
+    public ResponseEntity<?> eliminarTramite(@PathVariable Long idTramite) {
+        try {
+            tramiteService.eliminarTramite(idTramite);
+            return ResponseEntity.ok("Trámite eliminado correctamente.");
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(404).body(e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body("Error al eliminar el trámite.");
+        }
+    }
 }
