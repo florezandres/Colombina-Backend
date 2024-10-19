@@ -6,14 +6,12 @@ import com.resend.Resend;
 import com.resend.core.exception.ResendException;
 import com.resend.services.emails.model.CreateEmailOptions;
 import com.resend.services.emails.model.CreateEmailResponse;
+import org.springframework.beans.factory.annotation.Autowired;
 
 @Service
 public class NotificacionService {
-    private final Resend resendClient;
-
-    public NotificacionService(Resend resendClient) {
-        this.resendClient = resendClient;
-    }
+    @Autowired
+    private Resend resendClient;
 
     public void enviarNotificacion(String mensaje) {
         CreateEmailOptions params = CreateEmailOptions.builder()

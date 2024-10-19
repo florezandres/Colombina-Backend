@@ -2,7 +2,8 @@ package com.example.colombina.controllers;
 
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import com.example.colombina.services.NotificacionService;
 
@@ -10,13 +11,10 @@ import com.example.colombina.services.NotificacionService;
 @RequestMapping("/notificacion")
 public class NotificacionController {
 
-    private final NotificacionService notificacionService;
+    @Autowired
+    private NotificacionService notificacionService;
 
-    public NotificacionController(NotificacionService notificacionService) {
-        this.notificacionService = notificacionService;
-    }
-
-    @GetMapping
+    @PostMapping
     public String notificar() {
         notificacionService.enviarNotificacion("Hola, esto es una notificación");
         return "Notificación enviada";
