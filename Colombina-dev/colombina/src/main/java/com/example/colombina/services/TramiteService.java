@@ -10,6 +10,7 @@ import com.example.colombina.model.Documento;
 import com.example.colombina.model.Tramite;
 import com.example.colombina.repositories.TramiteRepository;
 
+
 @Service
 public class TramiteService {
 
@@ -90,7 +91,7 @@ public class TramiteService {
         String resumen = generarResumenDocumentos(tramiteId);
 
         // Envía la notificación
-        notificacionService.enviarNotificacion(tramiteId, "Consolidación completada", resumen);
+        notificacionService.guardarNotificacion(tramiteId, "Consolidación completada", resumen);
 
         // Puedes hacer más operaciones aquí si lo necesitas
     }

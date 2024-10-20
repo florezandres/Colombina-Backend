@@ -16,12 +16,14 @@ import org.springframework.web.bind.annotation.RestController;
 import com.example.colombina.DTOs.TramiteDTO;
 import com.example.colombina.model.Tramite;
 import com.example.colombina.services.TramiteService;
+import com.example.colombina.services.NotificacionService;
 
 @RestController
 @RequestMapping("/tramites")
 public class TramiteController {
     @Autowired
     private TramiteService tramiteService;
+    private NotificacionService notificacionService;
 
     // Apertura de un trámite por su ID -> ASUNTOS REGULATORIOS
     @CrossOrigin
@@ -30,6 +32,7 @@ public class TramiteController {
         try {
             // Llamar al servicio para abrir el trámite
             tramiteService.abrirTramite(idTramite);
+            notificacionService.enviarNotificacionEstadoTramite(idTramite); // Enviar notificación de cambio de estado
             return ResponseEntity.ok("Trámite abierto correctamente.");
         } catch (IllegalArgumentException e) {
             return ResponseEntity.status(404).body(e.getMessage()); // Error si el trámite no se encuentra
