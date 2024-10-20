@@ -28,12 +28,12 @@ services:
       MINIO_ACCESS_KEY: ${MINIO_ACCESS_KEY}
       MINIO_SECRET_KEY: ${MINIO_SECRET_KEY}
     volumes:
-      - minio_data:/data
+      - minio_volume:/data
     command: server /data
   backend:
     build: ./colombina
     ports:
-      - ${BACKEND_PORT}:8080
+      - ${BACKEND_PORT}:8090
     restart: always
     container_name: backend_colombina
     depends_on:
