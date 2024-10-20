@@ -53,16 +53,18 @@ public class SecurityConfiguration {
                 .authorizeHttpRequests(request -> request
                         .requestMatchers("/autenticacion/**")
                         .permitAll()
+                        .requestMatchers("/notificacion/**")
+                        .hasAnyAuthority("ADMIN")
                         .anyRequest()
                         .authenticated())
                 .exceptionHandling(exception -> exception
                         .authenticationEntryPoint((request, response, authException) -> {
                             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-                            response.getWriter().write("No autorizado.");
+                            response.getWriter().write("Unauthorized");
                         })
                         .accessDeniedHandler((request, response, accessDeniedException) -> {
                             response.setStatus(HttpServletResponse.SC_FORBIDDEN);
-                            response.getWriter().write("Acceso denegado.");
+                            response.getWriter().write("Forbidden");
                         }))
                 .sessionManagement(manager -> manager.sessionCreationPolicy(STATELESS))
                 .authenticationProvider(authenticationProvider()).addFilterBefore(

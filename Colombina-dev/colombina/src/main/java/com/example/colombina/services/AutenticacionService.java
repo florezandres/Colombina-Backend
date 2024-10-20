@@ -28,7 +28,6 @@ public class AutenticacionService {
         Optional<Usuario> usuario = usuarioRepository.findByNombre(username);
 
         if (usuario == null) {
-            System.out.println("Usuario no encontrado");
             throw new UsernameNotFoundException("Usuario no encontrado");
         }
 
