@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.example.colombina.DTOs.TramiteDTO;
+import com.example.colombina.model.Documento;
 import com.example.colombina.model.Tramite;
 import com.example.colombina.repositories.TramiteRepository;
 
@@ -14,6 +15,12 @@ public class TramiteService {
 
     @Autowired
     private TramiteRepository tramiteRepository;
+
+    @Autowired
+    private DocumentoService documentoService;
+
+    @Autowired
+    private NotificacionService notificacionService;
 
     // Cambia el estado de un trámite a EN_REVISION
     public void abrirTramite(Long idTramite) {
@@ -52,6 +59,40 @@ public class TramiteService {
     //HU-39 - Filtrar tramites por estado
     public List<TramiteDTO> filtrarTramitesPorEstado(Tramite.EstadoTramite estado) {
         return tramiteRepository.findByEstado(estado);
+    }
+
+    public String generarResumenDocumentos(Long tramiteId) {
+        Tramite tramite = tramiteRepository.findById(tramiteId)
+            .orElseThrow(() -> new IllegalArgumentException("Trámite no encontrado"));
+        
+        List<Documento> documentos = tramite.getDocumentos();
+        StringBuilder resumen = new StringBuilder();
+
+        // Genera un resumen de los documentos y su estado
+        documentos.forEach(documento -> {
+            resumen.append("Documento: ")
+                   .append(documento.getTipo())
+                   .append(" - Aprobado: ")
+                   .append(documento.isAprobado() ? "Sí" : "No")
+                   .append("\n");
+        });
+
+        return resumen.toString();
+    }
+
+    public void consolidarTramite(Long tramiteId) {
+        //  Verifica que todos los documentos estén completos
+        if (!documentoService.verificarDocumentosCompletos(tramiteId)) {
+            throw new IllegalArgumentException("No todos los documentos están aprobados.");
+        }
+
+        // Genera el resumen
+        String resumen = generarResumenDocumentos(tramiteId);
+
+        // Envía la notificación
+        notificacionService.enviarNotificacion(tramiteId, "Consolidación completada", resumen);
+
+        // Puedes hacer más operaciones aquí si lo necesitas
     }
 
 }

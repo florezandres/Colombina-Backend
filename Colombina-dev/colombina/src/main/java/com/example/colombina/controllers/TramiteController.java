@@ -64,4 +64,18 @@ public class TramiteController {
             return ResponseEntity.status(500).body("Error al filtrar los trámites.");
         }
     }
+
+    @CrossOrigin
+    @PostMapping("/{idTramite}/consolidacion")
+    public ResponseEntity<?> consolidarTramite(@PathVariable Long idTramite) {
+        try {
+            // Llama al servicio para consolidar el trámite
+            tramiteService.consolidarTramite(idTramite);
+            return ResponseEntity.ok("Consolidación completada correctamente.");
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(400).body(e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body("Error al consolidar el trámite.");
+        }
+    }
 }
