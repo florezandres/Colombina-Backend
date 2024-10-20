@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/solicitudes")
 public class SolicitudController {
+
     @Autowired
     private SolicitudService solicitudService;
 

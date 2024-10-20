@@ -2,14 +2,14 @@ package com.example.colombina.DTOs;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.web.multipart.MultipartFile;
 
 @Getter
 @Setter
 public class DocumentoDTO {
-    private Long id;
+    private String name;
     private String tipo;
     private boolean aprobado;
-    private String urlTemp;  // Localización temporal del archivo
-    private Long tramiteId;  // Referencia al Trámite
+    private MultipartFile file;  // Localización temporal del archivo
 }
 

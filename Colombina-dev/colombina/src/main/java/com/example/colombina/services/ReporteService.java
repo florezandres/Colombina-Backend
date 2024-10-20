@@ -25,8 +25,8 @@ public class ReporteService {
     @Autowired
     private TramiteRepository tramiteRepository;
 
-    public List<ReporteDTO> generarReporteDatos(Date fechaInicio, Date fechaFin, String tipoTramite, Tramite.EstadoTramite estado) {
-        List<Tramite> tramites = tramiteRepository.findByFechaRadicacionTipoyEstado(fechaInicio, fechaFin, tipoTramite, estado);
+    /*public List<ReporteDTO> generarReporteDatos(Date fechaInicio, Date fechaFin, String tipoTramite, Tramite.EstadoTramite estado) {
+        List<Tramite> tramites = tramiteRepository.findByFechaRadicacionTipoAndEstado(fechaInicio, fechaFin, tipoTramite, estado);
         List<ReporteDTO> reportes = new ArrayList<>();
 
         int totalTramites = tramites.size();
@@ -77,7 +77,7 @@ public class ReporteService {
 
         return reportes;
     }
-
+*/
 
     private long calcularDiasEntreFechas(Date fechaInicio, Date fechaFin) {
         // Convertir Date a LocalDate

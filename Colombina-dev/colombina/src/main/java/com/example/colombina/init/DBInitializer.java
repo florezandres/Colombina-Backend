@@ -1,11 +1,7 @@
 package com.example.colombina.init;
 
-import com.example.colombina.model.EntidadSanitaria;
-import com.example.colombina.model.Rol;
-import com.example.colombina.model.Usuario;
-import com.example.colombina.repositories.EntidadSanitariaRepository;
-import com.example.colombina.repositories.RolRepository;
-import com.example.colombina.repositories.UsuarioRepository;
+import com.example.colombina.model.*;
+import com.example.colombina.repositories.*;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,6 +11,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
+import java.util.Date;
 
 @Component
 public class DBInitializer implements CommandLineRunner {
@@ -27,6 +24,12 @@ public class DBInitializer implements CommandLineRunner {
 
     @Autowired
     private EntidadSanitariaRepository entidadSanitariaRepository;
+
+    @Autowired
+    private SolicitudRepository solicitudRepository;
+
+    @Autowired
+    private TramiteRepository tramiteRepository;
 
     @Autowired
     private PasswordEncoder passwordEncoder;
@@ -55,15 +58,15 @@ public class DBInitializer implements CommandLineRunner {
         rolRepository.save(rolExportaciones);
 
         // Crear los usuarios con los roles asignados
-        Usuario admin = new Usuario(null, "Admin", passwordEncoder.encode("adminpass"), "admin@example.com", rolAdmin,
+        Usuario admin = new Usuario(1L, "Admin", passwordEncoder.encode("adminpass"), "admin@example.com", rolAdmin,
                 new ArrayList<>(), new ArrayList<>(), new ArrayList<>());
-        Usuario asuntosReg = new Usuario(null, "AsuntosReg", passwordEncoder.encode("asuntosregpass"),
+        Usuario asuntosReg = new Usuario(2L, "AsuntosReg", passwordEncoder.encode("asuntosregpass"),
                 "asuntosreg@example.com", rolAsuntosReg, new ArrayList<>(), new ArrayList<>(), new ArrayList<>());
-        Usuario solicitante = new Usuario(null, "Solicitante", passwordEncoder.encode("solicitantepass"),
+        Usuario solicitante = new Usuario(3L, "Solicitante", passwordEncoder.encode("solicitantepass"),
                 "solicitante@example.com", rolSolicitante, new ArrayList<>(), new ArrayList<>(), new ArrayList<>());
-        Usuario mercadeo = new Usuario(null, "Mercadeo", passwordEncoder.encode("mercadeopass"), "mercadeo@example.com",
+        Usuario mercadeo = new Usuario(4L, "Mercadeo", passwordEncoder.encode("mercadeopass"), "mercadeo@example.com",
                 rolMercadeo, new ArrayList<>(), new ArrayList<>(), new ArrayList<>());
-        Usuario exportaciones = new Usuario(null, "Exportaciones", passwordEncoder.encode("exportacionespass"),
+        Usuario exportaciones = new Usuario(5L, "Exportaciones", passwordEncoder.encode("exportacionespass"),
                 "exportaciones@example.com", rolExportaciones, new ArrayList<>(), new ArrayList<>(), new ArrayList<>());
 
         // Guardar los usuarios en la base de datos
@@ -74,5 +77,15 @@ public class DBInitializer implements CommandLineRunner {
         usuarioRepository.save(exportaciones);
 
         logger.info("Usuarios inicializados correctamente.");
+
+        Date date = new Date();
+
+
+        Solicitud solicitud1 = new Solicitud(1L, "Solicitud 1", "Descripción de la solicitud 1", date, solicitante);
+        solicitudRepository.save(solicitud1);
+
+        Tramite tramite1 = new Tramite(1L, "AR-1", Tramite.EstadoTramite.EN_REVISION, date, entidadSanitaria1, null, null, null,
+                null, solicitud1);
+        tramiteRepository.save(tramite1);
     }
 }

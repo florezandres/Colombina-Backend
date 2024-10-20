@@ -20,7 +20,7 @@ public class ReporteController {
     @Autowired
     private ReporteService reporteService;
 
-    @GetMapping("/generar")
+    /*@GetMapping("/generar")
     public ResponseEntity<?> generarReportes(
             @RequestParam Date fechaInicio,
             @RequestParam Date fechaFin,
@@ -63,5 +63,5 @@ public class ReporteController {
             e.printStackTrace();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error generando reportes");
         }
-    }
+    }*/
 }

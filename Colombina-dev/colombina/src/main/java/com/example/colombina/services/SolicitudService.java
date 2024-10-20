@@ -67,7 +67,6 @@ public class SolicitudService {
         // Crear y guardar la nueva Solicitud
         Solicitud nuevaSolicitud = modelMapper.map(solicitudDTO, Solicitud.class); // Convertir el DTO a entidad
         nuevaSolicitud.setSolicitante(solicitante); // Asociar el usuario solicitante
-        nuevaSolicitud.setTramite(tramiteGuardado); // Asociar el trámite guardado
 
         System.out.println("Antes de guardar solicitud"+nuevaSolicitud.getDescripcionProducto());
         Solicitud solicitudGuardada = solicitudRepository.save(nuevaSolicitud);

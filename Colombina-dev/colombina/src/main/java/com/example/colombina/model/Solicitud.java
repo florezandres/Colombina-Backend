@@ -22,14 +22,11 @@ public class Solicitud {
     private String tipoProducto;
 
     @Temporal(TemporalType.DATE)
-    @Column(nullable = false)
+    @Column(nullable = true)
     private Date fechaSolicitud;
 
     @ManyToOne
     @JoinColumn(name = "solicitante_id", nullable = false)
     private Usuario solicitante;
-
-    @OneToOne(mappedBy = "solicitud")
-    private Tramite tramite;
 }
 

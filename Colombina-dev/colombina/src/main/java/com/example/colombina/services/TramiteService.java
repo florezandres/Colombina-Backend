@@ -58,7 +58,8 @@ public class TramiteService {
 
     //HU-39 - Filtrar tramites por estado
     public List<TramiteDTO> filtrarTramitesPorEstado(Tramite.EstadoTramite estado) {
-        return tramiteRepository.findByEstado(estado);
+        //return tramiteRepository.findByEstado(estado);
+        return null;
     }
 
     public String generarResumenDocumentos(Long tramiteId) {
