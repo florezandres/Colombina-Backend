@@ -2,9 +2,13 @@ package com.example.colombina.services;
 
 import com.example.colombina.DTOs.TramiteDTO;
 import com.example.colombina.DTOs.EstadisticasDTO;
+import com.example.colombina.model.Notificacion;
 import com.example.colombina.model.Tramite;
+import com.example.colombina.model.Usuario;
 import com.example.colombina.repositories.TramiteRepository;
+import com.example.colombina.repositories.UsuarioRepository;
 
+import java.util.Date;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -14,6 +18,10 @@ public class TramiteService {
 
     @Autowired
     private TramiteRepository tramiteRepository;
+    @Autowired
+    private NotificacionService notificacionService;
+    @Autowired
+    private UsuarioRepository usuarioRepository;
 
     // Cambia el estado de un trámite a EN_REVISION
     public void abrirTramite(Long idTramite) {
@@ -64,6 +72,29 @@ public class TramiteService {
     //Filtros para tramites
     public List<EstadisticasDTO> obtenerTramitesFiltrados(String tipo, String pais, String fechaInicio, String fechaFin) {
         return tramiteRepository.filtrarTramites(tipo, pais, fechaInicio, fechaFin);
+    }
+
+    //escalar un tramite
+    public void escalarTramite(Long idTramite) {
+        // Buscar el trámite por ID
+        Tramite tramite = tramiteRepository.findById(idTramite).orElseThrow(() -> new IllegalArgumentException("Trámite no encontrado"));
+
+        // Crear el mensaje de notificación
+        String mensaje = "El tramite con numero de Radicado " + tramite.getNumeroRadicado() + " ha sido escalado por falta de respuesta.";
+
+        // Obtener los usuarios con roles ADMIN o AGENTE
+        List<Usuario> destinatarios = usuarioRepository.findByRolTipoRolIn(List.of("ADMIN", "AGENTE"));
+
+        // Crear notificaciones para cada destinatario
+        for (Usuario usuario : destinatarios) {
+            Notificacion notificacion = new Notificacion();
+            notificacion.setMensaje(mensaje);
+            notificacion.setFecha(new Date());
+            notificacion.setDestinatario(usuario);
+
+            // Guardar la notificación
+            notificacionService.crearNotificacion(notificacion);
+        }
     }
     
     

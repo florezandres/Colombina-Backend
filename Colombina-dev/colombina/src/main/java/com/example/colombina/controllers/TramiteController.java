@@ -1,6 +1,7 @@
 package com.example.colombina.controllers;
 
 import com.example.colombina.DTOs.EstadisticasDTO;
+import com.example.colombina.services.NotificacionService;
 import com.example.colombina.services.TramiteService;
 
 import java.util.List;
@@ -72,6 +73,17 @@ public class TramiteController {
         return ResponseEntity.ok(tramitesFiltrados);
     }
 
+    //HU 17
+    @PostMapping("/{idTramite}/escalar")
+    public ResponseEntity<?> escalarTramite(@PathVariable Long idTramite) {
+        try {
+            // Escalar el trámite y crear la notificación
+            tramiteService.escalarTramite(idTramite);
+            return ResponseEntity.ok("El trámite ha sido escalado correctamente.");
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body("Error al escalar el trámite.");
+        }
+    }
 
 
 
