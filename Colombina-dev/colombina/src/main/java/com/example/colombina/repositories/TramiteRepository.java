@@ -13,4 +13,6 @@ import com.example.colombina.model.Tramite;
 public interface TramiteRepository extends JpaRepository<Tramite, Long> {
     Optional<Tramite> findByNumeroRadicado(String numeroRadicado);
     List<TramiteDTO> findByEstado(Tramite.EstadoTramite estado);
+
+    List<Tramite> findByFechaRadicacionTipoyEstado(Date fechaInicio, Date fechaFin, String tipoTramite, Tramite.EstadoTramite estado);
 }
