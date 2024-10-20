@@ -12,6 +12,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import com.example.colombina.services.JwtService;
@@ -40,13 +41,13 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             final String authHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
             final String jwt;
             final String userName;
-            if (authHeader == null || authHeader.isEmpty() || !authHeader.startsWith("Bearer ")) {
+            if (!StringUtils.hasText(authHeader) || !authHeader.startsWith("Bearer ")) {
                 filterChain.doFilter(request, response);
                 return;
             }
             jwt = authHeader.substring(7);
             userName = jwtService.extractUserName(jwt);
-            if (userName != null && !userName.isEmpty()
+            if (StringUtils.hasText(userName)
                     && SecurityContextHolder.getContext().getAuthentication() == null) {
                 UserDetails userDetails = userService.userDetailsService()
                         .loadUserByUsername(userName);
@@ -61,7 +62,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                         authToken = new UsernamePasswordAuthenticationToken(
                                 userDetails, null, java.util.Collections.emptyList());
                     }
-                    
+
                     authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                     context.setAuthentication(authToken);
                     SecurityContextHolder.setContext(context);

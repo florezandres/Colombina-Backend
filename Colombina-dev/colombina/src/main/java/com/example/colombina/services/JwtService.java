@@ -48,7 +48,6 @@ public class JwtService {
                 .issuedAt(new Date(System.currentTimeMillis()))
                 .expiration(new Date(System.currentTimeMillis() + tokeDuration.toMillis()))
                 .signWith(getSigningKey()).compact();
-
     }
 
     private boolean isTokenExpired(String token) {
