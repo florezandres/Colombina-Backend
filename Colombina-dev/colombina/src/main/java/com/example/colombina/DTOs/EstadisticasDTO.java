@@ -1,4 +1,5 @@
-package com.example.colombina.model;
+package com.example.colombina.DTOs;
+
 
 public class EstadisticasDTO {
 

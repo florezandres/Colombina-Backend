@@ -1,7 +1,7 @@
 package com.example.colombina.services;
 
 import com.example.colombina.DTOs.TramiteDTO;
-import com.example.colombina.model.EstadisticasDTO;
+import com.example.colombina.DTOs.EstadisticasDTO;
 import com.example.colombina.model.Tramite;
 import com.example.colombina.repositories.TramiteRepository;
 

@@ -1,6 +1,6 @@
 package com.example.colombina.controllers;
 
-import com.example.colombina.model.EstadisticasDTO;
+import com.example.colombina.DTOs.EstadisticasDTO;
 import com.example.colombina.services.TramiteService;
 
 import java.util.List;

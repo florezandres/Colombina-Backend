@@ -1,6 +1,6 @@
 package com.example.colombina.repositories;
 
-import com.example.colombina.model.EstadisticasDTO;
+import com.example.colombina.DTOs.EstadisticasDTO;
 import com.example.colombina.model.Tramite;
 
 import java.util.List;
@@ -16,13 +16,13 @@ public interface TramiteRepository extends JpaRepository<Tramite, Long> {
     Optional<Tramite> findByNumeroRadicado(String numeroRadicado);
 
       // Consulta para contar trámites por mes y tipo (nacional o internacional)
-      @Query("SELECT new com.example.colombina.model.EstadisticasDTO(MONTH(t.fechaRadicacion), COUNT(t)) " +
+      @Query("SELECT new com.example.colombina.DTOs.EstadisticasDTO(MONTH(t.fechaRadicacion), COUNT(t)) " +
       "FROM Tramite t WHERE t.tipoTramite = :tipo GROUP BY MONTH(t.fechaRadicacion)")
     List<EstadisticasDTO> contarTramitesPorMesYTipo(@Param("tipo") String tipo);
 
 
     // Consulta para contar documentos devueltos por tipo
-    @Query("SELECT new com.example.colombina.model.EstadisticasDTO(d.tipo, COUNT(d)) " +
+    @Query("SELECT new com.example.colombina.DTOs.EstadisticasDTO(d.tipo, COUNT(d)) " +
        "FROM Documento d GROUP BY d.tipo")
     List<EstadisticasDTO> contarDocumentosDevueltosPorTipo();
 
@@ -44,7 +44,7 @@ public interface TramiteRepository extends JpaRepository<Tramite, Long> {
 
 
     //filtros para tramites
-    @Query("SELECT new com.example.colombina.model.EstadisticasDTO(t.tipoTramite, COUNT(t)) " +
+    @Query("SELECT new com.example.colombina.DTOs.EstadisticasDTO(t.tipoTramite, COUNT(t)) " +
        "FROM Tramite t " +
        "WHERE (:tipo IS NULL OR t.tipoTramite = :tipo) " +
        "AND (:pais IS NULL OR t.entidadSanitaria.pais = :pais) " +
