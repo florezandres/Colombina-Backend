@@ -26,6 +26,10 @@ public class Tramite {
     @Column(nullable = false)
     private Date fechaRadicacion;
 
+    @Temporal(TemporalType.DATE)
+    @Column(nullable = false)
+    private Date fechaRespuesta;
+
     @ManyToOne
     @JoinColumn(name = "entidad_sanitaria_id", nullable = false)
     private EntidadSanitaria entidadSanitaria;
