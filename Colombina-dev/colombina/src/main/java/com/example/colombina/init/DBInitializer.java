@@ -6,8 +6,12 @@ import com.example.colombina.model.Usuario;
 import com.example.colombina.repositories.EntidadSanitariaRepository;
 import com.example.colombina.repositories.RolRepository;
 import com.example.colombina.repositories.UsuarioRepository;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
@@ -24,10 +28,16 @@ public class DBInitializer implements CommandLineRunner {
     @Autowired
     private EntidadSanitariaRepository entidadSanitariaRepository;
 
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
+    private static final Logger logger = LoggerFactory.getLogger(DBInitializer.class);
+
     @Override
     public void run(String... args) throws Exception {
-        //Crear entidad
-        EntidadSanitaria entidadSanitaria1 = new EntidadSanitaria(1L, "Entidad Sanitaria", "Colombia", new ArrayList<>());
+        // Crear entidad
+        EntidadSanitaria entidadSanitaria1 = new EntidadSanitaria(1L, "Entidad Sanitaria", "Colombia",
+                new ArrayList<>());
         entidadSanitariaRepository.save(entidadSanitaria1);
 
         // Crear los roles
@@ -45,11 +55,16 @@ public class DBInitializer implements CommandLineRunner {
         rolRepository.save(rolExportaciones);
 
         // Crear los usuarios con los roles asignados
-        Usuario admin = new Usuario(null, "Admin", "adminpass", "admin@example.com", rolAdmin, new ArrayList<>(), new ArrayList<>(), new ArrayList<>());
-        Usuario asuntosReg = new Usuario(null, "AsuntosReg", "asuntosregpass", "asuntosreg@example.com", rolAsuntosReg, new ArrayList<>(), new ArrayList<>(), new ArrayList<>());
-        Usuario solicitante = new Usuario(null, "Solicitante", "solicitantepass", "solicitante@example.com", rolSolicitante, new ArrayList<>(), new ArrayList<>(), new ArrayList<>());
-        Usuario mercadeo = new Usuario(null, "Mercadeo", "mercadeopass", "mercadeo@example.com", rolMercadeo, new ArrayList<>(), new ArrayList<>(), new ArrayList<>());
-        Usuario exportaciones = new Usuario(null, "Exportaciones", "exportacionespass", "exportaciones@example.com", rolExportaciones, new ArrayList<>(), new ArrayList<>(), new ArrayList<>());
+        Usuario admin = new Usuario(null, "Admin", passwordEncoder.encode("adminpass"), "admin@example.com", rolAdmin,
+                new ArrayList<>(), new ArrayList<>(), new ArrayList<>());
+        Usuario asuntosReg = new Usuario(null, "AsuntosReg", passwordEncoder.encode("asuntosregpass"),
+                "asuntosreg@example.com", rolAsuntosReg, new ArrayList<>(), new ArrayList<>(), new ArrayList<>());
+        Usuario solicitante = new Usuario(null, "Solicitante", passwordEncoder.encode("solicitantepass"),
+                "solicitante@example.com", rolSolicitante, new ArrayList<>(), new ArrayList<>(), new ArrayList<>());
+        Usuario mercadeo = new Usuario(null, "Mercadeo", passwordEncoder.encode("mercadeopass"), "mercadeo@example.com",
+                rolMercadeo, new ArrayList<>(), new ArrayList<>(), new ArrayList<>());
+        Usuario exportaciones = new Usuario(null, "Exportaciones", passwordEncoder.encode("exportacionespass"),
+                "exportaciones@example.com", rolExportaciones, new ArrayList<>(), new ArrayList<>(), new ArrayList<>());
 
         // Guardar los usuarios en la base de datos
         usuarioRepository.save(admin);
@@ -58,6 +73,6 @@ public class DBInitializer implements CommandLineRunner {
         usuarioRepository.save(mercadeo);
         usuarioRepository.save(exportaciones);
 
-        System.out.println("Usuarios inicializados correctamente.");
+        logger.info("Usuarios inicializados correctamente.");
     }
 }
