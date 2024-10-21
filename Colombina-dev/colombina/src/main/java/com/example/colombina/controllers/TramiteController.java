@@ -17,16 +17,36 @@ import com.example.colombina.DTOs.TramiteDTO;
 import com.example.colombina.model.Seguimiento;
 import com.example.colombina.model.Tramite;
 import com.example.colombina.repositories.SeguimientoRepository;
+import com.example.colombina.services.DocumentoService;
+import com.example.colombina.services.NotificacionService;
 import com.example.colombina.services.TramiteService;
 
 @RestController
 @RequestMapping("/tramites")
 public class TramiteController {
+
     @Autowired
     private TramiteService tramiteService;
 
     @Autowired
     private SeguimientoRepository seguimientoRepository;
+
+    @Autowired
+    private DocumentoService documentoService;
+
+    @Autowired
+    private NotificacionService notificacionService;
+
+    // Validación automática de documentos
+    @GetMapping("/{idTramite}/validar-documentos")
+    public ResponseEntity<?> validarDocumentos(@PathVariable Long idTramite) {
+        try {
+            documentoService.validarDocumentos(idTramite);
+            return ResponseEntity.ok("Validación de documentos completada.");
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body("Error en la validación de documentos.");
+        }
+    }
 
     // Apertura de un trámite por su ID -> ASUNTOS REGULATORIOS
     @CrossOrigin
@@ -42,9 +62,9 @@ public class TramiteController {
             return ResponseEntity.status(500).body("Error al abrir el trámite.");
         }
     }
-    
-    //HU-43 - Elimina un tramite que este incompleto
-    //Rol que utiliza el metodo: ASUNTOSREG (Agente de la Agencia de Asuntos Regulatorios)
+
+    // HU-43 - Elimina un trámite que esté incompleto
+    // Rol que utiliza el método: ASUNTOSREG (Agente de la Agencia de Asuntos Regulatorios)
     @DeleteMapping("/{idTramite}/eliminar")
     public ResponseEntity<?> eliminarTramite(@PathVariable Long idTramite) {
         try {
@@ -57,8 +77,8 @@ public class TramiteController {
         }
     }
 
-    //HU-39 - Filtrar tramites por estado
-    //Rol que utiliza el metodo: SOLICITANTE
+    // HU-39 - Filtrar trámites por estado
+    // Rol que utiliza el método: SOLICITANTE
     @CrossOrigin
     @GetMapping("/filtrado/estado")
     public ResponseEntity<?> filtrarTramitesPorEstado(@RequestParam Tramite.EstadoTramite estado) {
@@ -70,19 +90,26 @@ public class TramiteController {
         }
     }
 
-    //HU-13
+    // HU-13 - Obtener seguimiento de un trámite
     @GetMapping("/{idTramite}/seguimiento")
     public ResponseEntity<?> obtenerSeguimiento(@PathVariable Long idTramite) {
         List<Seguimiento> seguimientos = seguimientoRepository.findByTramiteId(idTramite);
         return ResponseEntity.ok(seguimientos);
     }
 
-
+    // HU-46 - Validación Automática de Documentos y Consolidación
     @CrossOrigin
     @PostMapping("/{idTramite}/consolidacion")
     public ResponseEntity<?> consolidarTramite(@PathVariable Long idTramite) {
         try {
-            // Llama al servicio para consolidar el trámite
+            // Validación automática de documentos antes de la consolidación
+            boolean validacionExitosa = documentoService.validarDocumentos(idTramite);
+
+            if (!validacionExitosa) {
+                return ResponseEntity.status(400).body("Existen documentos faltantes o incorrectos. Por favor, corrija los documentos antes de continuar.");
+            }
+
+            // Si los documentos son válidos, proceder con la consolidación del trámite
             tramiteService.consolidarTramite(idTramite);
             return ResponseEntity.ok("Consolidación completada correctamente.");
         } catch (IllegalArgumentException e) {
@@ -91,4 +118,5 @@ public class TramiteController {
             return ResponseEntity.status(500).body("Error al consolidar el trámite.");
         }
     }
+
 }

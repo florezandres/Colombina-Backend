@@ -1,5 +1,8 @@
 package com.example.colombina.services;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -7,9 +10,6 @@ import com.example.colombina.DTOs.VersionDocumentoDTO;
 import com.example.colombina.model.Documento;
 import com.example.colombina.model.VersionDocumento;
 import com.example.colombina.repositories.VersionDocumentoRepository;
-
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class VersionDocumentoService {
@@ -24,7 +24,12 @@ public class VersionDocumentoService {
 
     public VersionDocumentoDTO crearNuevaVersion(VersionDocumentoDTO dto, Long documentoId) {
         VersionDocumento version = new VersionDocumento();
-        version.setDocumento(new Documento(documentoId, null, false, null, null)); // Relación con el documento
+        
+        // Modificación del constructor de Documento para aceptar solo documentoId
+        Documento documento = new Documento();
+        documento.setId(documentoId); // Relación con el documento
+        version.setDocumento(documento);
+        
         version.setNombreArchivo(dto.getNombreArchivo());
         version.setUrlArchivo(dto.getUrlArchivo());
         version.setFechaCreacion(dto.getFechaCreacion());

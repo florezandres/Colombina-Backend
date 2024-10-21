@@ -1,7 +1,5 @@
 package com.example.colombina.model;
 
-import jakarta.persistence.*;
-import lombok.*;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -9,6 +7,20 @@ import java.util.List;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Getter
 @Setter
@@ -33,7 +45,6 @@ public class Usuario implements UserDetails {
     @JoinColumn(name = "rol_id", nullable = false)
     private Rol rol;
 
-    // El resto de tu código permanece igual
     @OneToMany(mappedBy = "solicitante", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Solicitud> solicitudes = new ArrayList<>();
 
@@ -56,5 +67,9 @@ public class Usuario implements UserDetails {
     @Override
     public String getUsername() {
         return nombre;
+    }
+
+    public String getCorreoElectronico() {
+        return correoElectronico;
     }
 }
