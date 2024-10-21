@@ -15,5 +15,6 @@ public class TramiteDTO {
     private Date fechaRadicacion;
     private Long solicitanteId;  // Referencia al Usuario
     private Long entidadSanitariaId;  // Referencia a la EntidadSanitaria
+    private Double progreso;
 }
 

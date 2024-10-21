@@ -2,6 +2,7 @@ package com.example.colombina.controllers;
 
 import java.util.List;
 
+import com.example.colombina.services.ProgresoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -23,6 +24,9 @@ public class TramiteController {
     @Autowired
     private TramiteService tramiteService;
 
+    @Autowired
+    private ProgresoService progresoService;
+
     // Apertura de un trámite por su ID -> ASUNTOS REGULATORIOS
     @CrossOrigin
     @PostMapping("/{idTramite}/apertura")
@@ -30,6 +34,8 @@ public class TramiteController {
         try {
             // Llamar al servicio para abrir el trámite
             tramiteService.abrirTramite(idTramite);
+            progresoService.actualizarProgreso(idTramite, 13.0);
+
             return ResponseEntity.ok("Trámite abierto correctamente.");
         } catch (IllegalArgumentException e) {
             return ResponseEntity.status(404).body(e.getMessage()); // Error si el trámite no se encuentra
@@ -65,12 +71,42 @@ public class TramiteController {
         }
     }
 
+    // Metodo para manejar la revisión de documentos (aceptar/rechazar revisión)
+    @CrossOrigin
+    @PostMapping("/{idTramite}/revisar")
+    public ResponseEntity<?> revisarDocumentos(
+            @PathVariable Long idTramite,
+            @RequestParam("accion") String accion) {
+        try {
+            // Verifica si la acción es "aceptar" o "rechazar"
+            if (accion.equalsIgnoreCase("aceptar")) {
+                // Si la revisión es aceptada, actualizar progreso a 24%
+                progresoService.actualizarProgreso(idTramite, 24.0); // Aumentar el progreso a 24%
+                return ResponseEntity.ok("Revisión aceptada, el progreso ha sido actualizado.");
+            } else if (accion.equalsIgnoreCase("rechazar")) {
+                // Si la revisión es rechazada, se puede manejar de otra manera
+                // Por ejemplo, se puede regresar el trámite a un estado anterior
+                return ResponseEntity.ok("Revisión rechazada, no se actualizó el progreso.");
+            } else {
+                return ResponseEntity.status(400).body("Acción inválida. Use 'aceptar' o 'rechazar'.");
+            }
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(404).body(e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body("Error al revisar los documentos.");
+        }
+    }
+
+
+
     @CrossOrigin
     @PostMapping("/{idTramite}/consolidacion")
     public ResponseEntity<?> consolidarTramite(@PathVariable Long idTramite) {
         try {
             // Llama al servicio para consolidar el trámite
             tramiteService.consolidarTramite(idTramite);
+            progresoService.actualizarProgreso(idTramite, 42.0);
+
             return ResponseEntity.ok("Consolidación completada correctamente.");
         } catch (IllegalArgumentException e) {
             return ResponseEntity.status(400).body(e.getMessage());
@@ -78,4 +114,6 @@ public class TramiteController {
             return ResponseEntity.status(500).body("Error al consolidar el trámite.");
         }
     }
+
+
 }
