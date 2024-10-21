@@ -5,7 +5,6 @@ import io.minio.errors.*;
 import io.minio.messages.Item;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -19,12 +18,10 @@ import java.util.List;
 @Slf4j
 @Service
 public class MinioService {
-    private final MinioClient minioClient;
 
     @Autowired
-    public MinioService(MinioClient minioClient) {
-        this.minioClient = minioClient;
-    }
+    private MinioClient minioClient;
+
     public InputStream getObject(String filename, Long tramiteId) throws ServerException, InsufficientDataException, ErrorResponseException, IOException, NoSuchAlgorithmException, InvalidKeyException, InvalidResponseException, XmlParserException, InternalException {
         InputStream stream;
         String bucketName = getOrCreateBucketForTramite(tramiteId);

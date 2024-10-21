@@ -26,9 +26,11 @@ public class NotificacionService {
     @Autowired
     private UsuarioRepository usuarioRepository;
 
+    private final String emailFrom = "Colombina <colombina@santicm.com>";
+
     public void enviarNotificacion(String mensaje) {
         CreateEmailOptions params = CreateEmailOptions.builder()
-                .from("Colombina <colombina@resend.dev>")
+                .from(emailFrom)
                 .to("correo@prueba.com")
                 .subject("it works!")
                 .html("<strong>" + mensaje + "</strong>")
