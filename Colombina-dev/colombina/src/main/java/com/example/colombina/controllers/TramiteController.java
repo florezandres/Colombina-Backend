@@ -14,7 +14,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.colombina.DTOs.TramiteDTO;
+import com.example.colombina.model.Seguimiento;
 import com.example.colombina.model.Tramite;
+import com.example.colombina.repositories.SeguimientoRepository;
 import com.example.colombina.services.TramiteService;
 
 @RestController
@@ -22,6 +24,9 @@ import com.example.colombina.services.TramiteService;
 public class TramiteController {
     @Autowired
     private TramiteService tramiteService;
+
+    @Autowired
+    private SeguimientoRepository seguimientoRepository;
 
     // Apertura de un trámite por su ID -> ASUNTOS REGULATORIOS
     @CrossOrigin
@@ -64,6 +69,14 @@ public class TramiteController {
             return ResponseEntity.status(500).body("Error al filtrar los trámites.");
         }
     }
+
+    //HU-13
+    @GetMapping("/{idTramite}/seguimiento")
+    public ResponseEntity<?> obtenerSeguimiento(@PathVariable Long idTramite) {
+        List<Seguimiento> seguimientos = seguimientoRepository.findByTramiteId(idTramite);
+        return ResponseEntity.ok(seguimientos);
+    }
+
 
     @CrossOrigin
     @PostMapping("/{idTramite}/consolidacion")
