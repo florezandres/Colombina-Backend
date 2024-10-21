@@ -2,17 +2,11 @@ package com.example.colombina.controllers;
 
 import java.util.List;
 
+import com.example.colombina.DTOs.ComentarioDTO;
 import com.example.colombina.services.ProgresoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.example.colombina.DTOs.TramiteDTO;
 import com.example.colombina.model.Tramite;
@@ -71,22 +65,29 @@ public class TramiteController {
         }
     }
 
-    // Metodo para manejar la revisión de documentos (aceptar/rechazar revisión)
     @CrossOrigin
     @PostMapping("/{idTramite}/revisar")
     public ResponseEntity<?> revisarDocumentos(
             @PathVariable Long idTramite,
-            @RequestParam("accion") String accion) {
+            @RequestParam("accion") String accion,
+            @RequestBody(required = false) ComentarioDTO comentarioDTO) {
         try {
-            // Verifica si la acción es "aceptar" o "rechazar"
             if (accion.equalsIgnoreCase("aceptar")) {
-                // Si la revisión es aceptada, actualizar progreso a 24%
-                progresoService.actualizarProgreso(idTramite, 24.0); // Aumentar el progreso a 24%
+                // Aceptar revisión, actualizar progreso a 24%
+                progresoService.actualizarProgreso(idTramite, 24.0);
                 return ResponseEntity.ok("Revisión aceptada, el progreso ha sido actualizado.");
             } else if (accion.equalsIgnoreCase("rechazar")) {
-                // Si la revisión es rechazada, se puede manejar de otra manera
-                // Por ejemplo, se puede regresar el trámite a un estado anterior
-                return ResponseEntity.ok("Revisión rechazada, no se actualizó el progreso.");
+                if (comentarioDTO == null || comentarioDTO.getComentario().isEmpty()) {
+                    return ResponseEntity.status(400).body("Debe proporcionar un comentario al rechazar.");
+                }
+
+                // Actualizar progreso a 13% (retrocediendo a un estado anterior)
+                progresoService.actualizarProgreso(idTramite, 13.0);
+
+                // Guardar el comentario en el historial de cambios
+                tramiteService.agregarComentarioAlHistorial(idTramite, comentarioDTO, "Revisión rechazada");
+
+                return ResponseEntity.ok("Revisión rechazada con comentario.");
             } else {
                 return ResponseEntity.status(400).body("Acción inválida. Use 'aceptar' o 'rechazar'.");
             }
@@ -96,7 +97,6 @@ public class TramiteController {
             return ResponseEntity.status(500).body("Error al revisar los documentos.");
         }
     }
-
 
 
     @CrossOrigin

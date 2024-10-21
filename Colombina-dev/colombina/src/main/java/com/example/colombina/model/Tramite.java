@@ -49,6 +49,13 @@ public class Tramite {
     @Column(nullable= false)
     private double progreso;
 
+    @Column()
+    private double llave;
+
+    public Tramite(long l, String s, EstadoTramite estadoTramite, Date date, EntidadSanitaria entidadSanitaria1, Object o, Object o1, Object o2, Object o3, Solicitud solicitud1) {
+    }
+
+
     // Enum definido dentro de TramiteRegulatorio (opcional)
     public enum EstadoTramite {
         EN_REVISION, // Asuntos regulatorios revisando

@@ -6,7 +6,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 @Getter
 @Setter
@@ -28,4 +30,9 @@ public class HistorialCambio {
     @ManyToOne
     @JoinColumn(name = "tramite_id", nullable = false)
     private Tramite tramite;
+
+    @OneToMany(mappedBy = "historialCambio", cascade = CascadeType.ALL)
+    private List<Comentario> comentarios = new ArrayList<>();
+
+
 }
