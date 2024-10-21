@@ -26,18 +26,38 @@ public class NotificacionService {
     @Autowired
     private UsuarioRepository usuarioRepository;
 
+    private final String emailFrom = "Colombina <colombina@santicm.com>";
+
     // Método para enviar una notificación básica por correo
-    public void enviarNotificacion(String destinatarioCorreo, String asunto, String mensaje) {
+    public void enviarNotificacion(String mensaje) {
         CreateEmailOptions params = CreateEmailOptions.builder()
-                .from("Colombina <colombina@resend.dev>") // Remitente del correo
-                .to(destinatarioCorreo) // Correo del destinatario
-                .subject(asunto) // Asunto del correo
-                .html("<strong>" + mensaje + "</strong>") // Mensaje en HTML
+                .from(emailFrom)
+                .to("correo@prueba.com")
+                .subject("it works!")
+                .html("<strong>" + mensaje + "</strong>")
                 .build();
 
         try {
             CreateEmailResponse data = resendClient.emails().send(params);
             System.out.println("Correo enviado con éxito, ID de la notificación: " + data.getId());
+        } catch (ResendException e) {
+            e.printStackTrace();
+            System.err.println("Error al enviar el correo: " + e.getMessage());
+        }
+    }
+
+    // Método sobrecargado para enviar notificación a un destinatario específico
+    public void enviarNotificacion(String destinatarioCorreo, String asunto, String mensaje) {
+        CreateEmailOptions params = CreateEmailOptions.builder()
+                .from(emailFrom)
+                .to(destinatarioCorreo)
+                .subject(asunto)
+                .html("<strong>" + mensaje + "</strong>")
+                .build();
+
+        try {
+            CreateEmailResponse data = resendClient.emails().send(params);
+            System.out.println("Correo enviado con éxito a " + destinatarioCorreo + ", ID de la notificación: " + data.getId());
         } catch (ResendException e) {
             e.printStackTrace();
             System.err.println("Error al enviar el correo: " + e.getMessage());
