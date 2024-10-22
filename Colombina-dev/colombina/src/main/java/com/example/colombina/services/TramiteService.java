@@ -2,6 +2,7 @@ package com.example.colombina.services;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Date;
 import java.util.List;
 
 import com.example.colombina.DTOs.ComentarioDTO;
@@ -12,6 +13,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.example.colombina.DTOs.TramiteDTO;
+import com.example.colombina.model.Documento;
+import com.example.colombina.model.Seguimiento;
+import com.example.colombina.model.Tramite;
+import com.example.colombina.repositories.SeguimientoRepository;
 import com.example.colombina.repositories.TramiteRepository;
 
 @Service
@@ -29,6 +34,9 @@ public class TramiteService {
 
     @Autowired
     private HistorialCambioRepository historialCambioRepository;
+
+    @Autowired
+    private SeguimientoRepository seguimientoRepository;
 
     // Cambia el estado de un trámite a EN_REVISION
     public void abrirTramite(Long idTramite) {
@@ -68,6 +76,27 @@ public class TramiteService {
     public List<TramiteDTO> filtrarTramitesPorEstado(Tramite.EstadoTramite estado) {
         //return tramiteRepository.findByEstado(estado);
         return null;
+    }
+
+    //HU-13
+    // Método para actualizar el seguimiento y calcular el tiempo de revisión
+    public void actualizarSeguimiento(Long idTramite, String nuevoEstado) {
+        Tramite tramite = tramiteRepository.findById(idTramite)
+                .orElseThrow(() -> new IllegalArgumentException("El trámite con ID " + idTramite + " no existe."));
+
+        // Crear nuevo seguimiento
+        Seguimiento seguimiento = new Seguimiento();
+        seguimiento.setTramite(tramite);
+        seguimiento.setEstadoActual(nuevoEstado);
+        seguimiento.setFechaSeguimiento(new Date());
+        seguimiento.setFechaFinSeguimiento(new Date());
+
+        // Calcular el tiempo de revisión
+        long tiempo = seguimiento.getFechaFinSeguimiento().getTime() - seguimiento.getFechaInicioSeguimiento().getTime();
+        seguimiento.setTiempoRevision(tiempo);
+
+        // Guardar seguimiento
+        seguimientoRepository.save(seguimiento);
     }
 
     public String generarResumenDocumentos(Long tramiteId) {

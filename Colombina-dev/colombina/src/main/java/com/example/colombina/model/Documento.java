@@ -1,6 +1,14 @@
 package com.example.colombina.model;
 
-import jakarta.persistence.*;
+import java.time.LocalDate;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -12,6 +20,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @Entity
 public class Documento {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -28,4 +37,30 @@ public class Documento {
     @ManyToOne
     @JoinColumn(name = "tramite_id", nullable = false)
     private Tramite tramite;
+
+    @Column
+    private LocalDate fechaExpiracion;
+
+    @Column
+    private boolean cumpleNormativas = true;
+
+    // Constructor solo con id (para referencias rápidas)
+    public Documento(Long id) {
+        this.id = id;
+    }
+
+    // Verifica si el documento ha vencido
+    public boolean isVencido() {
+        return fechaExpiracion != null && fechaExpiracion.isBefore(LocalDate.now());
+    }
+
+    // Verifica si el documento cumple con las normativas
+    public boolean isCumpleNormativas() {
+        return cumpleNormativas;
+    }
+
+    // Obtener el tipo de documento
+    public String getTipo() {
+        return tipo;
+    }
 }

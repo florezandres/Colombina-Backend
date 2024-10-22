@@ -9,12 +9,17 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import com.example.colombina.DTOs.TramiteDTO;
+import com.example.colombina.model.Seguimiento;
 import com.example.colombina.model.Tramite;
+import com.example.colombina.repositories.SeguimientoRepository;
+import com.example.colombina.services.DocumentoService;
+import com.example.colombina.services.NotificacionService;
 import com.example.colombina.services.TramiteService;
 
 @RestController
 @RequestMapping("/tramites")
 public class TramiteController {
+
     @Autowired
     private TramiteService tramiteService;
 
@@ -37,9 +42,9 @@ public class TramiteController {
             return ResponseEntity.status(500).body("Error al abrir el trámite.");
         }
     }
-    
-    //HU-43 - Elimina un tramite que este incompleto
-    //Rol que utiliza el metodo: ASUNTOSREG (Agente de la Agencia de Asuntos Regulatorios)
+
+    // HU-43 - Elimina un trámite que esté incompleto
+    // Rol que utiliza el método: ASUNTOSREG (Agente de la Agencia de Asuntos Regulatorios)
     @DeleteMapping("/{idTramite}/eliminar")
     public ResponseEntity<?> eliminarTramite(@PathVariable Long idTramite) {
         try {
@@ -52,8 +57,8 @@ public class TramiteController {
         }
     }
 
-    //HU-39 - Filtrar tramites por estado
-    //Rol que utiliza el metodo: SOLICITANTE
+    // HU-39 - Filtrar trámites por estado
+    // Rol que utiliza el método: SOLICITANTE
     @CrossOrigin
     @GetMapping("/filtrado/estado")
     public ResponseEntity<?> filtrarTramitesPorEstado(@RequestParam Tramite.EstadoTramite estado) {
@@ -103,7 +108,14 @@ public class TramiteController {
     @PostMapping("/{idTramite}/consolidacion")
     public ResponseEntity<?> consolidarTramite(@PathVariable Long idTramite) {
         try {
-            // Llama al servicio para consolidar el trámite
+            // Validación automática de documentos antes de la consolidación
+            boolean validacionExitosa = documentoService.validarDocumentos(idTramite);
+
+            if (!validacionExitosa) {
+                return ResponseEntity.status(400).body("Existen documentos faltantes o incorrectos. Por favor, corrija los documentos antes de continuar.");
+            }
+
+            // Si los documentos son válidos, proceder con la consolidación del trámite
             tramiteService.consolidarTramite(idTramite);
             progresoService.actualizarProgreso(idTramite, 42.0);
 
@@ -114,6 +126,4 @@ public class TramiteController {
             return ResponseEntity.status(500).body("Error al consolidar el trámite.");
         }
     }
-
-
 }
