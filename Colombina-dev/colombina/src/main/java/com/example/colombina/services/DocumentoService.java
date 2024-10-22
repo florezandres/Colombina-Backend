@@ -32,7 +32,7 @@ public class DocumentoService {
         return documentos.stream().allMatch(Documento::isAprobado);
     }
     // HU 38 Subida de Múltiples Archivos
-    // Método para manejar la subida de múltiples archivos
+// Método para manejar la subida de múltiples archivos
     public List<String> guardarDocumentos(Long tramiteId, MultipartFile[] archivos) {
         List<String> nombresGuardados = new ArrayList<>();
         Tramite tramite = tramiteRepository.findById(tramiteId)
@@ -53,9 +53,6 @@ public class DocumentoService {
             try {
                 Documento documento = new Documento();
                 documento.setTramite(tramite);
-                documento.setNombre(archivo.getOriginalFilename());
-                documento.setTipo(obtenerTipoDocumento(archivo.getOriginalFilename()));
-                documento.setContenido(archivo.getBytes());
                 documento.setCumpleNormativas(true); // Se asume que el documento cumple normativas al ser subido
                 documento.setAprobado(false); // Se marca como no aprobado inicialmente
                 documentoRepository.save(documento);
@@ -67,9 +64,11 @@ public class DocumentoService {
         }
 
         // Notificar que los archivos han sido subidos correctamente
-        notificacionService.enviarNotificacionDocumentosSubidos(tramiteId, nombresGuardados);
+        //Adecuacion con la clase NotificacionService Faltante 
+        //notificacionService.enviarNotificacionDocumentosSubidos(tramiteId, nombresGuardados);
         return nombresGuardados;
     }
+
     // HU 38 Subida de Múltiples Archivos
     
     // Método para validar los documentos enviados y notificar en caso de problemas
