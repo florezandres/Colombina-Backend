@@ -1,6 +1,7 @@
 package com.example.colombina.services;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import com.example.colombina.model.Notificacion;
 import com.example.colombina.model.Usuario;
@@ -32,6 +33,7 @@ public class NotificacionService {
     @Autowired
     private TramiteRepository tramiteRepository;
 
+    @Scheduled(cron = "0 0 10 * * ?")
     public void verificarExpiracionTramites() {
         List<Tramite> tramites = tramiteRepository.findAll();
         Date fechaActual = new Date();
