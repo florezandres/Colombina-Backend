@@ -26,6 +26,9 @@ public class TramiteController {
     @Autowired
     private ProgresoService progresoService;
 
+    @Autowired
+    private  DocumentoService documentoService;
+
     // Apertura de un trámite por su ID -> ASUNTOS REGULATORIOS
     @CrossOrigin
     @PostMapping("/{idTramite}/apertura")

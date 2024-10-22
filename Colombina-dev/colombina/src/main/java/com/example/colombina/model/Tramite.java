@@ -63,14 +63,12 @@ public class Tramite {
     @JoinColumn(name = "solicitud_id")
     private Solicitud solicitud;
 
-    @Column(nullable= false)
+    @Column()
     private double progreso;
 
     @Column()
     private double llave;
 
-    public Tramite(long l, String s, EstadoTramite estadoTramite, Date date, EntidadSanitaria entidadSanitaria1, Object o, Object o1, Object o2, Object o3, Solicitud solicitud1) {
-    }
 
 
     // Enum definido dentro de TramiteRegulatorio (opcional)

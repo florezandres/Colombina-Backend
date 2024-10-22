@@ -7,7 +7,6 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.springframework.data.annotation.Id;
 
 @Entity
 @Getter
@@ -34,4 +33,6 @@ public class Comentario {
     @ManyToOne
     @JoinColumn(name = "historial_cambio_id", nullable = false)  // Asegurarse de que no sea null
     private HistorialCambio historialCambio;
+
+
 }

@@ -1,6 +1,7 @@
 package com.example.colombina.controllers;
 
 import com.example.colombina.DTOs.ComentarioDTO;
+import com.example.colombina.model.Tramite;
 import com.example.colombina.services.ProgresoService;
 import com.example.colombina.services.TramiteService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +18,7 @@ public class EntidadSanitariaController {
     @Autowired
     TramiteService tramiteService;
 
+
     @CrossOrigin
     @PostMapping("/tramite/{idTramite}/aceptar")
     public ResponseEntity<?> aceptarTramite(
@@ -24,10 +26,15 @@ public class EntidadSanitariaController {
             @RequestParam("numeroRadicado") String numeroRadicado,
             @RequestParam("llave") Double llave) {
         try {
+            if (numeroRadicado == null || llave == null) {
+                return ResponseEntity.status(400).body("Número de radicado y llave son requeridos.");
+            }
+
+
+
             // Llamar al servicio para actualizar el trámite con el número de radicado y la llave
             tramiteService.asociarNumeroRadicadoYLLave(idTramite, numeroRadicado, llave);
             progresoService.actualizarProgreso(idTramite, 61.0);
-
 
             return ResponseEntity.ok("Trámite aceptado y número de radicado asignado.");
         } catch (IllegalArgumentException e) {
@@ -36,6 +43,7 @@ public class EntidadSanitariaController {
             return ResponseEntity.status(500).body("Error al aceptar el trámite.");
         }
     }
+
 
     @CrossOrigin
     @PostMapping("/tramite/{idTramite}/rechazar")
