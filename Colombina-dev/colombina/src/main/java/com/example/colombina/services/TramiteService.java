@@ -130,4 +130,17 @@ public class TramiteService {
         historialCambioRepository.save(historialCambio);
     }
 
+    public void asociarNumeroRadicadoYLLave(Long idTramite, String numeroRadicado, Double llave) {
+        // Buscar el trámite por su ID
+        Tramite tramite = tramiteRepository.findById(idTramite)
+                .orElseThrow(() -> new IllegalArgumentException("El trámite con ID " + idTramite + " no existe."));
+
+        // Asociar el número de radicado y la llave
+        tramite.setNumeroRadicado(numeroRadicado);
+        tramite.setLlave(llave);
+
+        // Guardar los cambios en la base de datos
+        tramiteRepository.save(tramite);
+    }
+
 }

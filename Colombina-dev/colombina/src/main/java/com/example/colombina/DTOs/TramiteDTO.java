@@ -17,6 +17,7 @@ public class TramiteDTO {
     private Long solicitanteId;  // Referencia al Usuario
     private Long entidadSanitariaId;  // Referencia a la EntidadSanitaria
     private Double progreso;
+    private Double llave;
     private List<HistorialCambioDTO> historialCambioDTOList;
 
 }
