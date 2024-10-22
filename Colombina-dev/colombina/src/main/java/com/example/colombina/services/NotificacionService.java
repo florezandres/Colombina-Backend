@@ -17,7 +17,6 @@ import com.resend.services.emails.model.CreateEmailResponse;
 
 import java.util.Calendar;
 import java.util.Date;
-import java.util.List;
 
 @Service
 public class NotificacionService {
@@ -33,6 +32,8 @@ public class NotificacionService {
 
     @Autowired
     private TramiteRepository tramiteRepository;
+
+    private final String emailFrom = "Colombina <colombina@santicm.com>";
 
     @Scheduled(cron = "0 0 10 * * ?")
     public void verificarExpiracionTramites() {
@@ -92,7 +93,7 @@ public class NotificacionService {
     // Método auxiliar para enviar correos
     public void enviarCorreo(String destinatario, String asunto, String mensaje) {
         CreateEmailOptions params = CreateEmailOptions.builder()
-                .from("Colombina <colombina@resend.dev>")
+                .from(emailFrom)
                 .to(destinatario)
                 .subject(asunto)
                 .html("<strong>" + mensaje + "</strong>")
