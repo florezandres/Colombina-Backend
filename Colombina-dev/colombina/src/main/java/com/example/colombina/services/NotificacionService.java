@@ -1,6 +1,7 @@
 package com.example.colombina.services;
 
 import java.util.Date;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -57,14 +58,16 @@ public class NotificacionService {
 
         try {
             CreateEmailResponse data = resendClient.emails().send(params);
-            System.out.println("Correo enviado con éxito a " + destinatarioCorreo + ", ID de la notificación: " + data.getId());
+            System.out.println(
+                    "Correo enviado con éxito a " + destinatarioCorreo + ", ID de la notificación: " + data.getId());
         } catch (ResendException e) {
             e.printStackTrace();
             System.err.println("Error al enviar el correo: " + e.getMessage());
         }
     }
 
-    // Método para enviar notificación de validación de documentos a un solicitante por trámite
+    // Método para enviar notificación de validación de documentos a un solicitante
+    // por trámite
     public void enviarNotificacion(Long tramiteId, String asunto, String mensaje) {
         Usuario destinatario = usuarioRepository.findSolicitanteByTramiteId(tramiteId);
 
@@ -75,7 +78,8 @@ public class NotificacionService {
             // Registrar la notificación en la base de datos
             registrarNotificacion(destinatario, asunto, mensaje);
         } else {
-            System.out.println("No se encontró el solicitante o no tiene un correo registrado para el trámite ID: " + tramiteId);
+            System.out.println(
+                    "No se encontró el solicitante o no tiene un correo registrado para el trámite ID: " + tramiteId);
         }
     }
 
@@ -87,6 +91,31 @@ public class NotificacionService {
         notificacion.setDestinatario(destinatario);
 
         notificacionRepository.save(notificacion);
-        System.out.println("Notificación registrada en la base de datos para el usuario: " + destinatario.getCorreoElectronico());
+        System.out.println(
+                "Notificación registrada en la base de datos para el usuario: " + destinatario.getCorreoElectronico());
+    }
+
+    public void recuperarContrasena(String nombre) {
+        List<String> admins = getAdminEmails();
+
+        CreateEmailOptions params = CreateEmailOptions.builder()
+                .from(emailFrom)
+                .to(admins)
+                .subject("Solicitud para recuperar contraseña")
+                .html("<strong>Se solicita al administrador comunicarse con el usuario " + nombre
+                        + " para enviarle la nueva contraseña</strong>")
+                .build();
+
+        try {
+            CreateEmailResponse data = resendClient.emails().send(params);
+            System.out.println("Correo enviado con éxito, ID de la notificación: " + data.getId());
+        } catch (ResendException e) {
+            e.printStackTrace();
+            System.err.println("Error al enviar el correo: " + e.getMessage());
+        }
+    }
+
+    private List<String> getAdminEmails() {
+        return usuarioRepository.findByRolTipoRol("ADMIN").stream().map(u -> u.getCorreoElectronico()).toList();
     }
 }
