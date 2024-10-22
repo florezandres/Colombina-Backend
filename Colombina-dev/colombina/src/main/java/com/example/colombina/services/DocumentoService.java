@@ -37,7 +37,7 @@ public class DocumentoService {
             if (!presente) {
                 String mensaje = "Falta el documento requerido: " + tipoRequerido;
                 System.out.println(mensaje);
-                notificacionService.enviarNotificacion(tramiteId, "Documento faltante", mensaje);
+                notificacionService.enviarNotificacionDocumentosFaltantes(tramiteId);
                 todosDocumentosValidos = false;
             }
         }
@@ -47,13 +47,13 @@ public class DocumentoService {
             if (!documento.isCumpleNormativas()) {
                 String mensaje = "El documento " + documento.getTipo() + " no cumple con las normativas.";
                 System.out.println(mensaje);
-                notificacionService.enviarNotificacion(tramiteId, "Documento no válido", mensaje);
+                notificacionService.enviarNotificacionDocumentosFaltantes(tramiteId);
                 todosDocumentosValidos = false;
             }
             if (documento.isVencido()) {
                 String mensaje = "El documento " + documento.getTipo() + " está vencido.";
                 System.out.println(mensaje);
-                notificacionService.enviarNotificacion(tramiteId, "Documento vencido", mensaje);
+                notificacionService.enviarNotificacionDocumentosFaltantes(tramiteId);
                 todosDocumentosValidos = false;
             }
         }
