@@ -121,4 +121,41 @@ public class TramiteController {
         }
     }
 
+    // HU-35 - Modificar un tramite
+    @PostMapping("/{idTramite}/modificar")
+    public ResponseEntity<?> modificarTramite(@PathVariable Long idTramite, @RequestParam String nuevoEstado) {
+        try {
+            tramiteService.modificarTramite(idTramite, nuevoEstado);
+            return ResponseEntity.ok("Trámite modificado correctamente.");
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(400).body(e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body("Error al modificar el trámite.");
+        }
+    }
+    // HU-38 - Subir múltiples archivos para un trámite
+    @PostMapping("/{idTramite}/subir-archivos")
+    public ResponseEntity<?> subirArchivos(@PathVariable Long idTramite, @RequestParam("archivos") MultipartFile[] archivos) {
+        try {
+            List<String> resultado = documentoService.guardarDocumentos(idTramite, archivos);
+            return ResponseEntity.ok("Archivos subidos correctamente: " + resultado);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(400).body(e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body("Error al subir los archivos.");
+        }
+    }
+    // HU-53 - Generar reportes personalizados
+    @GetMapping("/reportes/personalizados")
+    public ResponseEntity<?> generarReportePersonalizado(
+            @RequestParam(required = false) String estado,
+            @RequestParam(required = false) Date fechaInicio,
+            @RequestParam(required = false) Date fechaFin) {
+        try {
+            List<TramiteDTO> reporte = tramiteService.generarReportePersonalizado(estado, fechaInicio, fechaFin);
+            return ResponseEntity.ok(reporte);
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body("Error al generar el reporte.");
+        }
+    }
 }

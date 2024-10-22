@@ -123,5 +123,44 @@ public class TramiteService {
 
         // Puedes hacer más operaciones aquí si lo necesitas
     }
+   // HU-35 - Modificar un tramite
+public void modificarTramite(Long idTramite, String nuevoEstado) {
+    Tramite tramite = tramiteRepository.findById(idTramite)
+            .orElseThrow(() -> new IllegalArgumentException("El trámite con ID " + idTramite + " no existe."));
 
+    // Verificar si el nuevo estado es válido
+    try {
+        Tramite.EstadoTramite estado = Tramite.EstadoTramite.valueOf(nuevoEstado);
+        tramite.setEstado(estado);
+        tramiteRepository.save(tramite);
+    } catch (IllegalArgumentException e) {
+        throw new IllegalArgumentException("Estado no válido.");
+    }
+}
+    // HU-53 - Generar reportes personalizados
+    public List<TramiteDTO> generarReportePersonalizado(String estado, Date fechaInicio, Date fechaFin) {
+        // Filtrar por estado
+        List<Tramite> tramites;
+        if (estado != null) {
+            Tramite.EstadoTramite estadoTramite = Tramite.EstadoTramite.valueOf(estado);
+            tramites = tramiteRepository.findByEstado(estadoTramite);
+        } else {
+            tramites = tramiteRepository.findAll();
+        }
+
+        // Filtrar por fechas
+        List<TramiteDTO> reporte = new ArrayList<>();
+        for (Tramite tramite : tramites) {
+            if ((fechaInicio == null || !tramite.getFechaRadicacion().before(fechaInicio)) &&
+                    (fechaFin == null || !tramite.getFechaRadicacion().after(fechaFin))) {
+                TramiteDTO dto = new TramiteDTO();
+                dto.setId(tramite.getId());
+                dto.setNumeroRadicado(tramite.getNumeroRadicado());
+                dto.setEstado(tramite.getEstado());
+                dto.setFechaRadicacion(tramite.getFechaRadicacion());
+                reporte.add(dto);
+            }
+        }
+        return reporte;
+    }
 }
