@@ -20,6 +20,7 @@ import com.example.colombina.repositories.SeguimientoRepository;
 import com.example.colombina.services.DocumentoService;
 import com.example.colombina.services.NotificacionService;
 import com.example.colombina.services.TramiteService;
+import com.example.colombina.services.NotificacionService;
 
 @RestController
 @RequestMapping("/tramites")
@@ -55,6 +56,7 @@ public class TramiteController {
         try {
             // Llamar al servicio para abrir el trámite
             tramiteService.abrirTramite(idTramite);
+            notificacionService.enviarNotificacionEstadoTramite(idTramite); // Enviar notificación de cambio de estado
             return ResponseEntity.ok("Trámite abierto correctamente.");
         } catch (IllegalArgumentException e) {
             return ResponseEntity.status(404).body(e.getMessage()); // Error si el trámite no se encuentra
