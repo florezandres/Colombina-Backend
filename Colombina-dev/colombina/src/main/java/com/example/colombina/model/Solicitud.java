@@ -27,8 +27,6 @@ public class Solicitud {
     @JsonIgnore
     private Usuario solicitante;
 
-    @OneToOne
-    @JoinColumn(name = "tramite_id", nullable = false)
-    private Tramite tramite;
+
 }
 
