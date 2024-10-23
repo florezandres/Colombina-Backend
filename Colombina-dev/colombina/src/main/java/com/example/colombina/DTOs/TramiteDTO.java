@@ -11,6 +11,10 @@ import java.util.Date;
 public class TramiteDTO {
     private Long id;
     private String numeroRadicado;
+    private String nombreProducto;
+    private String descripcionProducto;
+    private String tipoProducto;
+    private String tipoTramite;
     private Tramite.EstadoTramite estado;
     private Date fechaRadicacion;
     private Long solicitanteId;  // Referencia al Usuario

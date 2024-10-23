@@ -35,6 +35,15 @@ public class Tramite {
     @Column(nullable = false, unique = true)
     private String numeroRadicado;
 
+    @Column(nullable = false)
+    private String nombreProducto;
+
+    @Column(nullable = false)
+    private String descripcionProducto;
+
+    @Column(nullable = false)
+    private String tipoProducto;
+
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private EstadoTramite estado;
@@ -42,6 +51,9 @@ public class Tramite {
     @Temporal(TemporalType.DATE)
     @Column(nullable = false)
     private Date fechaRadicacion;
+
+    @Column(nullable = false)
+    private String tipoTramite;
 
     @ManyToOne
     @JoinColumn(name = "entidad_sanitaria_id", nullable = false)
