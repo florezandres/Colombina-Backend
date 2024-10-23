@@ -3,20 +3,8 @@ package com.example.colombina.model;
 import java.util.Date;
 import java.util.List;
 
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.OneToOne;
-import jakarta.persistence.Temporal;
-import jakarta.persistence.TemporalType;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -60,16 +48,20 @@ public class Tramite {
     @JoinColumn(name = "entidad_sanitaria_id", nullable = false)
     private EntidadSanitaria entidadSanitaria;
 
-    @OneToMany(mappedBy = "tramite", cascade = CascadeType.ALL)
+    @JsonIgnore
+    @OneToMany(mappedBy = "tramite", cascade = CascadeType.ALL,fetch = FetchType.LAZY)
     private List<Documento> documentos;
 
-    @OneToMany(mappedBy = "tramite", cascade = CascadeType.ALL)
+    @JsonIgnore
+    @OneToMany(mappedBy = "tramite", cascade = CascadeType.ALL,fetch = FetchType.LAZY)
     private List<Pago> pagos;
 
-    @OneToMany(mappedBy = "tramite", cascade = CascadeType.ALL)
+    @JsonIgnore
+    @OneToMany(mappedBy = "tramite", cascade = CascadeType.ALL,fetch = FetchType.LAZY)
     private List<Seguimiento> seguimientos;
 
-    @OneToMany(mappedBy = "tramite", cascade = CascadeType.ALL)
+    @JsonIgnore
+    @OneToMany(mappedBy = "tramite", cascade = CascadeType.ALL,fetch = FetchType.LAZY)
     private List<HistorialCambio> historialCambios;
 
     @OneToOne
@@ -97,4 +89,15 @@ public class Tramite {
     public void setNumeroRadicado() {
         this.numeroRadicado = "AR-"+id;
     }
+
+    /*public Tramite(Long id, String numeroRadicado, String nombreProducto, String descripcionProducto, String tipoProducto, EstadoTramite estado, Date fechaRadicacion, String tipoTramite) {
+        this.id = id;
+        this.numeroRadicado = numeroRadicado;
+        this.nombreProducto = nombreProducto;
+        this.descripcionProducto = descripcionProducto;
+        this.tipoProducto = tipoProducto;
+        this.estado = estado;
+        this.fechaRadicacion = fechaRadicacion;
+        this.tipoTramite = tipoTramite;
+    }*/
 }

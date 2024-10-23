@@ -22,6 +22,8 @@ public class SolicitudController {
     @Autowired
     private ProgresoService progresoService;
 
+
+
     // Crear solicitud y trámite -> SOLICITANTE DEI
     @CrossOrigin
     @PostMapping(value = "/{idUsuario}/{idEntidad}/crear-solicitud", consumes = MediaType.APPLICATION_JSON_VALUE)

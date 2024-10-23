@@ -81,11 +81,14 @@ public class DBInitializer implements CommandLineRunner {
         Date date = new Date();
 
 
-        Solicitud solicitud1 = new Solicitud(1L, date, solicitante);
+        Solicitud solicitud1 = new Solicitud(null, date, solicitante);
+        Solicitud solicitud2 = new Solicitud(null,date,solicitante);
         solicitudRepository.save(solicitud1);
+        solicitudRepository.save(solicitud2);
 
-        Tramite tramite1 = new Tramite(1L, "AR-1", "Nombre 1", "Descripcion 1", "Tipo 1", Tramite.EstadoTramite.EN_REVISION, date, "A", entidadSanitaria1, null, null,
-                null, null, solicitud1,0,0);
+        Tramite tramite1 = new Tramite(null, "AR-1", "Nombre 1", "Descripcion 1", "Tipo 1", Tramite.EstadoTramite.EN_REVISION, date, "A", entidadSanitaria1, null,null,null,null, solicitud1,50,0);
+        Tramite tramite2 = new Tramite(null,"AR-2","Nombre 2","Descripcion 2","Tipo 1",Tramite.EstadoTramite.APROBADO,date,"B",entidadSanitaria1,null,null,null,null,solicitud2,75,0);
         tramiteRepository.save(tramite1);
+        tramiteRepository.save(tramite2);
     }
 }

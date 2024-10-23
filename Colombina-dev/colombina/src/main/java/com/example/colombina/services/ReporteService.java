@@ -92,8 +92,8 @@ public class ReporteService {
         return java.time.Duration.between(startDate.atStartOfDay(), endDate.atStartOfDay()).toDays();
     }
 
-    private Date obtenerFechaFinalDeTramite(Tramite tramite) {
-        List<Seguimiento> seguimientos = tramite.getSeguimientos();
+    /*private Date obtenerFechaFinalDeTramite(Tramite tramite) {
+        //List<Seguimiento> seguimientos = tramite.getSeguimientos();
         for (Seguimiento seguimiento : seguimientos) {
             if (seguimiento.getEstadoActual().equalsIgnoreCase("APROBADO") ||
                     seguimiento.getEstadoActual().equalsIgnoreCase("RECHAZADO")) {
@@ -101,7 +101,7 @@ public class ReporteService {
             }
         }
         return new Date(); // Fecha actual como respaldo
-    }
+    }*/
 
     // Genera reporte en Excel
     public ByteArrayInputStream generarReporteExcel(List<ReporteDTO> reportes) throws Exception {
