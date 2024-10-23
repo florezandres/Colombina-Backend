@@ -1,16 +1,24 @@
 package com.example.colombina.services;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
+import org.modelmapper.ModelMapper;
+import com.example.colombina.DTOs.ComentarioDTO;
+import com.example.colombina.model.*;
+import com.example.colombina.repositories.HistorialCambioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.example.colombina.DTOs.EstadisticasDTO;
 import com.example.colombina.DTOs.TramiteDTO;
 import com.example.colombina.model.Documento;
+import com.example.colombina.model.Notificacion;
 import com.example.colombina.model.Seguimiento;
 import com.example.colombina.model.Tramite;
+import com.example.colombina.model.Usuario;
 import com.example.colombina.repositories.SeguimientoRepository;
 import com.example.colombina.repositories.TramiteRepository;
 
@@ -28,7 +36,13 @@ public class TramiteService {
     private NotificacionService notificacionService;
 
     @Autowired
+    private ModelMapper modelMapper;
+
+    @Autowired
     private SeguimientoRepository seguimientoRepository;
+
+    @Autowired
+    private HistorialCambioRepository historialCambioRepository;
 
     // Cambia el estado de un trámite a EN_REVISION
     public void abrirTramite(Long idTramite) {
@@ -62,6 +76,11 @@ public class TramiteService {
 
         // Elimina el trámite
         tramiteRepository.delete(tramite);
+    }
+
+    //Traer todos los tramites
+    public List<Tramite> findAll() {
+        return tramiteRepository.findAll();
     }
 
     //HU-39 - Filtrar tramites por estado
@@ -164,4 +183,77 @@ public void modificarTramite(Long idTramite, String nuevoEstado) {
         }
         return reporte;
     }
+
+    public void agregarComentarioAlHistorial(Long idTramite, ComentarioDTO comentarioDTO, String descripcionCambio) {
+        // Buscar el trámite por su ID
+        Tramite tramite = tramiteRepository.findById(idTramite)
+                .orElseThrow(() -> new IllegalArgumentException("El trámite con ID " + idTramite + " no existe."));
+
+        // Crear una nueva entrada de historial de cambios
+        HistorialCambio historialCambio = new HistorialCambio();
+        historialCambio.setTramite(tramite);
+        historialCambio.setDescripcion(descripcionCambio);
+        historialCambio.setFechaCambio(new Date());// Fecha actual
+
+
+        // Crear un nuevo comentario basado en el DTO
+        Comentario comentario = new Comentario();
+        comentario.setUsuarioDestino(new Usuario(comentarioDTO.getIdUsuarioDestino()));  // Asignar los usuarios
+        comentario.setUsuarioOrigen(new Usuario(comentarioDTO.getIdUsuarioOrigen()));
+        comentario.setComentario(comentarioDTO.getComentario());
+        comentario.setHistorialCambio(historialCambio);  // Asociar el comentario con el historial
+
+        // Añadir el comentario al historial de cambios
+        historialCambio.getComentarios().add(comentario);
+        // Guardar la entrada en el repositorio del historial de cambios
+        historialCambioRepository.save(historialCambio);
+    }
+
+    public void asociarNumeroRadicadoYLLave(Long idTramite, String numeroRadicado, Double llave) {
+        // Buscar el trámite por su ID
+        Tramite tramite = tramiteRepository.findById(idTramite)
+                .orElseThrow(() -> new IllegalArgumentException("El trámite con ID " + idTramite + " no existe."));
+
+        // Asociar el número de radicado y la llave
+        tramite.setNumeroRadicado(numeroRadicado);
+        tramite.setLlave(llave);
+
+        // Guardar los cambios en la base de datos
+        tramiteRepository.save(tramite);
+    }
+
+      // Obtener trámites nacionales agrupados por mes
+    public List<EstadisticasDTO> obtenerTramitesNacionalesPorMes() {
+        return tramiteRepository.contarTramitesPorMesYTipo("nacional");
+    }
+
+    // Obtener trámites internacionales agrupados por mes
+    public List<EstadisticasDTO> obtenerTramitesInternacionalesPorMes() {
+        return tramiteRepository.contarTramitesPorMesYTipo("internacional");
+    }
+
+    // Obtener documentos devueltos agrupados por tipo
+    public List<EstadisticasDTO> obtenerDocumentosDevueltosPorTipo() {
+        return tramiteRepository.contarDocumentosDevueltosPorTipo();
+    }
+    //Filtra los tramites por periodos
+    public List<EstadisticasDTO> obtenerTramitesPorPeriodo(String tipo, String periodo) {
+        switch (periodo.toLowerCase()) {
+            case "semanas":
+                return tramiteRepository.contarTramitesPorSemanaYTipo(tipo);
+            case "meses":
+                return tramiteRepository.contarTramitesPorMesYTipo(tipo);
+            case "años":
+                return tramiteRepository.contarTramitesPorAnoYTipo(tipo);
+            default:
+                throw new IllegalArgumentException("Periodo no válido. Utiliza 'semanas', 'meses' o 'años'.");
+        }
+    }
+  
+    //Filtros para tramites
+    public List<EstadisticasDTO> obtenerTramitesFiltrados(String tipo, String pais, String fechaInicio, String fechaFin) {
+        return tramiteRepository.filtrarTramites(tipo, pais, fechaInicio, fechaFin);
+    }
+
+   
 }

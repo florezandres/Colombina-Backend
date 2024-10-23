@@ -3,6 +3,8 @@ package com.example.colombina.model;
 import java.util.Date;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -21,6 +23,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 
 @Getter
 @Setter
@@ -71,9 +74,21 @@ public class Tramite {
     @OneToMany(mappedBy = "tramite", cascade = CascadeType.ALL)
     private List<HistorialCambio> historialCambios;
 
+    @Column()
+    private double progreso;
+
+    @Column()
+    private double llave;
+
     @OneToOne
     @JoinColumn(name = "solicitud_id")
+    @JsonIgnore
     private Solicitud solicitud;
+
+
+    public Tramite(Long tramiteId, String comentarios, Object o, Object o1, Object o2, Object o3, Object o4, Object o5, Object o6, Object o7) {
+    }
+
 
     // Enum definido dentro de TramiteRegulatorio (opcional)
     public enum EstadoTramite {
@@ -82,6 +97,7 @@ public class Tramite {
         RECHAZADO, // Rechazado
         PENDIENTE, // Pendiente a procesar la solicitud
     }
+
     public void setNumeroRadicado() {
         this.numeroRadicado = "AR-"+id;
     }

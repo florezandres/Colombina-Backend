@@ -2,6 +2,8 @@ package com.example.colombina.model;
 
 import java.time.LocalDate;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -13,6 +15,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 
 @Getter
 @Setter
@@ -35,7 +38,9 @@ public class Documento {
     private String tempUrl;
 
     @ManyToOne
+    @ToString.Exclude
     @JoinColumn(name = "tramite_id", nullable = false)
+    @JsonIgnore
     private Tramite tramite;
 
     @Column

@@ -8,7 +8,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.Date;
 import java.util.Optional;
 
 @Service
@@ -33,7 +32,7 @@ public class RevisionManualService {
             revision.setFechaRevision(LocalDateTime.now());
         } else {
             revision = new RevisionManual();
-            revision.setTramite(new Tramite(tramiteId, "AR-"+tramiteId, "Nombre 1", "Dexcripcion 1", "Tipo 1", Tramite.EstadoTramite.EN_REVISION, new Date(), null, null, null, null, null, null, null)); // Relación con el trámite
+            revision.setTramite(new Tramite(tramiteId, comentarios, null, null, null, null, null, null, null, null)); // Relación con el trámite
             revision.setComentarios(comentarios);
             revision.setRevisionCompleta(true);
             revision.setFechaRevision(LocalDateTime.now());
