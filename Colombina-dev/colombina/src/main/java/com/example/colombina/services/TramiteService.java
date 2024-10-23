@@ -1,9 +1,11 @@
 package com.example.colombina.services;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -29,6 +31,9 @@ public class TramiteService {
 
     @Autowired
     private NotificacionService notificacionService;
+
+    @Autowired
+    private ModelMapper modelMapper;
 
     @Autowired
     private SeguimientoRepository seguimientoRepository;
@@ -65,6 +70,11 @@ public class TramiteService {
 
         // Elimina el trámite
         tramiteRepository.delete(tramite);
+    }
+
+    //Traer todos los tramites
+    public List<TramiteDTO> findAll() {
+        return Collections.singletonList(modelMapper.map(tramiteRepository.findAll(), TramiteDTO.class));
     }
 
     //HU-39 - Filtrar tramites por estado

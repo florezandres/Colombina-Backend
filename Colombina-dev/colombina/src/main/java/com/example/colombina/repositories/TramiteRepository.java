@@ -4,6 +4,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
+import org.jetbrains.annotations.NotNull;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -19,6 +20,8 @@ import com.example.colombina.model.Tramite;
 public interface TramiteRepository extends JpaRepository<Tramite, Long> {
     Optional<Tramite> findByNumeroRadicado(String numeroRadicado);
     List<Tramite> findByEstado(Tramite.EstadoTramite estado);
+    @NotNull
+    List<Tramite> findAll();
 
     //List<Tramite> findByFechaRadicacionAndEstado(Date fechaInicio, Date fechaFin, String tipoTramite, Tramite.EstadoTramite estado);
       // Consulta para contar trámites por mes y tipo (nacional o internacional)
