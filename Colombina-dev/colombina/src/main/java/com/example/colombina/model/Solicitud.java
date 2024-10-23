@@ -22,6 +22,7 @@ public class Solicitud {
     private Date fechaSolicitud;
 
     @ManyToOne
+    @ToString.Exclude
     @JoinColumn(name = "solicitante_id", nullable = false)
     @JsonIgnore
     private Usuario solicitante;

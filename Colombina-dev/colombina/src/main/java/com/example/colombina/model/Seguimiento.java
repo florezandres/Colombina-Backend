@@ -18,6 +18,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 
 @Getter
 @Setter
@@ -45,6 +46,7 @@ public class Seguimiento {
     private Date fechaFinSeguimiento;
 
     @ManyToOne
+    @ToString.Exclude
     @JoinColumn(name = "tramite_id", nullable = false)
     @JsonIgnore
     private Tramite tramite;

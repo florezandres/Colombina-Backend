@@ -79,8 +79,8 @@ public class TramiteService {
     }
 
     //Traer todos los tramites
-    public List<TramiteDTO> findAll() {
-        return Collections.singletonList(modelMapper.map(tramiteRepository.findAll(), TramiteDTO.class));
+    public List<Tramite> findAll() {
+        return tramiteRepository.findAll();
     }
 
     //HU-39 - Filtrar tramites por estado
