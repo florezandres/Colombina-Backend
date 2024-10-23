@@ -1,10 +1,15 @@
 package com.example.colombina.controllers;
 
+import java.io.InputStream;
 import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.InputStreamResource;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -48,15 +53,33 @@ public class FilesController {
 
     @CrossOrigin
     @GetMapping("/listar-archivos/{id_tramite}")
-    public ResponseEntity<List<String>> obtenerArchivos(@PathVariable Long id_tramite) {
+    public ResponseEntity<List<DocumentoDTO>> obtenerArchivos(@PathVariable Long id_tramite) {
         try {
-            List<String> archivos = minioService.listFiles(id_tramite);
+            List<DocumentoDTO> archivos = minioService.listFiles(id_tramite);
             return ResponseEntity.ok(archivos);
         } catch (Exception e) {
             log.error("Error al obtener archivos para el trámite " + id_tramite, e);
             return ResponseEntity.status(500).body(null);
         }
     }
+
+    @GetMapping("/descargar-archivo/{id_tramite}/{filename}")
+    public ResponseEntity<InputStreamResource> descargarArchivo(
+            @PathVariable("id_tramite") Long idTramite,
+            @PathVariable("filename") String filename) {
+
+        // Aquí, asegúrate de que estás obteniendo el archivo correcto desde MinIO
+        try {
+            InputStream inputStream = minioService.getObject(filename, idTramite);
+            return ResponseEntity.ok()
+                    .header(HttpHeaders.CONTENT_DISPOSITION, "attachment;filename=" + filename)
+                    .contentType(MediaType.APPLICATION_PDF)
+                    .body(new InputStreamResource(inputStream));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
+    }
+
 
     @CrossOrigin
     @DeleteMapping("/eliminar-archivo/{id_tramite}/{filename}")
