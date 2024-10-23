@@ -1,7 +1,6 @@
 package com.example.colombina.services;
 
 import com.example.colombina.DTOs.RevisionManualDTO;
-import com.example.colombina.model.EntidadSanitaria;
 import com.example.colombina.model.RevisionManual;
 import com.example.colombina.model.Tramite;
 import com.example.colombina.repositories.RevisionManualRepository;
@@ -25,8 +24,6 @@ public class RevisionManualService {
     public RevisionManualDTO realizarRevision(Long tramiteId, String comentarios) {
         Optional<RevisionManual> revisionExistente = revisionManualRepository.findByTramiteId(tramiteId);
         RevisionManual revision;
-        EntidadSanitaria entidadSanitaria = new EntidadSanitaria();
-
 
         if (revisionExistente.isPresent()) {
             revision = revisionExistente.get();
@@ -35,7 +32,7 @@ public class RevisionManualService {
             revision.setFechaRevision(LocalDateTime.now());
         } else {
             revision = new RevisionManual();
-            revision.setTramite(new Tramite(tramiteId, comentarios, null, null, entidadSanitaria, null, null, null, null, null,0, 0)); // Relación con el trámite
+            revision.setTramite(new Tramite(tramiteId, comentarios, null, null, null, null, null, null, null, null)); // Relación con el trámite
             revision.setComentarios(comentarios);
             revision.setRevisionCompleta(true);
             revision.setFechaRevision(LocalDateTime.now());

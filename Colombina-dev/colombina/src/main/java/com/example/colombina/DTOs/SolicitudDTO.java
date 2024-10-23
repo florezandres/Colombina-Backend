@@ -9,8 +9,6 @@ import java.util.Date;
 @Getter
 public class SolicitudDTO {
     private Long id;
-    private String descripcionProducto;
-    private String tipoProducto;
     private Date fechaSolicitud;
     private Long solicitanteId;  // Referencia al Usuario
 }

@@ -2,11 +2,17 @@ package com.example.colombina.controllers;
 
 import java.util.List;
 
-import com.example.colombina.DTOs.ComentarioDTO;
-import com.example.colombina.services.ProgresoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.example.colombina.DTOs.TramiteDTO;
 import com.example.colombina.model.Seguimiento;
@@ -16,6 +22,8 @@ import com.example.colombina.services.DocumentoService;
 import com.example.colombina.services.NotificacionService;
 import com.example.colombina.services.TramiteService;
 
+import java.util.Date;
+
 @RestController
 @RequestMapping("/tramites")
 public class TramiteController {
@@ -24,10 +32,24 @@ public class TramiteController {
     private TramiteService tramiteService;
 
     @Autowired
-    private ProgresoService progresoService;
+    private SeguimientoRepository seguimientoRepository;
 
     @Autowired
-    private  DocumentoService documentoService;
+    private DocumentoService documentoService;
+
+    @Autowired
+    private NotificacionService notificacionService;
+
+    // Validación automática de documentos
+    @GetMapping("/{idTramite}/validar-documentos")
+    public ResponseEntity<?> validarDocumentos(@PathVariable Long idTramite) {
+        try {
+            documentoService.validarDocumentos(idTramite);
+            return ResponseEntity.ok("Validación de documentos completada.");
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body("Error en la validación de documentos.");
+        }
+    }
 
     // Apertura de un trámite por su ID -> ASUNTOS REGULATORIOS
     @CrossOrigin
@@ -36,8 +58,7 @@ public class TramiteController {
         try {
             // Llamar al servicio para abrir el trámite
             tramiteService.abrirTramite(idTramite);
-            progresoService.actualizarProgreso(idTramite, 13.0);
-
+            notificacionService.enviarNotificacionEstadoTramite(idTramite); // Enviar notificación de cambio de estado
             return ResponseEntity.ok("Trámite abierto correctamente.");
         } catch (IllegalArgumentException e) {
             return ResponseEntity.status(404).body(e.getMessage()); // Error si el trámite no se encuentra
@@ -73,40 +94,14 @@ public class TramiteController {
         }
     }
 
-    @CrossOrigin
-    @PostMapping("/{idTramite}/revisar")
-    public ResponseEntity<?> revisarDocumentos(
-            @PathVariable Long idTramite,
-            @RequestParam("accion") String accion,
-            @RequestBody(required = false) ComentarioDTO comentarioDTO) {
-        try {
-            if (accion.equalsIgnoreCase("aceptar")) {
-                // Aceptar revisión, actualizar progreso a 24%
-                progresoService.actualizarProgreso(idTramite, 24.0);
-                return ResponseEntity.ok("Revisión aceptada, el progreso ha sido actualizado.");
-            } else if (accion.equalsIgnoreCase("rechazar")) {
-                if (comentarioDTO == null || comentarioDTO.getComentario().isEmpty()) {
-                    return ResponseEntity.status(400).body("Debe proporcionar un comentario al rechazar.");
-                }
-
-                // Actualizar progreso a 13% (retrocediendo a un estado anterior)
-                progresoService.actualizarProgreso(idTramite, 13.0);
-
-                // Guardar el comentario en el historial de cambios
-                tramiteService.agregarComentarioAlHistorial(idTramite, comentarioDTO, "Revisión rechazada");
-
-                return ResponseEntity.ok("Revisión rechazada con comentario.");
-            } else {
-                return ResponseEntity.status(400).body("Acción inválida. Use 'aceptar' o 'rechazar'.");
-            }
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.status(404).body(e.getMessage());
-        } catch (Exception e) {
-            return ResponseEntity.status(500).body("Error al revisar los documentos.");
-        }
+    // HU-13 - Obtener seguimiento de un trámite
+    @GetMapping("/{idTramite}/seguimiento")
+    public ResponseEntity<?> obtenerSeguimiento(@PathVariable Long idTramite) {
+        List<Seguimiento> seguimientos = seguimientoRepository.findByTramiteId(idTramite);
+        return ResponseEntity.ok(seguimientos);
     }
 
-
+    // HU-46 - Validación Automática de Documentos y Consolidación
     @CrossOrigin
     @PostMapping("/{idTramite}/consolidacion")
     public ResponseEntity<?> consolidarTramite(@PathVariable Long idTramite) {
@@ -120,13 +115,49 @@ public class TramiteController {
 
             // Si los documentos son válidos, proceder con la consolidación del trámite
             tramiteService.consolidarTramite(idTramite);
-            progresoService.actualizarProgreso(idTramite, 42.0);
-
             return ResponseEntity.ok("Consolidación completada correctamente.");
         } catch (IllegalArgumentException e) {
             return ResponseEntity.status(400).body(e.getMessage());
         } catch (Exception e) {
             return ResponseEntity.status(500).body("Error al consolidar el trámite.");
+        }
+    }
+
+    // HU-35 - Modificar un tramite
+    @PostMapping("/{idTramite}/modificar")
+    public ResponseEntity<?> modificarTramite(@PathVariable Long idTramite, @RequestParam String nuevoEstado) {
+        try {
+            tramiteService.modificarTramite(idTramite, nuevoEstado);
+            return ResponseEntity.ok("Trámite modificado correctamente.");
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(400).body(e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body("Error al modificar el trámite.");
+        }
+    }
+    // HU-38 - Subir múltiples archivos para un trámite
+    @PostMapping("/{idTramite}/subir-archivos")
+    public ResponseEntity<?> subirArchivos(@PathVariable Long idTramite, @RequestParam("archivos") MultipartFile[] archivos) {
+        try {
+            //List<String> resultado = documentoService.guardarDocumentos(idTramite, archivos);
+            return ResponseEntity.ok("Archivos subidos correctamente: ");
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(400).body(e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body("Error al subir los archivos.");
+        }
+    }
+    // HU-53 - Generar reportes personalizados
+    @GetMapping("/reportes/personalizados")
+    public ResponseEntity<?> generarReportePersonalizado(
+            @RequestParam(required = false) String estado,
+            @RequestParam(required = false) Date fechaInicio,
+            @RequestParam(required = false) Date fechaFin) {
+        try {
+            List<TramiteDTO> reporte = tramiteService.generarReportePersonalizado(estado, fechaInicio, fechaFin);
+            return ResponseEntity.ok(reporte);
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body("Error al generar el reporte.");
         }
     }
 }

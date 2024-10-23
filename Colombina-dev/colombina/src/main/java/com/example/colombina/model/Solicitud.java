@@ -15,12 +15,6 @@ public class Solicitud {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
-    private String descripcionProducto;
-
-    @Column(nullable = false)
-    private String tipoProducto;
-
     @Temporal(TemporalType.DATE)
     @Column(nullable = true)
     private Date fechaSolicitud;
