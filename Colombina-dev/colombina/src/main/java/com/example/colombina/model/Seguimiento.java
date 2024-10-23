@@ -2,6 +2,8 @@ package com.example.colombina.model;
 
 import java.util.Date;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -44,6 +46,7 @@ public class Seguimiento {
 
     @ManyToOne
     @JoinColumn(name = "tramite_id", nullable = false)
+    @JsonIgnore
     private Tramite tramite;
 
     @Transient  // No persistir este campo en la base de datos

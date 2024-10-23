@@ -2,6 +2,8 @@ package com.example.colombina.model;
 
 import java.time.LocalDate;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -36,6 +38,7 @@ public class Documento {
 
     @ManyToOne
     @JoinColumn(name = "tramite_id", nullable = false)
+    @JsonIgnore
     private Tramite tramite;
 
     @Column

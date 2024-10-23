@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -73,6 +74,10 @@ public class SolicitudService {
         System.out.println("Antes de return");
         // Convertir la solicitud guardada a DTO y devolverla
         return modelMapper.map(solicitudGuardada, SolicitudDTO.class);
+    }
+
+    public List<Solicitud> getSolicitudes() {
+        return solicitudRepository.findAll();
     }
 }
 

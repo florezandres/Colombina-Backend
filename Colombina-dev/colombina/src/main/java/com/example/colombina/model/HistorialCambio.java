@@ -8,6 +8,8 @@ import lombok.Setter;
 
 import java.util.Date;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 @Getter
 @Setter
 @NoArgsConstructor
@@ -27,5 +29,6 @@ public class HistorialCambio {
 
     @ManyToOne
     @JoinColumn(name = "tramite_id", nullable = false)
+    @JsonIgnore
     private Tramite tramite;
 }

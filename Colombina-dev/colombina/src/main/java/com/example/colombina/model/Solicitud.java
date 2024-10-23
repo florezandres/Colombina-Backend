@@ -5,6 +5,8 @@ import lombok.*;
 
 import java.util.Date;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 @Getter
 @Setter
 @NoArgsConstructor
@@ -21,6 +23,7 @@ public class Solicitud {
 
     @ManyToOne
     @JoinColumn(name = "solicitante_id", nullable = false)
+    @JsonIgnore
     private Usuario solicitante;
 }
 
