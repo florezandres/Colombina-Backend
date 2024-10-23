@@ -81,6 +81,18 @@ public class TramiteController {
         }
     }
 
+    // Traer todos los trámites
+    @CrossOrigin
+    @GetMapping("/todos")
+    public ResponseEntity<?> findAll() {
+        try {
+            List<TramiteDTO> tramites = tramiteService.findAll();
+            return ResponseEntity.ok(tramites);
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body("Error al traer todos los trámites.");
+        }
+    }
+
     // HU-39 - Filtrar trámites por estado
     // Rol que utiliza el método: SOLICITANTE
     @CrossOrigin
