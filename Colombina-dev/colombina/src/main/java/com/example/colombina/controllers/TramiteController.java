@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.example.colombina.DTOs.EstadisticasDTO;
 import com.example.colombina.DTOs.TramiteDTO;
 import com.example.colombina.model.Seguimiento;
 import com.example.colombina.model.Tramite;
@@ -160,4 +161,57 @@ public class TramiteController {
             return ResponseEntity.status(500).body("Error al generar el reporte.");
         }
     }
+        // Obtener estadísticas de trámites nacionales agrupados por mes
+        @CrossOrigin
+        @GetMapping("/estadisticas/nacionales")
+        public ResponseEntity<List<EstadisticasDTO>> obtenerTramitesNacionalesPorMes() {
+            List<EstadisticasDTO> estadisticas = tramiteService.obtenerTramitesNacionalesPorMes();
+            return ResponseEntity.ok(estadisticas);
+        }
+    
+        // Obtener estadísticas de trámites internacionales agrupados por mes
+        @CrossOrigin
+        @GetMapping("/estadisticas/internacionales")
+        public ResponseEntity<List<EstadisticasDTO>> obtenerTramitesInternacionalesPorMes() {
+            List<EstadisticasDTO> estadisticas = tramiteService.obtenerTramitesInternacionalesPorMes();
+            return ResponseEntity.ok(estadisticas);
+        }
+    
+        // Obtener estadísticas de documentos devueltos agrupados por tipo de documento
+        @CrossOrigin
+        @GetMapping("/estadisticas/documentos-devueltos")
+        public ResponseEntity<List<EstadisticasDTO>> obtenerDocumentosDevueltosPorTipo() {
+            List<EstadisticasDTO> estadisticas = tramiteService.obtenerDocumentosDevueltosPorTipo();
+            return ResponseEntity.ok(estadisticas);
+        }
+        //Estadisticas de tramite por periodo
+        @GetMapping("/estadisticas/tramites")
+        public ResponseEntity<List<EstadisticasDTO>> obtenerTramitesPorPeriodo(@RequestParam String tipo, @RequestParam String periodo) {
+            List<EstadisticasDTO> estadisticas = tramiteService.obtenerTramitesPorPeriodo(tipo, periodo);
+            return ResponseEntity.ok(estadisticas);
+        }
+        
+    
+        //Filtros por fecha, tipo de trámite y país
+        @GetMapping("/estadisticas/filtrados")
+        public ResponseEntity<List<EstadisticasDTO>> obtenerTramitesFiltrados(
+                @RequestParam(required = false) String tipo,
+                @RequestParam(required = false) String pais,
+                @RequestParam(required = false) String fechaInicio,
+                @RequestParam(required = false) String fechaFin) {
+            List<EstadisticasDTO> tramitesFiltrados = tramiteService.obtenerTramitesFiltrados(tipo, pais, fechaInicio, fechaFin);
+            return ResponseEntity.ok(tramitesFiltrados);
+        }
+    
+        //HU 17
+        @PostMapping("/{idTramite}/escalar")
+        public ResponseEntity<?> escalarTramite(@PathVariable Long idTramite) {
+            try {
+                // Escalar el trámite y crear la notificación
+                tramiteService.escalarTramite(idTramite);
+                return ResponseEntity.ok("El trámite ha sido escalado correctamente.");
+            } catch (Exception e) {
+                return ResponseEntity.status(500).body("Error al escalar el trámite.");
+            }
+        }
 }

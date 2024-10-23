@@ -10,7 +10,13 @@ import com.example.colombina.repositories.HistorialCambioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.example.colombina.DTOs.EstadisticasDTO;
 import com.example.colombina.DTOs.TramiteDTO;
+import com.example.colombina.model.Documento;
+import com.example.colombina.model.Notificacion;
+import com.example.colombina.model.Seguimiento;
+import com.example.colombina.model.Tramite;
+import com.example.colombina.model.Usuario;
 import com.example.colombina.repositories.SeguimientoRepository;
 import com.example.colombina.repositories.TramiteRepository;
 
@@ -205,4 +211,39 @@ public void modificarTramite(Long idTramite, String nuevoEstado) {
         // Guardar los cambios en la base de datos
         tramiteRepository.save(tramite);
     }
+
+      // Obtener trámites nacionales agrupados por mes
+    public List<EstadisticasDTO> obtenerTramitesNacionalesPorMes() {
+        return tramiteRepository.contarTramitesPorMesYTipo("nacional");
+    }
+
+    // Obtener trámites internacionales agrupados por mes
+    public List<EstadisticasDTO> obtenerTramitesInternacionalesPorMes() {
+        return tramiteRepository.contarTramitesPorMesYTipo("internacional");
+    }
+
+    // Obtener documentos devueltos agrupados por tipo
+    public List<EstadisticasDTO> obtenerDocumentosDevueltosPorTipo() {
+        return tramiteRepository.contarDocumentosDevueltosPorTipo();
+    }
+    //Filtra los tramites por periodos
+    public List<EstadisticasDTO> obtenerTramitesPorPeriodo(String tipo, String periodo) {
+        switch (periodo.toLowerCase()) {
+            case "semanas":
+                return tramiteRepository.contarTramitesPorSemanaYTipo(tipo);
+            case "meses":
+                return tramiteRepository.contarTramitesPorMesYTipo(tipo);
+            case "años":
+                return tramiteRepository.contarTramitesPorAnoYTipo(tipo);
+            default:
+                throw new IllegalArgumentException("Periodo no válido. Utiliza 'semanas', 'meses' o 'años'.");
+        }
+    }
+
+    //Filtros para tramites
+    public List<EstadisticasDTO> obtenerTramitesFiltrados(String tipo, String pais, String fechaInicio, String fechaFin) {
+        return tramiteRepository.filtrarTramites(tipo, pais, fechaInicio, fechaFin);
+    }
+
+
 }
