@@ -18,7 +18,7 @@ public class EntidadSanitariaController {
     @Autowired
     TramiteService tramiteService;
 
-
+    //Paso 5
     @CrossOrigin
     @PostMapping("/tramite/{idTramite}/aceptar")
     public ResponseEntity<?> aceptarTramite(
@@ -44,7 +44,7 @@ public class EntidadSanitariaController {
         }
     }
 
-
+    //Paso 5
     @CrossOrigin
     @PostMapping("/tramite/{idTramite}/rechazar")
     public ResponseEntity<?> rechazarTramite(
@@ -68,6 +68,7 @@ public class EntidadSanitariaController {
         }
     }
 
+    //Paso 5
     @CrossOrigin
     @PostMapping("/tramite/{idTramite}/opcionesRechazo")
     public ResponseEntity<?> opcionesRechazoTramite(
