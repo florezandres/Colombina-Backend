@@ -1,5 +1,7 @@
 package com.example.colombina.model;
 
+import jakarta.persistence.*;
+import lombok.*;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -54,6 +56,7 @@ public class Usuario implements UserDetails {
     @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Permiso> permisos = new ArrayList<>();
 
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return List.of(new SimpleGrantedAuthority(rol.getTipoRol()));
@@ -69,7 +72,8 @@ public class Usuario implements UserDetails {
         return nombre;
     }
 
-    public String getCorreoElectronico() {
-        return correoElectronico;
+    // Constructor solo con el ID
+    public Usuario(Long id) {
+        this.id = id;
     }
 }

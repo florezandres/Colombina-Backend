@@ -3,6 +3,7 @@ package com.example.colombina.controllers;
 import com.example.colombina.DTOs.RequestTramiteSolicitudDTO;
 import com.example.colombina.DTOs.SolicitudDTO;
 import com.example.colombina.DTOs.TramiteDTO;
+import com.example.colombina.services.ProgresoService;
 import com.example.colombina.services.SolicitudService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -17,6 +18,9 @@ public class SolicitudController {
 
     @Autowired
     private SolicitudService solicitudService;
+
+    @Autowired
+    private ProgresoService progresoService;
 
     // Crear solicitud y trámite -> SOLICITANTE DEI
     @CrossOrigin
@@ -33,6 +37,9 @@ public class SolicitudController {
             TramiteDTO tramiteDTO = requestTramiteSolicitudDTO.getTramiteDTO();
             // Llamada al servicio para crear la solicitud
             SolicitudDTO nuevaSolicitud = solicitudService.crearSolicitud(solicitudDTO, tramiteDTO, idUsuario, idEntidad);
+
+            // Actualizar el progreso en 11% para el primer paso
+            progresoService.actualizarProgreso(tramiteDTO.getId(), 0);
             return ResponseEntity.ok(nuevaSolicitud);
         } catch (IllegalArgumentException e) {
             return ResponseEntity.status(400).body(e.getMessage()); // Error en caso de duplicado o validaciones

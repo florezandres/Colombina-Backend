@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Getter
@@ -25,5 +26,5 @@ public class EntidadSanitaria {
     private String pais;
 
     @OneToMany(mappedBy = "entidadSanitaria", cascade = CascadeType.ALL)
-    private List<Tramite> tramites;
+    private List<Tramite>  tramites = new ArrayList<>();
 }
