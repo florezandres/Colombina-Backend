@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.example.colombina.DTOs.TramiteDTO;
 import com.example.colombina.model.Seguimiento;
@@ -20,7 +21,8 @@ import com.example.colombina.repositories.SeguimientoRepository;
 import com.example.colombina.services.DocumentoService;
 import com.example.colombina.services.NotificacionService;
 import com.example.colombina.services.TramiteService;
-import com.example.colombina.services.NotificacionService;
+
+import java.util.Date;
 
 @RestController
 @RequestMapping("/tramites")
@@ -137,8 +139,8 @@ public class TramiteController {
     @PostMapping("/{idTramite}/subir-archivos")
     public ResponseEntity<?> subirArchivos(@PathVariable Long idTramite, @RequestParam("archivos") MultipartFile[] archivos) {
         try {
-            List<String> resultado = documentoService.guardarDocumentos(idTramite, archivos);
-            return ResponseEntity.ok("Archivos subidos correctamente: " + resultado);
+            //List<String> resultado = documentoService.guardarDocumentos(idTramite, archivos);
+            return ResponseEntity.ok("Archivos subidos correctamente: ");
         } catch (IllegalArgumentException e) {
             return ResponseEntity.status(400).body(e.getMessage());
         } catch (Exception e) {
