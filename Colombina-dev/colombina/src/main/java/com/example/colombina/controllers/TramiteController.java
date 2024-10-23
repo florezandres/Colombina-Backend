@@ -215,7 +215,7 @@ public class TramiteController {
             return ResponseEntity.ok(tramitesFiltrados);
         }
     
-        //HU 17
+       /* //HU 17
         @PostMapping("/{idTramite}/escalar")
         public ResponseEntity<?> escalarTramite(@PathVariable Long idTramite) {
             try {
@@ -225,5 +225,5 @@ public class TramiteController {
             } catch (Exception e) {
                 return ResponseEntity.status(500).body("Error al escalar el trámite.");
             }
-        }
+        }*/
 }
