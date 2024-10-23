@@ -6,6 +6,9 @@ import java.util.Date;
 import java.util.List;
 
 import org.modelmapper.ModelMapper;
+import com.example.colombina.DTOs.ComentarioDTO;
+import com.example.colombina.model.*;
+import com.example.colombina.repositories.HistorialCambioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -37,6 +40,9 @@ public class TramiteService {
 
     @Autowired
     private SeguimientoRepository seguimientoRepository;
+
+    @Autowired
+    private HistorialCambioRepository historialCambioRepository;
 
     // Cambia el estado de un trámite a EN_REVISION
     public void abrirTramite(Long idTramite) {
@@ -176,6 +182,44 @@ public void modificarTramite(Long idTramite, String nuevoEstado) {
             }
         }
         return reporte;
+    }
+
+    public void agregarComentarioAlHistorial(Long idTramite, ComentarioDTO comentarioDTO, String descripcionCambio) {
+        // Buscar el trámite por su ID
+        Tramite tramite = tramiteRepository.findById(idTramite)
+                .orElseThrow(() -> new IllegalArgumentException("El trámite con ID " + idTramite + " no existe."));
+
+        // Crear una nueva entrada de historial de cambios
+        HistorialCambio historialCambio = new HistorialCambio();
+        historialCambio.setTramite(tramite);
+        historialCambio.setDescripcion(descripcionCambio);
+        historialCambio.setFechaCambio(new Date());// Fecha actual
+
+
+        // Crear un nuevo comentario basado en el DTO
+        Comentario comentario = new Comentario();
+        comentario.setUsuarioDestino(new Usuario(comentarioDTO.getIdUsuarioDestino()));  // Asignar los usuarios
+        comentario.setUsuarioOrigen(new Usuario(comentarioDTO.getIdUsuarioOrigen()));
+        comentario.setComentario(comentarioDTO.getComentario());
+        comentario.setHistorialCambio(historialCambio);  // Asociar el comentario con el historial
+
+        // Añadir el comentario al historial de cambios
+        historialCambio.getComentarios().add(comentario);
+        // Guardar la entrada en el repositorio del historial de cambios
+        historialCambioRepository.save(historialCambio);
+    }
+
+    public void asociarNumeroRadicadoYLLave(Long idTramite, String numeroRadicado, Double llave) {
+        // Buscar el trámite por su ID
+        Tramite tramite = tramiteRepository.findById(idTramite)
+                .orElseThrow(() -> new IllegalArgumentException("El trámite con ID " + idTramite + " no existe."));
+
+        // Asociar el número de radicado y la llave
+        tramite.setNumeroRadicado(numeroRadicado);
+        tramite.setLlave(llave);
+
+        // Guardar los cambios en la base de datos
+        tramiteRepository.save(tramite);
     }
 
       // Obtener trámites nacionales agrupados por mes

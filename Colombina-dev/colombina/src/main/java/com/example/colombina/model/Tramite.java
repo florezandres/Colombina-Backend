@@ -81,6 +81,8 @@ public class Tramite {
     @Column()
     private double llave;
 
+    public Tramite(Long tramiteId, String comentarios, Object o, Object o1, Object o2, Object o3, Object o4, Object o5, Object o6, Object o7) {
+    }
 
 
     // Enum definido dentro de TramiteRegulatorio (opcional)
