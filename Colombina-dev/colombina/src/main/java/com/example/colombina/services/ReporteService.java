@@ -1,8 +1,6 @@
 package com.example.colombina.services;
 
 import com.example.colombina.DTOs.ReporteDTO;
-import com.example.colombina.model.Seguimiento;
-import com.example.colombina.model.Tramite;
 import com.example.colombina.repositories.TramiteRepository;
 import com.itextpdf.text.Font;
 import org.apache.poi.ss.usermodel.*;

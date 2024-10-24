@@ -2,10 +2,7 @@ package com.example.colombina.services;
 
 import org.springframework.stereotype.Service;
 
-import com.example.colombina.model.Rol;
 import com.example.colombina.repositories.UsuarioRepository;
-
-import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;

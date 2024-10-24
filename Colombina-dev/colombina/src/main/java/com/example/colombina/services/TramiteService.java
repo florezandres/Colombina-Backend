@@ -1,7 +1,6 @@
 package com.example.colombina.services;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -15,7 +14,6 @@ import org.springframework.stereotype.Service;
 import com.example.colombina.DTOs.EstadisticasDTO;
 import com.example.colombina.DTOs.TramiteDTO;
 import com.example.colombina.model.Documento;
-import com.example.colombina.model.Notificacion;
 import com.example.colombina.model.Seguimiento;
 import com.example.colombina.model.Tramite;
 import com.example.colombina.model.Usuario;

@@ -17,18 +17,23 @@ public class GlobalExceptionHandler {
     private static final Logger logger = LoggerFactory.getLogger(GlobalExceptionHandler.class);
 
     @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
-    public ResponseEntity<String> handleNotSuportedException(Exception ex, WebRequest request) {
+    public ResponseEntity<String> handleNotSuportedException(HttpRequestMethodNotSupportedException ex, WebRequest request) {
         return new ResponseEntity<>("Method Not Allowed", HttpStatus.METHOD_NOT_ALLOWED);
     }
 
     @ExceptionHandler(NoResourceFoundException.class)
-    public ResponseEntity<String> handleNoResourceFoundException(Exception ex, WebRequest request) {
+    public ResponseEntity<String> handleNoResourceFoundException(NoResourceFoundException ex, WebRequest request) {
         return new ResponseEntity<>("Resource Not Found", HttpStatus.NOT_FOUND);
     }
 
     @ExceptionHandler(BadCredentialsException.class)
-    public ResponseEntity<String> handleBadCredentialsException(Exception ex, WebRequest request) {
+    public ResponseEntity<String> handleBadCredentialsException(BadCredentialsException ex, WebRequest request) {
         return new ResponseEntity<>("Bad Credentials", HttpStatus.UNAUTHORIZED);
+    }
+
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity<String> handleIllegalArgumentException(IllegalArgumentException ex, WebRequest request) {
+        return new ResponseEntity<>(ex.getMessage(), HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(Exception.class)

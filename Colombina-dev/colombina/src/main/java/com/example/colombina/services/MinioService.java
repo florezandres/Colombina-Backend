@@ -7,7 +7,6 @@ import io.minio.messages.Item;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FilenameUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -16,19 +15,18 @@ import java.io.InputStream;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 @Slf4j
 @Service
 public class MinioService {
-    private final MinioClient minioClient;
 
     @Autowired
-    public MinioService(MinioClient minioClient) {
-        this.minioClient = minioClient;
-    }
-    public InputStream getObject(String filename, Long tramiteId) throws ServerException, InsufficientDataException, ErrorResponseException, IOException, NoSuchAlgorithmException, InvalidKeyException, InvalidResponseException, XmlParserException, InternalException {
+    private MinioClient minioClient;
+
+    public InputStream getObject(String filename, Long tramiteId) throws ServerException, InsufficientDataException,
+            ErrorResponseException, IOException, NoSuchAlgorithmException, InvalidKeyException,
+            InvalidResponseException, XmlParserException, InternalException {
         InputStream stream;
         String bucketName = getOrCreateBucketForTramite(tramiteId);
         stream = minioClient.getObject(GetObjectArgs.builder()
@@ -53,8 +51,6 @@ public class MinioService {
                 .build());
     }
 
-
-
     public String getOrCreateBucketForTramite(Long tramiteId) {
         String bucketName = "tramite-" + tramiteId;
 
@@ -78,7 +74,9 @@ public class MinioService {
         }
     }
 
-    public List<DocumentoDTO> listFiles(Long tramiteId) throws IOException, ServerException, InsufficientDataException, ErrorResponseException, NoSuchAlgorithmException, InvalidKeyException, InvalidResponseException, XmlParserException, InternalException {
+    public List<DocumentoDTO> listFiles(Long tramiteId) throws IOException, ServerException, InsufficientDataException,
+            ErrorResponseException, NoSuchAlgorithmException, InvalidKeyException, InvalidResponseException,
+            XmlParserException, InternalException {
         String bucketName = getOrCreateBucketForTramite(tramiteId);
         ListObjectsArgs listObjectsArgs = ListObjectsArgs.builder()
                 .bucket(bucketName)
@@ -90,10 +88,10 @@ public class MinioService {
         for (Result<Item> result : objects) {
             Item item = result.get();
 
-            // Crear un DocumentoDTO para cada archivo, asegurándonos de que la extensión esté presente
+            // Crear un DocumentoDTO para cada archivo, asegurándonos de que la extensión
+            // esté presente
             DocumentoDTO documentoDTO = new DocumentoDTO();
-            documentoDTO.setName(FilenameUtils.getBaseName(item.objectName()));  // Nombre sin la extensión
-            documentoDTO.setExtension(FilenameUtils.getExtension(item.objectName()));  // La extensión
+            documentoDTO.setName(item.objectName());
 
             documentos.add(documentoDTO);
         }
@@ -101,9 +99,9 @@ public class MinioService {
         return documentos;
     }
 
-
-
-    public void deleteFile(String filename, Long tramiteId) throws IOException, NoSuchAlgorithmException, InvalidKeyException, ServerException, InsufficientDataException, ErrorResponseException, InvalidResponseException, XmlParserException, InternalException {
+    public void deleteFile(String filename, Long tramiteId) throws IOException, NoSuchAlgorithmException,
+            InvalidKeyException, ServerException, InsufficientDataException, ErrorResponseException,
+            InvalidResponseException, XmlParserException, InternalException {
         String bucketName = getOrCreateBucketForTramite(tramiteId);
 
         try {

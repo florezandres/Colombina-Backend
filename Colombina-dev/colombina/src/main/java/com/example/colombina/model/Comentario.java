@@ -1,7 +1,5 @@
 package com.example.colombina.model;
 
-import com.example.colombina.model.HistorialCambio;
-import com.example.colombina.model.Usuario;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;

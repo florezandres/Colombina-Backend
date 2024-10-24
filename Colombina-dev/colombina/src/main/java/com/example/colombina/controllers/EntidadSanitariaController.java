@@ -1,7 +1,6 @@
 package com.example.colombina.controllers;
 
 import com.example.colombina.DTOs.ComentarioDTO;
-import com.example.colombina.model.Tramite;
 import com.example.colombina.services.ProgresoService;
 import com.example.colombina.services.TramiteService;
 import org.springframework.beans.factory.annotation.Autowired;
