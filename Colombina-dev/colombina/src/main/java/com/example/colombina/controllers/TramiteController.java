@@ -69,7 +69,8 @@ public class TramiteController {
     }
 
     // HU-43 - Elimina un trámite que esté incompleto
-    // Rol que utiliza el método: ASUNTOSREG (Agente de la Agencia de Asuntos Regulatorios)
+    // Rol que utiliza el método: ASUNTOSREG (Agente de la Agencia de Asuntos
+    // Regulatorios)
     @DeleteMapping("/{idTramite}/eliminar")
     public ResponseEntity<?> eliminarTramite(@PathVariable Long idTramite) {
         try {
@@ -92,7 +93,7 @@ public class TramiteController {
         } catch (Exception e) {
             return ResponseEntity.status(500).body("Error al traer todos los trámites.");
         }
-    }
+    }    
 
     // HU-39 - Filtrar trámites por estado
     // Rol que utiliza el método: SOLICITANTE
@@ -123,7 +124,8 @@ public class TramiteController {
             boolean validacionExitosa = documentoService.validarDocumentos(idTramite);
 
             if (!validacionExitosa) {
-                return ResponseEntity.status(400).body("Existen documentos faltantes o incorrectos. Por favor, corrija los documentos antes de continuar.");
+                return ResponseEntity.status(400).body(
+                        "Existen documentos faltantes o incorrectos. Por favor, corrija los documentos antes de continuar.");
             }
 
             // Si los documentos son válidos, proceder con la consolidación del trámite
@@ -148,11 +150,14 @@ public class TramiteController {
             return ResponseEntity.status(500).body("Error al modificar el trámite.");
         }
     }
+
     // HU-38 - Subir múltiples archivos para un trámite
     @PostMapping("/{idTramite}/subir-archivos")
-    public ResponseEntity<?> subirArchivos(@PathVariable Long idTramite, @RequestParam("archivos") MultipartFile[] archivos) {
+    public ResponseEntity<?> subirArchivos(@PathVariable Long idTramite,
+            @RequestParam("archivos") MultipartFile[] archivos) {
         try {
-            //List<String> resultado = documentoService.guardarDocumentos(idTramite, archivos);
+            // List<String> resultado = documentoService.guardarDocumentos(idTramite,
+            // archivos);
             return ResponseEntity.ok("Archivos subidos correctamente: ");
         } catch (IllegalArgumentException e) {
             return ResponseEntity.status(400).body(e.getMessage());
@@ -160,6 +165,7 @@ public class TramiteController {
             return ResponseEntity.status(500).body("Error al subir los archivos.");
         }
     }
+
     // HU-53 - Generar reportes personalizados
     @GetMapping("/reportes/personalizados")
     public ResponseEntity<?> generarReportePersonalizado(
@@ -173,57 +179,63 @@ public class TramiteController {
             return ResponseEntity.status(500).body("Error al generar el reporte.");
         }
     }
-        // Obtener estadísticas de trámites nacionales agrupados por mes
-        @CrossOrigin
-        @GetMapping("/estadisticas/nacionales")
-        public ResponseEntity<List<EstadisticasDTO>> obtenerTramitesNacionalesPorMes() {
-            List<EstadisticasDTO> estadisticas = tramiteService.obtenerTramitesNacionalesPorMes();
-            return ResponseEntity.ok(estadisticas);
-        }
-    
-        // Obtener estadísticas de trámites internacionales agrupados por mes
-        @CrossOrigin
-        @GetMapping("/estadisticas/internacionales")
-        public ResponseEntity<List<EstadisticasDTO>> obtenerTramitesInternacionalesPorMes() {
-            List<EstadisticasDTO> estadisticas = tramiteService.obtenerTramitesInternacionalesPorMes();
-            return ResponseEntity.ok(estadisticas);
-        }
-    
-        // Obtener estadísticas de documentos devueltos agrupados por tipo de documento
-        @CrossOrigin
-        @GetMapping("/estadisticas/documentos-devueltos")
-        public ResponseEntity<List<EstadisticasDTO>> obtenerDocumentosDevueltosPorTipo() {
-            List<EstadisticasDTO> estadisticas = tramiteService.obtenerDocumentosDevueltosPorTipo();
-            return ResponseEntity.ok(estadisticas);
-        }
-        //Estadisticas de tramite por periodo
-        @GetMapping("/estadisticas/tramites")
-        public ResponseEntity<List<EstadisticasDTO>> obtenerTramitesPorPeriodo(@RequestParam String tipo, @RequestParam String periodo) {
-            List<EstadisticasDTO> estadisticas = tramiteService.obtenerTramitesPorPeriodo(tipo, periodo);
-            return ResponseEntity.ok(estadisticas);
-        }
-        
-    
-        //Filtros por fecha, tipo de trámite y país
-        @GetMapping("/estadisticas/filtrados")
-        public ResponseEntity<List<EstadisticasDTO>> obtenerTramitesFiltrados(
-                @RequestParam(required = false) String tipo,
-                @RequestParam(required = false) String pais,
-                @RequestParam(required = false) String fechaInicio,
-                @RequestParam(required = false) String fechaFin) {
-            List<EstadisticasDTO> tramitesFiltrados = tramiteService.obtenerTramitesFiltrados(tipo, pais, fechaInicio, fechaFin);
-            return ResponseEntity.ok(tramitesFiltrados);
-        }
-    
-       /* //HU 17
-        @PostMapping("/{idTramite}/escalar")
-        public ResponseEntity<?> escalarTramite(@PathVariable Long idTramite) {
-            try {
-                // Escalar el trámite y crear la notificación
-                tramiteService.escalarTramite(idTramite);
-                return ResponseEntity.ok("El trámite ha sido escalado correctamente.");
-            } catch (Exception e) {
-                return ResponseEntity.status(500).body("Error al escalar el trámite.");
-            }
-        }*/
+
+    // Obtener estadísticas de trámites nacionales agrupados por mes
+    @CrossOrigin
+    @GetMapping("/estadisticas/nacionales")
+    public ResponseEntity<List<EstadisticasDTO>> obtenerTramitesNacionalesPorMes() {
+        List<EstadisticasDTO> estadisticas = tramiteService.obtenerTramitesNacionalesPorMes();
+        return ResponseEntity.ok(estadisticas);
+    }
+
+    // Obtener estadísticas de trámites internacionales agrupados por mes
+    @CrossOrigin
+    @GetMapping("/estadisticas/internacionales")
+    public ResponseEntity<List<EstadisticasDTO>> obtenerTramitesInternacionalesPorMes() {
+        List<EstadisticasDTO> estadisticas = tramiteService.obtenerTramitesInternacionalesPorMes();
+        return ResponseEntity.ok(estadisticas);
+    }
+
+    // Obtener estadísticas de documentos devueltos agrupados por tipo de documento
+    @CrossOrigin
+    @GetMapping("/estadisticas/documentos-devueltos")
+    public ResponseEntity<List<EstadisticasDTO>> obtenerDocumentosDevueltosPorTipo() {
+        List<EstadisticasDTO> estadisticas = tramiteService.obtenerDocumentosDevueltosPorTipo();
+        return ResponseEntity.ok(estadisticas);
+    }
+
+    // Estadisticas de tramite por periodo
+    @GetMapping("/estadisticas/tramites")
+    public ResponseEntity<List<EstadisticasDTO>> obtenerTramitesPorPeriodo(@RequestParam String tipo,
+            @RequestParam String periodo) {
+        List<EstadisticasDTO> estadisticas = tramiteService.obtenerTramitesPorPeriodo(tipo, periodo);
+        return ResponseEntity.ok(estadisticas);
+    }
+
+    // Filtros por fecha, tipo de trámite y país
+    @GetMapping("/estadisticas/filtrados")
+    public ResponseEntity<List<EstadisticasDTO>> obtenerTramitesFiltrados(
+            @RequestParam(required = false) String tipo,
+            @RequestParam(required = false) String pais,
+            @RequestParam(required = false) String fechaInicio,
+            @RequestParam(required = false) String fechaFin) {
+        List<EstadisticasDTO> tramitesFiltrados = tramiteService.obtenerTramitesFiltrados(tipo, pais, fechaInicio,
+                fechaFin);
+        return ResponseEntity.ok(tramitesFiltrados);
+    }
+
+    /*
+     * //HU 17
+     * 
+     * @PostMapping("/{idTramite}/escalar")
+     * public ResponseEntity<?> escalarTramite(@PathVariable Long idTramite) {
+     * try {
+     * // Escalar el trámite y crear la notificación
+     * tramiteService.escalarTramite(idTramite);
+     * return ResponseEntity.ok("El trámite ha sido escalado correctamente.");
+     * } catch (Exception e) {
+     * return ResponseEntity.status(500).body("Error al escalar el trámite.");
+     * }
+     * }
+     */
 }

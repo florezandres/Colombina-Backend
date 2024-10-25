@@ -1,5 +1,6 @@
 package com.example.colombina.DTOs;
 
+import com.example.colombina.model.Tramite;
 
 public class EstadisticasDTO {
 
@@ -16,6 +17,11 @@ public class EstadisticasDTO {
     // Constructor para la consulta por tipo y cantidad
     public EstadisticasDTO(String tipo, Long cantidad) {
         this.tipo = tipo;
+        this.cantidad = cantidad;
+    }
+
+    public EstadisticasDTO(Tramite.TipoTramite tipo, Long cantidad) {
+        this.tipo = tipo.toString();
         this.cantidad = cantidad;
     }
 

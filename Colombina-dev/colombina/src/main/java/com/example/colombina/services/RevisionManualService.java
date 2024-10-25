@@ -4,6 +4,8 @@ import com.example.colombina.DTOs.RevisionManualDTO;
 import com.example.colombina.model.RevisionManual;
 import com.example.colombina.model.Tramite;
 import com.example.colombina.repositories.RevisionManualRepository;
+import com.example.colombina.repositories.TramiteRepository;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -15,6 +17,9 @@ public class RevisionManualService {
 
     @Autowired
     private RevisionManualRepository revisionManualRepository;
+
+    @Autowired
+    private TramiteRepository tramiteRepository;
 
     public RevisionManualDTO obtenerRevisionPorTramite(Long tramiteId) {
         Optional<RevisionManual> revision = revisionManualRepository.findByTramiteId(tramiteId);
@@ -32,7 +37,9 @@ public class RevisionManualService {
             revision.setFechaRevision(LocalDateTime.now());
         } else {
             revision = new RevisionManual();
-            revision.setTramite(new Tramite(tramiteId, comentarios, null, null, null, null, null, null, null, null)); // Relación con el trámite
+            Tramite tramite = tramiteRepository.findById(tramiteId).get();
+            // TODO: modificar el atributo correcto
+            revision.setTramite(tramite); // Relación con el trámite
             revision.setComentarios(comentarios);
             revision.setRevisionCompleta(true);
             revision.setFechaRevision(LocalDateTime.now());

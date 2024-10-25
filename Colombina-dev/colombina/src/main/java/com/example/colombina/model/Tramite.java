@@ -19,13 +19,11 @@ import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Temporal;
 import jakarta.persistence.TemporalType;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import lombok.ToString;
 
 @Getter
 @Setter
@@ -57,27 +55,31 @@ public class Tramite {
     @Column(nullable = false)
     private Date fechaRadicacion;
 
+    @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private String tipoTramite;
+    private TipoTramite tipoTramite;
+
+    @Column(nullable = false)
+    private Integer etapa;
 
     @ManyToOne
     @JoinColumn(name = "entidad_sanitaria_id", nullable = false)
     private EntidadSanitaria entidadSanitaria;
 
     @JsonIgnore
-    @OneToMany(mappedBy = "tramite", cascade = CascadeType.ALL,fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "tramite", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Documento> documentos;
 
     @JsonIgnore
-    @OneToMany(mappedBy = "tramite", cascade = CascadeType.ALL,fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "tramite", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Pago> pagos;
 
     @JsonIgnore
-    @OneToMany(mappedBy = "tramite", cascade = CascadeType.ALL,fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "tramite", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Seguimiento> seguimientos;
 
     @JsonIgnore
-    @OneToMany(mappedBy = "tramite", cascade = CascadeType.ALL,fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "tramite", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<HistorialCambio> historialCambios;
 
     @Column()
@@ -91,10 +93,30 @@ public class Tramite {
     @JsonIgnore
     private Solicitud solicitud;
 
-
-    public Tramite(Long tramiteId, String comentarios, Object o, Object o1, Object o2, Object o3, Object o4, Object o5, Object o6, Object o7) {
+    public Tramite(String numeroRadicado, String nombreProducto, String descripcionProducto, String tipoProducto,
+            EstadoTramite estado, Date fechaRadicacion, TipoTramite tipoTramite, Integer etapa,
+            EntidadSanitaria entidadSanitaria, Solicitud solicitud) {
+        this.numeroRadicado = numeroRadicado;
+        this.nombreProducto = nombreProducto;
+        this.descripcionProducto = descripcionProducto;
+        this.tipoProducto = tipoProducto;
+        this.estado = estado;
+        this.fechaRadicacion = fechaRadicacion;
+        this.tipoTramite = tipoTramite;
+        this.etapa = etapa;
+        this.entidadSanitaria = entidadSanitaria;
+        this.solicitud = solicitud;
+        this.progreso = this.tipoTramite == TipoTramite.NACIONAL ? etapa / 9 : etapa / 8;
+        this.llave = 0;
+        this.documentos = null;
+        this.pagos = null;
+        this.seguimientos = null;
+        this.historialCambios = null;
     }
 
+    public String getEtapa() {
+        return this.tipoTramite == TipoTramite.NACIONAL ? "A" + etapa : "B" + etapa;
+    }
 
     // Enum definido dentro de TramiteRegulatorio (opcional)
     public enum EstadoTramite {
@@ -104,18 +126,27 @@ public class Tramite {
         PENDIENTE, // Pendiente a procesar la solicitud
     }
 
-    public void setNumeroRadicado() {
-        this.numeroRadicado = "AR-"+id;
+    public enum TipoTramite {
+        NACIONAL,
+        INTERNACIONAL
     }
 
-    /*public Tramite(Long id, String numeroRadicado, String nombreProducto, String descripcionProducto, String tipoProducto, EstadoTramite estado, Date fechaRadicacion, String tipoTramite) {
-        this.id = id;
-        this.numeroRadicado = numeroRadicado;
-        this.nombreProducto = nombreProducto;
-        this.descripcionProducto = descripcionProducto;
-        this.tipoProducto = tipoProducto;
-        this.estado = estado;
-        this.fechaRadicacion = fechaRadicacion;
-        this.tipoTramite = tipoTramite;
-    }*/
+    public void setNumeroRadicado() {
+        this.numeroRadicado = "AR-" + id;
+    }
+
+    /*
+     * public Tramite(Long id, String numeroRadicado, String nombreProducto, String
+     * descripcionProducto, String tipoProducto, EstadoTramite estado, Date
+     * fechaRadicacion, String tipoTramite) {
+     * this.id = id;
+     * this.numeroRadicado = numeroRadicado;
+     * this.nombreProducto = nombreProducto;
+     * this.descripcionProducto = descripcionProducto;
+     * this.tipoProducto = tipoProducto;
+     * this.estado = estado;
+     * this.fechaRadicacion = fechaRadicacion;
+     * this.tipoTramite = tipoTramite;
+     * }
+     */
 }
