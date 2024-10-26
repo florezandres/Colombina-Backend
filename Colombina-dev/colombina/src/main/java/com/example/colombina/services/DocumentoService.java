@@ -1,8 +1,13 @@
 package com.example.colombina.services;
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.example.colombina.DTOs.DocumentoDTO;
+import com.example.colombina.DTOs.TramiteDTO;
+import org.modelmapper.ModelMapper;
+import org.modelmapper.TypeToken;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -104,4 +109,14 @@ public class DocumentoService {
 
         return todosDocumentosValidos;
     }
+
+    public List<DocumentoDTO> recuperarTodoDocumento(){
+        ModelMapper modelMapper = new ModelMapper();
+        List<Documento> documentos = documentoRepository.findAll();
+        Type listType = new TypeToken<List<DocumentoDTO>>() {}.getType();
+        return modelMapper.map(documentos, listType);
+    }
+
+
+
 }

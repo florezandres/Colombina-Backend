@@ -1,5 +1,6 @@
 package com.example.colombina.services;
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -8,6 +9,7 @@ import org.modelmapper.ModelMapper;
 import com.example.colombina.DTOs.ComentarioDTO;
 import com.example.colombina.model.*;
 import com.example.colombina.repositories.HistorialCambioRepository;
+import org.modelmapper.TypeToken;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -76,10 +78,26 @@ public class TramiteService {
         tramiteRepository.delete(tramite);
     }
 
-    //Traer todos los tramites
+    /*//Traer todos los tramites
     public List<Tramite> findAll() {
         return tramiteRepository.findAll();
+    }*/
+
+    public List<TramiteDTO> findAll() {
+        ModelMapper modelMapper = new ModelMapper();
+        List<Tramite> tramites = tramiteRepository.findAll();
+        for(Tramite t: tramites){
+            System.out.println("etapa: " + t.getEtapa());
+            System.out.println("progreso: " + t.getProgreso());
+        }
+        // Define el tipo de destino
+        Type listType = new TypeToken<List<TramiteDTO>>() {}.getType();
+
+        // Convierte la lista de entidades a una lista de DTOs
+        return modelMapper.map(tramites, listType);
     }
+
+
 
     //HU-39 - Filtrar tramites por estado
     public List<TramiteDTO> filtrarTramitesPorEstado(Tramite.EstadoTramite estado) {

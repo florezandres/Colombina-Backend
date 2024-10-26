@@ -88,7 +88,7 @@ public class TramiteController {
     @GetMapping("/todos")
     public ResponseEntity<?> findAll() {
         try {
-            List<Tramite> tramites = tramiteService.findAll();
+            List<TramiteDTO> tramites = tramiteService.findAll();
             return ResponseEntity.ok(tramites);
         } catch (Exception e) {
             return ResponseEntity.status(500).body("Error al traer todos los trámites.");

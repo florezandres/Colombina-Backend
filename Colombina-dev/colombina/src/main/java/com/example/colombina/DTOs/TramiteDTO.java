@@ -23,6 +23,5 @@ public class TramiteDTO {
     private Double progreso;
     private Double llave;
     private List<HistorialCambioDTO> historialCambioDTOList;
-
 }
 

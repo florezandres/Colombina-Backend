@@ -60,7 +60,7 @@ public class Tramite {
     private TipoTramite tipoTramite;
 
     @Column(nullable = false)
-    private Integer etapa;
+    private Double etapa;
 
     @ManyToOne
     @JoinColumn(name = "entidad_sanitaria_id", nullable = false)
@@ -82,7 +82,7 @@ public class Tramite {
     @OneToMany(mappedBy = "tramite", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<HistorialCambio> historialCambios;
 
-    @Column()
+    @Column(nullable = false)
     private double progreso;
 
     @Column()
@@ -94,7 +94,7 @@ public class Tramite {
     private Solicitud solicitud;
 
     public Tramite(String numeroRadicado, String nombreProducto, String descripcionProducto, String tipoProducto,
-            EstadoTramite estado, Date fechaRadicacion, TipoTramite tipoTramite, Integer etapa,
+            EstadoTramite estado, Date fechaRadicacion, TipoTramite tipoTramite, Double etapa,
             EntidadSanitaria entidadSanitaria, Solicitud solicitud) {
         this.numeroRadicado = numeroRadicado;
         this.nombreProducto = nombreProducto;
