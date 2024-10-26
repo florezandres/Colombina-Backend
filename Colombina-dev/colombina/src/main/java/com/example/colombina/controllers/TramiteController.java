@@ -212,17 +212,7 @@ public class TramiteController {
         return ResponseEntity.ok(estadisticas);
     }
 
-    // Filtros por fecha, tipo de trámite y país
-    @GetMapping("/estadisticas/filtrados")
-    public ResponseEntity<List<EstadisticasDTO>> obtenerTramitesFiltrados(
-            @RequestParam(required = false) String tipo,
-            @RequestParam(required = false) String pais,
-            @RequestParam(required = false) String fechaInicio,
-            @RequestParam(required = false) String fechaFin) {
-        List<EstadisticasDTO> tramitesFiltrados = tramiteService.obtenerTramitesFiltrados(tipo, pais, fechaInicio,
-                fechaFin);
-        return ResponseEntity.ok(tramitesFiltrados);
-    }
+  
 
     /*
      * //HU 17
