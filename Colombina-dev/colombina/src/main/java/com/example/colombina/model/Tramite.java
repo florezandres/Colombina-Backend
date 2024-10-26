@@ -106,7 +106,7 @@ public class Tramite {
         this.etapa = etapa;
         this.entidadSanitaria = entidadSanitaria;
         this.solicitud = solicitud;
-        this.progreso = this.tipoTramite == TipoTramite.NACIONAL ? etapa / 9 : etapa / 8;
+        this.progreso = etapa;
         this.llave = 0;
         this.documentos = null;
         this.pagos = null;
