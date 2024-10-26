@@ -3,6 +3,7 @@ package com.example.colombina.services;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import com.example.colombina.DTOs.DocumentoDTO;
 import com.example.colombina.DTOs.TramiteDTO;
@@ -117,6 +118,27 @@ public class DocumentoService {
         return modelMapper.map(documentos, listType);
     }
 
+    public DocumentoDTO verDocumento(Long id) {
+        ModelMapper modelMapper = new ModelMapper();
 
+        // Busca el documento por ID
+        Optional<Documento> documentoOptional = documentoRepository.findById(id);
 
+        // Convierte a DTO si el documento existe
+        return documentoOptional
+                .map(documento -> modelMapper.map(documento, DocumentoDTO.class))
+                .orElse(null); // o lanza una excepción según sea necesario
+    }
+
+    public DocumentoDTO actualizarAprobado(Long id, boolean aprobado) {
+        ModelMapper modelMapper = new ModelMapper();
+        Optional<Documento> documentoOptional = documentoRepository.findById(id);
+        if (documentoOptional.isPresent()) {
+            Documento documento = documentoOptional.get();
+            documento.setAprobado(aprobado);
+            Documento documentoActualizado = documentoRepository.save(documento);
+            return modelMapper.map(documentoActualizado, DocumentoDTO.class);
+        }
+        return null;
+    }
 }

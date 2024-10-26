@@ -1,5 +1,7 @@
 package com.example.colombina.model;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.Date;
 import java.util.List;
 
@@ -106,7 +108,7 @@ public class Tramite {
         this.etapa = etapa;
         this.entidadSanitaria = entidadSanitaria;
         this.solicitud = solicitud;
-        this.progreso = etapa;
+        this.progreso = this.tipoTramite == TipoTramite.NACIONAL ? etapa / 9 : etapa / 8;
         this.llave = 0;
         this.documentos = null;
         this.pagos = null;
@@ -115,7 +117,12 @@ public class Tramite {
     }
 
     public String getEtapa() {
-        return this.tipoTramite == TipoTramite.NACIONAL ? "A" + etapa : "B" + etapa;
+        return this.tipoTramite == TipoTramite.NACIONAL ? "A" + etapa.intValue() : "B" + etapa.intValue();
+    }
+
+    public Double getProgreso() {
+        BigDecimal bd = new BigDecimal(this.progreso).setScale(2, RoundingMode.HALF_UP);
+        return bd.doubleValue();
     }
 
     // Enum definido dentro de TramiteRegulatorio (opcional)
