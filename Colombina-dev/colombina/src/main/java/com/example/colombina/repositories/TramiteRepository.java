@@ -73,14 +73,9 @@ public interface TramiteRepository extends JpaRepository<Tramite, Long> {
     @Query("SELECT FUNCTION('MONTH', t.fechaRadicacion), COUNT(t) FROM Tramite t WHERE t.estado = 'RECHAZADO' GROUP BY FUNCTION('MONTH', t.fechaRadicacion)")
     List<Object[]> countTramitesRechazadosByMes();
 
-    @Query("SELECT FUNCTION('MONTH', t.fechaRadicacion), COUNT(t) FROM Tramite t WHERE t.tipoTramite = 'NACIONAL' GROUP BY FUNCTION('MONTH', t.fechaRadicacion)")
-    List<Object[]> countTramitesNacionalesByMes();
+    
 
-    @Query("SELECT FUNCTION('MONTH', t.fechaRadicacion), COUNT(t) FROM Tramite t WHERE t.tipoTramite = 'INTERNACIONAL' GROUP BY FUNCTION('MONTH', t.fechaRadicacion)")
-    List<Object[]> countTramitesInternacionalesByMes();
-
-    @Query("SELECT FUNCTION('MONTH', t.fechaRadicacion), COUNT(t) FROM Tramite t GROUP BY FUNCTION('MONTH', t.fechaRadicacion)")
-    List<Object[]> countAllTramitesByMes();
+   
 
     // Consultas por Productos
     @Query("SELECT t.tipoProducto, COUNT(t) FROM Tramite t WHERE t.estado = 'EN_REVISION' OR t.estado = 'PENDIENTE' GROUP BY t.tipoProducto")
@@ -98,16 +93,68 @@ public interface TramiteRepository extends JpaRepository<Tramite, Long> {
     @Query("SELECT t.tipoProducto, COUNT(t) FROM Tramite t GROUP BY t.tipoProducto")
     List<Object[]> countAllTramitesByProducto();
 
-   @Query("SELECT EXTRACT(MONTH FROM t.fechaRadicacion) AS mes, COUNT(t) " +
-       "FROM Tramite t " +
-       "WHERE t.estado = :estado1 OR t.estado = :estado2 " +
-       "GROUP BY EXTRACT(MONTH FROM t.fechaRadicacion) " +
-       "ORDER BY mes")
-    List<Object[]> countTramitesByMesAndEstado(@Param("estado1") EstadoTramite estado1, @Param("estado2") EstadoTramite estado2);
+    
 
+    
     long countByTipoTramite(TipoTramite tipoTramite);
     long countByEstado(EstadoTramite estado);
-    
+
+    /*
+    @Query("SELECT TO_CHAR(t.fechaRadicacion, 'FMMonth/YYYY') AS mes_anio, COUNT(t) " +
+       "FROM Tramite t " +
+       "WHERE t.estado = :estado1 OR t.estado = :estado2 " +
+       "GROUP BY TO_CHAR(t.fechaRadicacion, 'FMMonth/YYYY') " +
+       "ORDER BY MIN(t.fechaRadicacion)")
+      List<Object[]> countTramitesByMesAndEstado(@Param("estado1") EstadoTramite estado1, @Param("estado2") EstadoTramite estado2);
+
+      @Query("SELECT TO_CHAR(t.fechaRadicacion, 'FMMonth/YYYY') AS mes_anio, COUNT(t.id) " +
+            "FROM Tramite t " +
+            "WHERE t.tipoTramite = 'NACIONAL' " +
+            "GROUP BY TO_CHAR(t.fechaRadicacion, 'FMMonth/YYYY') " +
+            "ORDER BY MIN(t.fechaRadicacion)")
+      List<Object[]> countTramitesNacionalesByMes();
+
+      @Query("SELECT TO_CHAR(t.fechaRadicacion, 'FMMonth/YYYY') AS mes_anio, COUNT(t) " +
+            "FROM Tramite t " +
+            "GROUP BY TO_CHAR(t.fechaRadicacion, 'FMMonth/YYYY') " +
+            "ORDER BY MIN(t.fechaRadicacion)")
+      List<Object[]> countAllTramitesByMes();
+      @Query("SELECT TO_CHAR(t.fechaRadicacion, 'Month YYYY') AS mes_anio, COUNT(t.id) " +
+       "FROM Tramite t " +
+       "WHERE t.tipoTramite = 'INTERNACIONAL' " +
+       "GROUP BY TO_CHAR(t.fechaRadicacion, 'Month YYYY') " +
+       "ORDER BY mes_anio")
+    List<Object[]> countTramitesInternacionalesByMes();
+    */
+    @Query("SELECT TO_CHAR(t.fechaRadicacion, 'MM/YYYY') AS mes_anio, COUNT(t) " +
+          "FROM Tramite t " +
+          "WHERE t.estado = :estado1 OR t.estado = :estado2 " +
+          "GROUP BY TO_CHAR(t.fechaRadicacion, 'MM/YYYY') " +
+          "ORDER BY MIN(t.fechaRadicacion)")
+    List<Object[]> countTramitesByMesAndEstado(@Param("estado1") EstadoTramite estado1, @Param("estado2") EstadoTramite estado2);
+
+    @Query("SELECT TO_CHAR(t.fechaRadicacion, 'MM/YYYY') AS mes_anio, COUNT(t.id) " +
+          "FROM Tramite t " +
+          "WHERE t.tipoTramite = 'NACIONAL' " +
+          "GROUP BY TO_CHAR(t.fechaRadicacion, 'MM/YYYY') " +
+          "ORDER BY MIN(t.fechaRadicacion)")
+    List<Object[]> countTramitesNacionalesByMes();
+
+    @Query("SELECT TO_CHAR(t.fechaRadicacion, 'MM/YYYY') AS mes_anio, COUNT(t) " +
+          "FROM Tramite t " +
+          "GROUP BY TO_CHAR(t.fechaRadicacion, 'MM/YYYY') " +
+          "ORDER BY MIN(t.fechaRadicacion)")
+    List<Object[]> countAllTramitesByMes();
+    @Query("SELECT TO_CHAR(t.fechaRadicacion, 'MM/YYYY') AS mes_anio, COUNT(t.id) " +
+          "FROM Tramite t " +
+          "WHERE t.tipoTramite = 'INTERNACIONAL' " +
+          "GROUP BY TO_CHAR(t.fechaRadicacion, 'MM/YYYY') " +
+          "ORDER BY mes_anio")
+    List<Object[]> countTramitesInternacionalesByMes();
+
+
+
+
     //********************************************************************** */
     //FIN NUEVOS
    
