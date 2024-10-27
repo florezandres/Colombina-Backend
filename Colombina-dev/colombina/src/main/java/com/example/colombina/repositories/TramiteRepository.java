@@ -12,6 +12,9 @@ import org.springframework.stereotype.Repository;
 
 import com.example.colombina.DTOs.EstadisticasDTO;
 import com.example.colombina.model.Tramite;
+import com.example.colombina.model.Tramite.EstadoTramite;
+import com.example.colombina.model.Tramite.TipoTramite;
+
 import java.util.Date;
 
 
@@ -26,41 +29,8 @@ public interface TramiteRepository extends JpaRepository<Tramite, Long> {
 
   Optional<Tramite> findById(Long id);
 
-  // List<Tramite> findByFechaRadicacionAndEstado(Date fechaInicio, Date fechaFin,
-  // String tipoTramite, Tramite.EstadoTramite estado);
-  // Consulta para contar trámites por mes y tipo (nacional o internacional)
-  @Query("SELECT new com.example.colombina.DTOs.EstadisticasDTO(MONTH(t.fechaRadicacion), COUNT(t)) " +
-      "FROM Tramite t WHERE t.tipoTramite = :tipo GROUP BY MONTH(t.fechaRadicacion)")
-  List<EstadisticasDTO> contarTramitesPorMesYTipo(@Param("tipo") String tipo);
-
-  // Consulta para contar documentos devueltos por tipo
-  @Query("SELECT new com.example.colombina.DTOs.EstadisticasDTO(d.tipo, COUNT(d)) " +
-      "FROM Documento d GROUP BY d.tipo")
-  List<EstadisticasDTO> contarDocumentosDevueltosPorTipo();
-
-  // Contar trámites por semana
-  @Query("SELECT FUNCTION('WEEK', t.fechaRadicacion) AS semana, COUNT(t) AS cantidad " +
-      "FROM Tramite t WHERE t.tipoTramite = :tipo GROUP BY FUNCTION('WEEK', t.fechaRadicacion)")
-  List<EstadisticasDTO> contarTramitesPorSemanaYTipo(String tipo);
-
-  // Contar trámites por año
-  @Query("SELECT YEAR(t.fechaRadicacion) AS ano, COUNT(t) AS cantidad " +
-      "FROM Tramite t WHERE t.tipoTramite = :tipo GROUP BY YEAR(t.fechaRadicacion)")
-  List<EstadisticasDTO> contarTramitesPorAnoYTipo(String tipo);
-
   // filtros para Estadisticas
   
-  @Query("SELECT u.nombre, COUNT(t) FROM Tramite t JOIN t.solicitud s JOIN s.solicitante u WHERE t.estado = :queGraficar GROUP BY u.nombre")
-    List<Object[]> countTramitesByUsuario(String queGraficar);
-
-    @Query("SELECT e.pais, COUNT(t) FROM Tramite t JOIN t.entidadSanitaria e WHERE t.estado = :queGraficar GROUP BY e.pais")
-    List<Object[]> countTramitesByPais(String queGraficar);
-
-    @Query("SELECT FUNCTION('MONTH', t.fechaRadicacion), COUNT(t) FROM Tramite t WHERE t.estado = :queGraficar GROUP BY FUNCTION('MONTH', t.fechaRadicacion)")
-    List<Object[]> countTramitesByMes(String queGraficar);
-
-    @Query("SELECT t.tipoProducto, COUNT(t) FROM Tramite t WHERE t.estado = :queGraficar GROUP BY t.tipoProducto")
-    List<Object[]> countTramitesByProducto(String queGraficar);
     //NUEVOS
     //********************************************************************** */
 
@@ -128,20 +98,18 @@ public interface TramiteRepository extends JpaRepository<Tramite, Long> {
     @Query("SELECT t.tipoProducto, COUNT(t) FROM Tramite t GROUP BY t.tipoProducto")
     List<Object[]> countAllTramitesByProducto();
 
+   @Query("SELECT EXTRACT(MONTH FROM t.fechaRadicacion) AS mes, COUNT(t) " +
+       "FROM Tramite t " +
+       "WHERE t.estado = :estado1 OR t.estado = :estado2 " +
+       "GROUP BY EXTRACT(MONTH FROM t.fechaRadicacion) " +
+       "ORDER BY mes")
+    List<Object[]> countTramitesByMesAndEstado(@Param("estado1") EstadoTramite estado1, @Param("estado2") EstadoTramite estado2);
+
+    long countByTipoTramite(TipoTramite tipoTramite);
+    long countByEstado(EstadoTramite estado);
+    
     //********************************************************************** */
     //FIN NUEVOS
-    //Final filtros para estadistica
-    // filtros para tramites
-    @Query("SELECT new com.example.colombina.DTOs.EstadisticasDTO(t.tipoTramite, COUNT(t)) " +
-    "FROM Tramite t " +
-    "WHERE (:tipo IS NULL OR t.tipoTramite = :tipo) " +
-    "AND (:pais IS NULL OR t.entidadSanitaria.pais = :pais) " +
-    "AND (:fechaInicio IS NULL OR t.fechaRadicacion >= :fechaInicio) " +
-    "AND (:fechaFin IS NULL OR t.fechaRadicacion <= :fechaFin) " +
-    "GROUP BY t.tipoTramite")
-    List<EstadisticasDTO> filtrarTramites(@Param("tipo") String tipo,
-    @Param("pais") String pais,
-    @Param("fechaInicio") String fechaInicio,
-    @Param("fechaFin") String fechaFin);
+   
 
 }

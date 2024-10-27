@@ -2,7 +2,7 @@ package com.example.colombina.init;
 
 import com.example.colombina.model.*;
 import com.example.colombina.repositories.*;
-
+import java.util.Calendar;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,9 +39,10 @@ public class DBInitializer implements CommandLineRunner {
     @Override
     public void run(String... args) throws Exception {
         // Crear entidad
-        EntidadSanitaria entidadSanitaria1 = new EntidadSanitaria(1L, "Entidad Sanitaria", "Colombia",
-                new ArrayList<>());
-        entidadSanitariaRepository.save(entidadSanitaria1);
+        EntidadSanitaria entidadColombia = new EntidadSanitaria(1L, "Entidad Sanitaria Colombia", "Colombia", new ArrayList<>());
+        EntidadSanitaria entidadMexico = new EntidadSanitaria(2L, "Entidad Sanitaria México", "México", new ArrayList<>());
+        entidadSanitariaRepository.save(entidadColombia);
+        entidadSanitariaRepository.save(entidadMexico);
 
         // Crear los roles
         Rol rolAdmin = new Rol("ADMIN");
@@ -78,16 +79,22 @@ public class DBInitializer implements CommandLineRunner {
 
         logger.info("Usuarios inicializados correctamente.");
 
-        Date date = new Date();
+        Calendar cal = Calendar.getInstance();
+        cal.set(2023, Calendar.OCTOBER, 10);
+        Date fechaoctubre2024 = cal.getTime();
+
+        // Fecha: marzo de 2023
+        cal.set(2023, Calendar.SEPTEMBER, 15);
+        Date fechaseptiembre2024 = cal.getTime();
 
 
-        Solicitud solicitud1 = new Solicitud(null, date, solicitante);
-        Solicitud solicitud2 = new Solicitud(null,date,solicitante);
+        Solicitud solicitud1 = new Solicitud(null, fechaoctubre2024, solicitante);
+        Solicitud solicitud2 = new Solicitud(null,fechaseptiembre2024,solicitante);
         solicitudRepository.save(solicitud1);
         solicitudRepository.save(solicitud2);
 
-        Tramite tramite1 = new Tramite("AR-1", "Nombre 1", "Descripcion 1", "Tipo 1", Tramite.EstadoTramite.EN_REVISION, date, Tramite.TipoTramite.NACIONAL, 5.0, entidadSanitaria1, solicitud1);
-        Tramite tramite2 = new Tramite("AR-2", "Nombre 2", "Descripcion 2", "Tipo 2", Tramite.EstadoTramite.APROBADO, date, Tramite.TipoTramite.INTERNACIONAL, 8.0, entidadSanitaria1, solicitud2);
+        Tramite tramite1 = new Tramite("AR-1", "Nombre 1", "Descripcion 1", "Tipo 1", Tramite.EstadoTramite.EN_REVISION, fechaoctubre2024, Tramite.TipoTramite.NACIONAL, 5.0, entidadColombia, solicitud1);
+        Tramite tramite2 = new Tramite("AR-2", "Nombre 2", "Descripcion 2", "Tipo 2", Tramite.EstadoTramite.APROBADO, fechaseptiembre2024, Tramite.TipoTramite.INTERNACIONAL, 8.0, entidadMexico, solicitud2);
         tramiteRepository.save(tramite1);
         tramiteRepository.save(tramite2);
     }

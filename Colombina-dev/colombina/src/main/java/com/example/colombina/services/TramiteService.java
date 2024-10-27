@@ -238,38 +238,6 @@ public void modificarTramite(Long idTramite, String nuevoEstado) {
         tramiteRepository.save(tramite);
     }
 
-      // Obtener trámites nacionales agrupados por mes
-    public List<EstadisticasDTO> obtenerTramitesNacionalesPorMes() {
-        return tramiteRepository.contarTramitesPorMesYTipo("nacional");
-    }
-
-    // Obtener trámites internacionales agrupados por mes
-    public List<EstadisticasDTO> obtenerTramitesInternacionalesPorMes() {
-        return tramiteRepository.contarTramitesPorMesYTipo("internacional");
-    }
-
-    // Obtener documentos devueltos agrupados por tipo
-    public List<EstadisticasDTO> obtenerDocumentosDevueltosPorTipo() {
-        return tramiteRepository.contarDocumentosDevueltosPorTipo();
-    }
-    //Filtra los tramites por periodos
-    public List<EstadisticasDTO> obtenerTramitesPorPeriodo(String tipo, String periodo) {
-        switch (periodo.toLowerCase()) {
-            case "semanas":
-                return tramiteRepository.contarTramitesPorSemanaYTipo(tipo);
-            case "meses":
-                return tramiteRepository.contarTramitesPorMesYTipo(tipo);
-            case "años":
-                return tramiteRepository.contarTramitesPorAnoYTipo(tipo);
-            default:
-                throw new IllegalArgumentException("Periodo no válido. Utiliza 'semanas', 'meses' o 'años'.");
-        }
-    }
-  
-    //Filtros para tramites
-    public List<EstadisticasDTO> obtenerTramitesFiltrados(String tipo, String pais, String fechaInicio, String fechaFin) {
-        return tramiteRepository.filtrarTramites(tipo, pais, fechaInicio, fechaFin);
-    }
 
    
 }

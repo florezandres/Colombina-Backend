@@ -180,37 +180,7 @@ public class TramiteController {
         }
     }
 
-    // Obtener estadísticas de trámites nacionales agrupados por mes
-    @CrossOrigin
-    @GetMapping("/estadisticas/nacionales")
-    public ResponseEntity<List<EstadisticasDTO>> obtenerTramitesNacionalesPorMes() {
-        List<EstadisticasDTO> estadisticas = tramiteService.obtenerTramitesNacionalesPorMes();
-        return ResponseEntity.ok(estadisticas);
-    }
-
-    // Obtener estadísticas de trámites internacionales agrupados por mes
-    @CrossOrigin
-    @GetMapping("/estadisticas/internacionales")
-    public ResponseEntity<List<EstadisticasDTO>> obtenerTramitesInternacionalesPorMes() {
-        List<EstadisticasDTO> estadisticas = tramiteService.obtenerTramitesInternacionalesPorMes();
-        return ResponseEntity.ok(estadisticas);
-    }
-
-    // Obtener estadísticas de documentos devueltos agrupados por tipo de documento
-    @CrossOrigin
-    @GetMapping("/estadisticas/documentos-devueltos")
-    public ResponseEntity<List<EstadisticasDTO>> obtenerDocumentosDevueltosPorTipo() {
-        List<EstadisticasDTO> estadisticas = tramiteService.obtenerDocumentosDevueltosPorTipo();
-        return ResponseEntity.ok(estadisticas);
-    }
-
-    // Estadisticas de tramite por periodo
-    @GetMapping("/estadisticas/tramites")
-    public ResponseEntity<List<EstadisticasDTO>> obtenerTramitesPorPeriodo(@RequestParam String tipo,
-            @RequestParam String periodo) {
-        List<EstadisticasDTO> estadisticas = tramiteService.obtenerTramitesPorPeriodo(tipo, periodo);
-        return ResponseEntity.ok(estadisticas);
-    }
+    
 
   
 

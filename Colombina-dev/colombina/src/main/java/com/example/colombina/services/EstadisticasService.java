@@ -3,6 +3,8 @@ package com.example.colombina.services;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.example.colombina.model.Tramite.EstadoTramite;
+import com.example.colombina.model.Tramite.TipoTramite;
 import com.example.colombina.repositories.TramiteRepository;
 
 import java.util.HashMap;
@@ -18,6 +20,9 @@ public class EstadisticasService {
     public Map<String, Object> getChartData(String queGraficar, String enFuncionDe) {
         Map<String, Object> result = new HashMap<>();
         List<Object[]> data;
+
+        EstadoTramite estado1 = EstadoTramite.EN_REVISION;
+        EstadoTramite estado2 = EstadoTramite.PENDIENTE;
 
         switch (enFuncionDe.toLowerCase()) {
             case "usuario":
@@ -46,9 +51,9 @@ public class EstadisticasService {
 
             case "meses":
                 data = queGraficar.equalsIgnoreCase("Trámites Activos") ?
-                        tramiteRepository.countTramitesActivosByMes() :
+                        tramiteRepository.countTramitesByMesAndEstado(estado1, estado2) :
                         queGraficar.equalsIgnoreCase("Trámites Rechazados") ?
-                        tramiteRepository.countTramitesRechazadosByMes() :
+                        tramiteRepository.countTramitesByMesAndEstado(EstadoTramite.RECHAZADO, EstadoTramite.RECHAZADO) :
                         queGraficar.equalsIgnoreCase("Trámites Nacionales") ?
                         tramiteRepository.countTramitesNacionalesByMes() :
                         queGraficar.equalsIgnoreCase("Trámites Internacionales") ?
@@ -77,4 +82,25 @@ public class EstadisticasService {
 
         return result;
     }
+
+
+    public Map<String, Long> getTotales() {
+    Map<String, Long> totales = new HashMap<>();
+
+    // Total de trámites
+    totales.put("totalTramites", tramiteRepository.count());
+
+    // Totales por tipo de trámite, usando el enum TipoTramite
+    totales.put("totalTramitesNacionales", tramiteRepository.countByTipoTramite(TipoTramite.NACIONAL));
+    totales.put("totalTramitesInternacionales", tramiteRepository.countByTipoTramite(TipoTramite.INTERNACIONAL));
+
+    // Totales por estado de trámite, usando el enum EstadoTramite
+    totales.put("totalTramitesEnRevision", tramiteRepository.countByEstado(EstadoTramite.EN_REVISION));
+    totales.put("totalTramitesAprobado", tramiteRepository.countByEstado(EstadoTramite.APROBADO));
+    totales.put("totalTramitesRechazado", tramiteRepository.countByEstado(EstadoTramite.RECHAZADO));
+    totales.put("totalTramitesPendiente", tramiteRepository.countByEstado(EstadoTramite.PENDIENTE));
+
+    return totales;
+}
+    
 }

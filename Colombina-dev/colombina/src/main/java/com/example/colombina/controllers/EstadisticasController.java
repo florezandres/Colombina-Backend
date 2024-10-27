@@ -21,6 +21,11 @@ public class EstadisticasController {
 
         return estadisticasService.getChartData(queGraficar, enFuncionDe);
     }
+    @GetMapping("/totales")
+    public Map<String, Long> getTotales() {
+        return estadisticasService.getTotales();
+    }
+
 }
 
 
