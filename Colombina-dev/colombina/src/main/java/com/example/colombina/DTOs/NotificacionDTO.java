@@ -12,5 +12,5 @@ public class NotificacionDTO {
     private String mensaje;
     private Date fecha;
     private Long destinatarioId;  // Referencia al Usuario
+    private Long tramiteId;       // Referencia al Trámite
 }
-

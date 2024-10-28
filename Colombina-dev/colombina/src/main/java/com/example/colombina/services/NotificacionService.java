@@ -56,39 +56,47 @@ public class NotificacionService {
             if (fechaLimite.before(fechaActual)) {
                 enviarNotificacionExpiracionTramite(tramite.getId());
             }
+        }
     }
-}
 
-    // Notificación automática cuando el estado del trámite cambia
-    public void enviarNotificacionEstadoTramite(Long tramiteId) {
-        // Obtiene el usuario solicitante asociado al trámite
+    public void enviarNotificacionEstadoTramite(Long tramiteId, String nuevoEstado) {
         Usuario destinatario = usuarioRepository.findSolicitanteByTramiteId(tramiteId);
-        String mensaje = "Su trámite ha cambiado de estado.";
-        
-        // Enviar correo electrónico
+        String mensaje = "Su trámite con ID " + tramiteId + " ha cambiado de estado a: " + nuevoEstado + ".";
+
         enviarCorreo(destinatario.getCorreoElectronico(), "Cambio de estado del trámite", mensaje);
-        
-        // Crear y guardar notificación en la base de datos
-        guardarNotificacion(tramiteId, "Estado de Trámite", mensaje);
+        guardarNotificacion(tramiteId, "Cambio de estado del trámite", mensaje);
     }
 
-    // Notificación de documentos faltantes
-    public void enviarNotificacionDocumentosFaltantes(Long tramiteId) {
+    public void enviarNotificacionDocumentosFaltantes(Long tramiteId, List<String> documentosFaltantes) {
         Usuario destinatario = usuarioRepository.findSolicitanteByTramiteId(tramiteId);
-        String mensaje = "Faltan documentos para su trámite. Por favor, adjúntelos para continuar.";
-        
+        String documentos = String.join(", ", documentosFaltantes); // Convierte la lista en una cadena
+        String mensaje = "Faltan los siguientes documentos para su trámite con ID " + tramiteId + ": " + documentos + ". Por favor, adjúntelos para continuar.";
+
         enviarCorreo(destinatario.getCorreoElectronico(), "Documentos Faltantes", mensaje);
         guardarNotificacion(tramiteId, "Documentos Faltantes", mensaje);
     }
 
-    // Notificación de expiración de trámite
     public void enviarNotificacionExpiracionTramite(Long tramiteId) {
         Usuario destinatario = usuarioRepository.findSolicitanteByTramiteId(tramiteId);
-        String mensaje = "Su trámite está a punto de expirar. Renueve su solicitud a tiempo.";
-        
+        String mensaje = "Su trámite con ID " + tramiteId + " está a punto de expirar. Renueve su solicitud a tiempo.";
+
         enviarCorreo(destinatario.getCorreoElectronico(), "Expiración de Trámite", mensaje);
         guardarNotificacion(tramiteId, "Expiración de Trámite", mensaje);
     }
+
+    public List<Notificacion> obtenerNotificacionesPorUsuario(Long usuarioId) {
+        Usuario destinatario = usuarioRepository.findById(usuarioId).orElse(null);
+        return notificacionRepository.findByDestinatario(destinatario);
+    }
+
+    public void marcarNotificacionComoLeida(Long notificacionId) {
+        Notificacion notificacion = notificacionRepository.findById(notificacionId).orElse(null);
+        if (notificacion != null) {
+            notificacion.setLeida(true);
+            notificacionRepository.save(notificacion);
+        }
+    }
+
 
     // Método auxiliar para enviar correos
     public void enviarCorreo(String destinatario, String asunto, String mensaje) {
@@ -113,7 +121,8 @@ public class NotificacionService {
 
         Usuario destinatario = usuarioRepository.findSolicitanteByTramiteId(tramiteId);
         Notificacion notificacion = new Notificacion();
-        notificacion.setMensaje(titulo + ": " + mensaje);
+        notificacion.setAsunto(titulo);
+        notificacion.setMensaje(mensaje);
         notificacion.setFecha(new Date());
         notificacion.setDestinatario(destinatario); // Se asegura de que se guarde el destinatario
 
@@ -122,6 +131,34 @@ public class NotificacionService {
         notificacionRepository.save(notificacion);
         System.out.println(
                 "Notificación registrada en la base de datos para el usuario: " + destinatario.getCorreoElectronico());
+    }
+
+    public List<Notificacion> obtenerTodasLasNotificaciones() {
+        return notificacionRepository.findAll();
+    }
+
+    public Notificacion obtenerNotificacionPorId(Long id) {
+        return notificacionRepository.findById(id).orElse(null);
+    }
+
+    public Notificacion crearNotificacion(Notificacion notificacion) {
+        return notificacionRepository.save(notificacion);
+    }
+
+    public Notificacion actualizarNotificacion(Long id, Notificacion notificacion) {
+        if (notificacionRepository.existsById(id)) {
+            notificacion.setId(id); // Asegúrate de establecer el ID
+            return notificacionRepository.save(notificacion);
+        }
+        return null; // O lanzar una excepción
+    }
+
+    public boolean eliminarNotificacion(Long id) {
+        if (notificacionRepository.existsById(id)) {
+            notificacionRepository.deleteById(id);
+            return true;
+        }
+        return false; // O lanzar una excepción
     }
 
     public void recuperarContrasena(String nombre) {

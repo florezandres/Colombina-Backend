@@ -86,8 +86,9 @@ public class DocumentoService {
             boolean presente = documentos.stream().anyMatch(d -> d.getTipo().equals(tipoRequerido));
             if (!presente) {
                 String mensaje = "Falta el documento requerido: " + tipoRequerido;
+                List<String> documentosFaltantes = new ArrayList<>();
                 System.out.println(mensaje);
-                notificacionService.enviarNotificacionDocumentosFaltantes(tramiteId);
+                notificacionService.enviarNotificacionDocumentosFaltantes(tramiteId,documentosFaltantes);
                 todosDocumentosValidos = false;
             }
         }
@@ -97,13 +98,15 @@ public class DocumentoService {
             if (!documento.isCumpleNormativas()) {
                 String mensaje = "El documento " + documento.getTipo() + " no cumple con las normativas.";
                 System.out.println(mensaje);
-                notificacionService.enviarNotificacionDocumentosFaltantes(tramiteId);
+                List<String> documentosFaltantes = new ArrayList<>();
+                notificacionService.enviarNotificacionDocumentosFaltantes(tramiteId,documentosFaltantes);
                 todosDocumentosValidos = false;
             }
             if (documento.isVencido()) {
                 String mensaje = "El documento " + documento.getTipo() + " está vencido.";
                 System.out.println(mensaje);
-                notificacionService.enviarNotificacionDocumentosFaltantes(tramiteId);
+                List<String> documentosFaltantes = new ArrayList<>();
+                notificacionService.enviarNotificacionDocumentosFaltantes(tramiteId,documentosFaltantes);
                 todosDocumentosValidos = false;
             }
         }

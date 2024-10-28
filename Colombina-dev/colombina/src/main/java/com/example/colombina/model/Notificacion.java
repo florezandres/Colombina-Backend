@@ -19,6 +19,9 @@ public class Notificacion {
     private Long id;
 
     @Column(nullable = false)
+    private String asunto;
+
+    @Column(nullable = false)
     private String mensaje;
 
     @Temporal(TemporalType.DATE)
@@ -28,4 +31,12 @@ public class Notificacion {
     @ManyToOne
     @JoinColumn(name = "destinatario_id", nullable = false)
     private Usuario destinatario;
+
+    // Nueva relación con Trámite
+    @ManyToOne
+    @JoinColumn(name = "tramite_id", nullable = false)
+    private Tramite tramite;
+
+    @Column(nullable = false)
+    private boolean leida;
 }
