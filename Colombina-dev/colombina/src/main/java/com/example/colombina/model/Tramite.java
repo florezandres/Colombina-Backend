@@ -62,7 +62,7 @@ public class Tramite {
     private TipoTramite tipoTramite;
 
     @Column(nullable = false)
-    private Double etapa;
+    private Integer etapa;
 
     @ManyToOne
     @JoinColumn(name = "entidad_sanitaria_id", nullable = false)
@@ -96,7 +96,7 @@ public class Tramite {
     private Solicitud solicitud;
 
     public Tramite(String numeroRadicado, String nombreProducto, String descripcionProducto, String tipoProducto,
-            EstadoTramite estado, Date fechaRadicacion, TipoTramite tipoTramite, Double etapa,
+            EstadoTramite estado, Date fechaRadicacion, TipoTramite tipoTramite, Integer etapa,
             EntidadSanitaria entidadSanitaria, Solicitud solicitud) {
         this.numeroRadicado = numeroRadicado;
         this.nombreProducto = nombreProducto;
@@ -108,7 +108,7 @@ public class Tramite {
         this.etapa = etapa;
         this.entidadSanitaria = entidadSanitaria;
         this.solicitud = solicitud;
-        this.progreso = this.tipoTramite == TipoTramite.NACIONAL ? etapa / 9 : etapa / 8;
+        this.progreso = this.tipoTramite == TipoTramite.NACIONAL ? (double) etapa / 9 : (double) etapa / 8;
         this.llave = 0;
         this.documentos = null;
         this.pagos = null;
