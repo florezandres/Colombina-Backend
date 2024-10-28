@@ -27,6 +27,8 @@ public class Solicitud {
     @JsonIgnore
     private Usuario solicitante;
 
-
+    @OneToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "tramite_id")
+    private Tramite tramite;
 }
 

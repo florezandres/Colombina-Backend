@@ -65,7 +65,7 @@ public class Tramite {
     private Integer etapa;
 
     @ManyToOne
-    @JoinColumn(name = "entidad_sanitaria_id", nullable = false)
+    @JoinColumn(name = "entidad_sanitaria_id")
     private EntidadSanitaria entidadSanitaria;
 
     @JsonIgnore
