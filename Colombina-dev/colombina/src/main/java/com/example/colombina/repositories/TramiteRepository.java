@@ -27,6 +27,7 @@ public interface TramiteRepository extends JpaRepository<Tramite, Long> {
   @NotNull
   List<Tramite> findAll();
 
+  @NotNull
   Optional<Tramite> findById(Long id);
 
   // filtros para Estadisticas

@@ -97,6 +97,12 @@ public class TramiteService {
         return modelMapper.map(tramites, listType);
     }
 
+    //Find by id
+    public TramiteDTO findById(Long id) {
+        Tramite tramite = tramiteRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("El trámite con ID " + id + " no existe."));
+        return modelMapper.map(tramite, TramiteDTO.class);
+    }
 
 
     //HU-39 - Filtrar tramites por estado

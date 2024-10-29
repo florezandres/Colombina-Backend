@@ -93,7 +93,18 @@ public class TramiteController {
         } catch (Exception e) {
             return ResponseEntity.status(500).body("Error al traer todos los trámites.");
         }
-    }    
+    }
+
+    @CrossOrigin
+    @GetMapping("/{id}")
+    public ResponseEntity<?> findById(@PathVariable Long id) {
+        try {
+            TramiteDTO tramite = tramiteService.findById(id);
+            return ResponseEntity.ok(tramite);
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body("Error al traer el trámite.");
+        }
+    }
 
     // HU-39 - Filtrar trámites por estado
     // Rol que utiliza el método: SOLICITANTE
