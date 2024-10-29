@@ -1,22 +1,22 @@
 package com.example.colombina.services;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
+
 import com.example.colombina.model.Notificacion;
-import com.example.colombina.model.Usuario;
 import com.example.colombina.model.Tramite;
+import com.example.colombina.model.Usuario;
 import com.example.colombina.repositories.NotificacionRepository;
-import com.example.colombina.repositories.UsuarioRepository;
 import com.example.colombina.repositories.TramiteRepository;
+import com.example.colombina.repositories.UsuarioRepository;
 import com.resend.Resend;
 import com.resend.core.exception.ResendException;
 import com.resend.services.emails.model.CreateEmailOptions;
 import com.resend.services.emails.model.CreateEmailResponse;
-
-import java.util.Calendar;
-import java.util.Date;
 
 @Service
 public class NotificacionService {
@@ -139,10 +139,10 @@ public class NotificacionService {
         notificacion.setAsunto(titulo);
         notificacion.setMensaje(mensaje);
         notificacion.setFecha(new Date());
-        notificacion.setDestinatario(destinatario); // Se asegura de que se guarde el destinatario
+        notificacion.setDestinatario(destinatario);
+        notificacion.setLeida(false);
 
         
-
         notificacionRepository.save(notificacion);
         System.out.println(
                 "Notificación registrada en la base de datos para el usuario: " + destinatario.getCorreoElectronico());
@@ -162,10 +162,10 @@ public class NotificacionService {
 
     public Notificacion actualizarNotificacion(Long id, Notificacion notificacion) {
         if (notificacionRepository.existsById(id)) {
-            notificacion.setId(id); // Asegúrate de establecer el ID
+            notificacion.setId(id);
             return notificacionRepository.save(notificacion);
         }
-        return null; // O lanzar una excepción
+        return null;
     }
 
     public boolean eliminarNotificacion(Long id) {
@@ -173,7 +173,7 @@ public class NotificacionService {
             notificacionRepository.deleteById(id);
             return true;
         }
-        return false; // O lanzar una excepción
+        return false;
     }
 
     public void recuperarContrasena(String nombre) {
