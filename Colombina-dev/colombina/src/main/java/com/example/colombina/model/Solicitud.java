@@ -15,18 +15,17 @@ public class Solicitud {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
-    private String descripcionProducto;
-
-    @Column(nullable = false)
-    private String tipoProducto;
-
     @Temporal(TemporalType.DATE)
     @Column(nullable = true)
     private Date fechaSolicitud;
 
     @ManyToOne
+    @ToString.Exclude
     @JoinColumn(name = "solicitante_id", nullable = false)
     private Usuario solicitante;
+
+    @OneToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "tramite_id")
+    private Tramite tramite;
 }
 
