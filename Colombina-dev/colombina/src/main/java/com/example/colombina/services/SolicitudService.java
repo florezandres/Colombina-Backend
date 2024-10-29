@@ -71,10 +71,14 @@ public class SolicitudService {
         return modelMapper.map(solicitudGuardada, SolicitudDTO.class);
     }
 
-    public List<Solicitud> getSolicitudes(String username) {
+    public List<Solicitud> getSolicitudesPorSolicitante(String username) {
         Usuario solicitante = usuarioRepository.findByNombre(username)
                 .orElseThrow(() -> new IllegalArgumentException("Usuario no encontrado con el nombre: " + username));
         return solicitudRepository.findBySolicitanteWithTramite(solicitante);
+    }
+
+    public List<Solicitud> getSolicitudes(String username) {
+        return solicitudRepository.findAll();
     }
 }
 

@@ -55,7 +55,13 @@ public class SolicitudController {
     }
 
     @GetMapping()
-    public ResponseEntity<?> getSolicitudes(Principal principal) {
+    public ResponseEntity<?> getSolicitudesPorSolicitante(Principal principal) {
+        log.info(principal.getName());
+        return ResponseEntity.ok().body(solicitudService.getSolicitudesPorSolicitante(principal.getName()));
+    }
+
+    @GetMapping(value = "/todos")
+    public ResponseEntity<?> findAll(Principal principal) {
         log.info(principal.getName());
         return ResponseEntity.ok().body(solicitudService.getSolicitudes(principal.getName()));
     }
