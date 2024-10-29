@@ -44,13 +44,9 @@ public class SolicitudController {
             // Llamada al servicio para crear la solicitud
             SolicitudDTO nuevaSolicitud = solicitudService.crearSolicitud(solicitudDTO, tramiteDTO, username);
 
-            // Actualizar el progreso en 11% para el primer paso
-            progresoService.actualizarProgreso(tramiteDTO.getId(), 0);
             return ResponseEntity.ok(nuevaSolicitud);
         } catch (IllegalArgumentException e) {
             return ResponseEntity.status(400).body(e.getMessage()); // Error en caso de duplicado o validaciones
-        } catch (Exception e) {
-            return ResponseEntity.status(500).body("Error procesando la solicitud.");
         }
     }
 
