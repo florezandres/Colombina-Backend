@@ -38,9 +38,8 @@ public class DBInitializer implements CommandLineRunner {
 
         @Override
         public void run(String... args) throws Exception {
-                // Crear entidad
-                EntidadSanitaria entidadColombia = new EntidadSanitaria(1L, "Entidad Sanitaria Colombia", "Colombia",
-                                new ArrayList<>());
+                // Crear entidades
+                EntidadSanitaria entidadColombia = new EntidadSanitaria("Entidad Sanitaria Colombia", "Colombia");
                 entidadSanitariaRepository.save(entidadColombia);
 
                 // Crear los roles

@@ -2,9 +2,11 @@ package com.example.colombina.services;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
+import com.example.colombina.DTOs.EntidadSanitariaDTO;
 import org.modelmapper.ModelMapper;
 import com.example.colombina.DTOs.ComentarioDTO;
 import com.example.colombina.model.*;
@@ -243,7 +245,5 @@ public void modificarTramite(Long idTramite, String nuevoEstado) {
         // Guardar los cambios en la base de datos
         tramiteRepository.save(tramite);
     }
-
-
    
 }

@@ -34,6 +34,7 @@ public class SolicitudController {
             @RequestBody RequestTramiteSolicitudDTO requestTramiteSolicitudDTO,
             Principal principal) {
         log.info("Creando solicitud...");
+        System.out.println("Creando solicitud...");
 
         String username = principal.getName();
 

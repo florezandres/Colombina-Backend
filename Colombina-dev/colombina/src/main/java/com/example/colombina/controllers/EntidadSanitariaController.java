@@ -1,6 +1,7 @@
 package com.example.colombina.controllers;
 
 import com.example.colombina.DTOs.ComentarioDTO;
+import com.example.colombina.services.EntidadSanitariaService;
 import com.example.colombina.services.ProgresoService;
 import com.example.colombina.services.TramiteService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +17,21 @@ public class EntidadSanitariaController {
 
     @Autowired
     TramiteService tramiteService;
+
+    @Autowired
+    EntidadSanitariaService entidadSanitariaService;
+
+    @CrossOrigin
+    @GetMapping("/todas-entidades")
+    public ResponseEntity<?> obtenerTodasEntidades() {
+        try {
+            System.out.println("Entra controlador entidad sanitaria");
+            return ResponseEntity.ok(entidadSanitariaService.findAll());
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body("Error al obtener las entidades sanitarias.");
+        }
+    }
+
 
     //Paso 5
     @CrossOrigin

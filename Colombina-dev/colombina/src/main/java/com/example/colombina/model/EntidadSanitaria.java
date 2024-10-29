@@ -32,4 +32,10 @@ public class EntidadSanitaria {
     @JsonIgnore
     @OneToMany(mappedBy = "entidadSanitaria", cascade = CascadeType.ALL)
     private List<Tramite>  tramites = new ArrayList<>();
+
+    public EntidadSanitaria(String nombre, String pais) {
+        this.nombre = nombre;
+        this.pais = pais;
+        this.tramites = new ArrayList<>();
+    }
 }
