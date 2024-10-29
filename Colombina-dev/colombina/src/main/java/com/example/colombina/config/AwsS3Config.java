@@ -23,7 +23,7 @@ public class AwsS3Config {
     AWSCredentials credentails = new BasicAWSCredentials(awsAccessKey,awsSecretKey);
         return AmazonS3ClientBuilder.standard()
         .withCredentials(new AWSStaticCredentialsProvider(credentails))
-                .withRegion(Regions.US_EAST_1)
+                .withRegion(Regions.US_EAST_2)
                 .build();
     }
 }

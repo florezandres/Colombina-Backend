@@ -11,8 +11,10 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.amazonaws.AmazonClientException;
 import com.amazonaws.services.s3.AmazonS3;
-import com.amazonaws.services.s3.model.ObjectListing;
+import com.amazonaws.services.s3.model.ListObjectsV2Request;
+import com.amazonaws.services.s3.model.ListObjectsV2Result;
 import com.amazonaws.services.s3.model.ObjectMetadata;
+import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.amazonaws.services.s3.model.S3Object;
 import com.amazonaws.services.s3.model.S3ObjectSummary;
 import com.example.colombina.DTOs.DocumentoDTO;
@@ -26,52 +28,67 @@ public class AwsS3Service {
     @Autowired
     private AmazonS3 amazonS3Client;
 
+    private final String baseBucketName = "archivos-tramites-regulatorios";
+
     public String getOrCreateBucketForTramite(Long tramiteId) {
-        String bucketName = "tramite-" + tramiteId;
+        String prefix = "tramite-" + tramiteId + "/";
 
         try {
-            if (!amazonS3Client.doesBucketExistV2(bucketName)) {
-                amazonS3Client.createBucket(bucketName);
-                log.info("Bucket creado: " + bucketName);
+            // Verificar si el bucket base existe, si no, crearlo
+            if (!amazonS3Client.doesBucketExistV2(baseBucketName)) {
+                amazonS3Client.createBucket(baseBucketName);
+                log.info("Bucket base creado: " + baseBucketName);
             } else {
-                log.info("Bucket ya existe: " + bucketName);
+                log.info("Bucket base ya existe: " + baseBucketName);
             }
 
-            return bucketName;
+            // Retornar el prefijo que se usará para el trámite específico dentro del bucket
+            // base
+            return prefix;
         } catch (Exception e) {
-            log.error("Error al verificar o crear el bucket para el trámite " + tramiteId, e);
-            throw new RuntimeException("No se pudo crear o verificar el bucket", e);
+            log.error("Error al verificar o crear el bucket base para el trámite " + tramiteId, e);
+            throw new RuntimeException("No se pudo crear o verificar el bucket base", e);
         }
     }
 
     public InputStream getObject(String filename, Long tramiteId) {
-        String bucketName = getOrCreateBucketForTramite(tramiteId);
-        S3Object s3Object = amazonS3Client.getObject(bucketName, filename);
-        return s3Object.getObjectContent();
+        String prefix = getOrCreateBucketForTramite(tramiteId);
+        String fullPath = prefix + filename;
+    
+        try {
+            S3Object s3Object = amazonS3Client.getObject(baseBucketName, fullPath);
+            return s3Object.getObjectContent();
+        } catch (AmazonClientException e) {
+            log.error("Error al obtener el archivo " + filename + " del bucket " + baseBucketName, e);
+            throw new RuntimeException("No se pudo obtener el archivo", e);
+        }
     }
 
     public List<DocumentoDTO> listFiles(Long tramiteId) throws AmazonClientException {
-        String bucketName = getOrCreateBucketForTramite(tramiteId);
-        ObjectListing objectListing = amazonS3Client.listObjects(bucketName);
+        String prefix = getOrCreateBucketForTramite(tramiteId);
         List<DocumentoDTO> documentos = new ArrayList<>();
 
-        while (true) {
-            List<S3ObjectSummary> objectSummaries = objectListing.getObjectSummaries();
-            if (objectSummaries.isEmpty()) {
-                break;
-            }
+        try {
+            ListObjectsV2Request request = new ListObjectsV2Request()
+                    .withBucketName(baseBucketName)
+                    .withPrefix(prefix);
 
-            for (S3ObjectSummary summary : objectSummaries) {
-                DocumentoDTO documentoDTO = new DocumentoDTO();
-                documentoDTO.setName(summary.getKey());
+            ListObjectsV2Result result;
+            do {
+                result = amazonS3Client.listObjectsV2(request);
+                for (S3ObjectSummary summary : result.getObjectSummaries()) {
+                    DocumentoDTO documentoDTO = new DocumentoDTO();
+                    documentoDTO.setName(summary.getKey().replace(prefix, ""));
+                    documentos.add(documentoDTO);
+                }
+                request.setContinuationToken(result.getNextContinuationToken());
+            } while (result.isTruncated());
 
-                documentos.add(documentoDTO);
-            }
-
-            objectListing = amazonS3Client.listNextBatchOfObjects(objectListing);
+            log.info("Files found in bucket({}): {}", baseBucketName, documentos);
+        } catch (AmazonClientException e) {
+            log.error("Error al listar archivos para el trámite " + tramiteId, e);
+            throw e;
         }
-
-        log.info("Files found in bucket({}): {}", bucketName, documentos);
 
         return documentos;
     }
@@ -82,23 +99,31 @@ public class AwsS3Service {
             throw new IllegalArgumentException("El archivo no tiene una extensión válida.");
         }
 
-        String bucketName = getOrCreateBucketForTramite(tramiteId);
+        String prefix = getOrCreateBucketForTramite(tramiteId);
+        String fullPath = prefix + filename;
+
         ObjectMetadata metadata = new ObjectMetadata();
         metadata.setContentLength(file.getSize());
         metadata.setContentType(file.getContentType());
 
-        amazonS3Client.putObject(bucketName, filename, file.getInputStream(), metadata);
-        log.info("Archivo subido al bucket({}): {}", bucketName, filename);
+        file.getInputStream().mark((int) file.getSize() + 1);
+
+        PutObjectRequest request = new PutObjectRequest(baseBucketName, fullPath, file.getInputStream(), metadata);
+        request.getRequestClientOptions().setReadLimit((int) file.getSize() + 1000);
+
+        amazonS3Client.putObject(request);
+        log.info("Archivo subido al bucket({}): {}", baseBucketName, fullPath);
     }
 
     public void deleteFile(String filename, Long tramiteId) {
-        String bucketName = getOrCreateBucketForTramite(tramiteId);
+        String prefix = getOrCreateBucketForTramite(tramiteId);
+        String fullPath = prefix + filename;
 
         try {
-            amazonS3Client.deleteObject(bucketName, filename);
-            log.info("Archivo eliminado: " + filename + " del bucket: " + bucketName);
+            amazonS3Client.deleteObject(baseBucketName, fullPath);
+            log.info("Archivo eliminado: " + filename + " del bucket: " + baseBucketName);
         } catch (AmazonClientException e) {
-            log.error("Error al eliminar el archivo " + filename + " del bucket " + bucketName, e);
+            log.error("Error al eliminar el archivo " + filename + " del bucket " + baseBucketName, e);
             throw new RuntimeException("No se pudo eliminar el archivo", e);
         }
     }
