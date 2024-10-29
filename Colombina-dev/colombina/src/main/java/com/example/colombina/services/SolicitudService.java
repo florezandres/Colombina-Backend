@@ -72,7 +72,7 @@ public class SolicitudService {
         return solicitudRepository.findBySolicitanteWithTramite(solicitante);
     }
 
-    public List<Solicitud> getSolicitudes(String username) {
+    public List<Solicitud> getSolicitudes() {
         return solicitudRepository.findAll();
     }
 }

@@ -3,7 +3,6 @@ package com.example.colombina.controllers;
 import com.example.colombina.DTOs.RequestTramiteSolicitudDTO;
 import com.example.colombina.DTOs.SolicitudDTO;
 import com.example.colombina.DTOs.TramiteDTO;
-import com.example.colombina.services.ProgresoService;
 import com.example.colombina.services.SolicitudService;
 
 import lombok.extern.slf4j.Slf4j;
@@ -23,9 +22,6 @@ public class SolicitudController {
 
     @Autowired
     private SolicitudService solicitudService;
-
-    @Autowired
-    private ProgresoService progresoService;
 
     // Crear solicitud y trámite -> SOLICITANTE DEI
     @CrossOrigin
@@ -57,9 +53,8 @@ public class SolicitudController {
     }
 
     @GetMapping(value = "/todos")
-    public ResponseEntity<?> findAll(Principal principal) {
-        log.info(principal.getName());
-        return ResponseEntity.ok().body(solicitudService.getSolicitudes(principal.getName()));
+    public ResponseEntity<?> findAll() {
+        return ResponseEntity.ok().body(solicitudService.getSolicitudes());
     }
 
 }
