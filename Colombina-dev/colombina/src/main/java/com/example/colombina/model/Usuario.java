@@ -1,7 +1,5 @@
 package com.example.colombina.model;
 
-import jakarta.persistence.*;
-import lombok.*;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -9,6 +7,8 @@ import java.util.List;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -38,6 +38,7 @@ public class Usuario implements UserDetails {
     private String nombre;
 
     @Column(nullable = false)
+    @JsonIgnore
     private String contrasena;
 
     @Column(nullable = false, unique = true)
@@ -45,15 +46,19 @@ public class Usuario implements UserDetails {
 
     @ManyToOne
     @JoinColumn(name = "rol_id", nullable = false)
+    @JsonIgnore
     private Rol rol;
 
     @OneToMany(mappedBy = "solicitante", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnore
     private List<Solicitud> solicitudes = new ArrayList<>();
 
     @OneToMany(mappedBy = "destinatario", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnore
     private List<Notificacion> notificaciones = new ArrayList<>();
 
     @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnore
     private List<Permiso> permisos = new ArrayList<>();
 
 
@@ -63,6 +68,7 @@ public class Usuario implements UserDetails {
     }
 
     @Override
+    @JsonIgnore
     public String getPassword() {
         return contrasena;
     }

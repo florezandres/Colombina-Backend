@@ -125,6 +125,10 @@ public class Tramite {
         return bd.doubleValue();
     }
 
+    public void setProgreso() {
+        this.progreso = this.tipoTramite == TipoTramite.NACIONAL ? (double) etapa / 9 : (double) etapa / 8;
+    }
+
     // Enum definido dentro de TramiteRegulatorio (opcional)
     public enum EstadoTramite {
         EN_REVISION, // Asuntos regulatorios revisando

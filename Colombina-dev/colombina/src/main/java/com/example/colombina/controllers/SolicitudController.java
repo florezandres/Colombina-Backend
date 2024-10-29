@@ -3,7 +3,6 @@ package com.example.colombina.controllers;
 import com.example.colombina.DTOs.RequestTramiteSolicitudDTO;
 import com.example.colombina.DTOs.SolicitudDTO;
 import com.example.colombina.DTOs.TramiteDTO;
-import com.example.colombina.services.ProgresoService;
 import com.example.colombina.services.SolicitudService;
 
 import lombok.extern.slf4j.Slf4j;
@@ -24,9 +23,6 @@ public class SolicitudController {
     @Autowired
     private SolicitudService solicitudService;
 
-    @Autowired
-    private ProgresoService progresoService;
-
     // Crear solicitud y trámite -> SOLICITANTE DEI
     @CrossOrigin
     @PostMapping(value = "/crear-solicitud", consumes = MediaType.APPLICATION_JSON_VALUE)
@@ -44,13 +40,9 @@ public class SolicitudController {
             // Llamada al servicio para crear la solicitud
             SolicitudDTO nuevaSolicitud = solicitudService.crearSolicitud(solicitudDTO, tramiteDTO, username);
 
-            // Actualizar el progreso en 11% para el primer paso
-            progresoService.actualizarProgreso(tramiteDTO.getId(), 0);
             return ResponseEntity.ok(nuevaSolicitud);
         } catch (IllegalArgumentException e) {
             return ResponseEntity.status(400).body(e.getMessage()); // Error en caso de duplicado o validaciones
-        } catch (Exception e) {
-            return ResponseEntity.status(500).body("Error procesando la solicitud.");
         }
     }
 
@@ -61,9 +53,8 @@ public class SolicitudController {
     }
 
     @GetMapping(value = "/todos")
-    public ResponseEntity<?> findAll(Principal principal) {
-        log.info(principal.getName());
-        return ResponseEntity.ok().body(solicitudService.getSolicitudes(principal.getName()));
+    public ResponseEntity<?> findAll() {
+        return ResponseEntity.ok().body(solicitudService.getSolicitudes());
     }
 
 }
