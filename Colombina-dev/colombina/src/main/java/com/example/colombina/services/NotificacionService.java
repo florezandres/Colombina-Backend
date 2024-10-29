@@ -98,15 +98,29 @@ public class NotificacionService {
     }
 
 
-    // Método auxiliar para enviar correos
     public void enviarCorreo(String destinatario, String asunto, String mensaje) {
+        String firmaUrl = "http://localhost:8080/images/firma.png";
+        String mensajeHtml = "<html>" +
+                "<body style='font-family: Arial, sans-serif; color: #333;'>" +
+                "<h2 style='color: #0066CC;'>Estimado usuario,</h2>" +
+                "<p style='font-size: 14px;'>" + mensaje + "</p>" +
+                "<br>" +
+                "<p style='font-size: 12px; color: #888;'>Gracias por su atención.</p>" +
+                "<br><br>" +
+                "<hr style='border: 0; height: 1px; background-color: #ddd;'/>" +
+                "<p style='font-size: 12px; color: #333;'>Atentamente,</p>" +
+                "<p style='font-size: 14px; font-weight: bold; color: #0066CC;'>Colombina</p>" +
+                "<img src='" + firmaUrl + "' alt='Firma' style='width: 200px; margin-top: 20px;'/>" +
+                "</body>" +
+                "</html>";
+    
         CreateEmailOptions params = CreateEmailOptions.builder()
                 .from(emailFrom)
                 .to(destinatario)
                 .subject(asunto)
-                .html("<strong>" + mensaje + "</strong>")
+                .html(mensajeHtml)
                 .build();
-
+    
         try {
             CreateEmailResponse data = resendClient.emails().send(params);
             System.out.println("Email enviado: " + data.getId());
@@ -115,6 +129,7 @@ public class NotificacionService {
             System.err.println("Error al enviar el correo: " + e.getMessage());
         }
     }
+    
 
     // Método auxiliar para guardar la notificación en la base de datos
     public void guardarNotificacion(Long tramiteId, String titulo, String mensaje) {
