@@ -59,6 +59,30 @@ public class NotificacionService {
     }
 }
 
+     // Método para notificar que un documento no cumple con las normativas
+     public void enviarNotificacionDocumentoNoCumpleNormativas(Long tramiteId, String tipoDocumento) {
+        Usuario destinatario = usuarioRepository.findSolicitanteByTramiteId(tramiteId);
+        String mensaje = "El documento " + tipoDocumento + " no cumple con las normativas requeridas.";
+        
+        // Enviar notificación por correo
+        enviarCorreo(destinatario.getCorreoElectronico(), "Documento No Cumple Normativas", mensaje);
+        
+        // Guardar la notificación en la base de datos
+        guardarNotificacion(tramiteId, "Documento No Cumple Normativas", mensaje);
+    }
+
+    // Método para notificar que un documento está vencido
+    public void enviarNotificacionDocumentoVencido(Long tramiteId, String tipoDocumento) {
+        Usuario destinatario = usuarioRepository.findSolicitanteByTramiteId(tramiteId);
+        String mensaje = "El documento " + tipoDocumento + " está vencido y requiere actualización.";
+        
+        // Enviar notificación por correo
+        enviarCorreo(destinatario.getCorreoElectronico(), "Documento Vencido", mensaje);
+        
+        // Guardar la notificación en la base de datos
+        guardarNotificacion(tramiteId, "Documento Vencido", mensaje);
+    }
+    
     // Notificación automática cuando el estado del trámite cambia
     public void enviarNotificacionEstadoTramite(Long tramiteId) {
         // Obtiene el usuario solicitante asociado al trámite
