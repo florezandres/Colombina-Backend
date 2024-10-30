@@ -80,17 +80,16 @@ public class TramiteService {
     }*/
 
     public List<TramiteDTO> findAll() {
-        ModelMapper modelMapper = new ModelMapper();
-        List<Tramite> tramites = tramiteRepository.findAll();
-        for(Tramite t: tramites){
-            System.out.println("etapa: " + t.getEtapa());
-            System.out.println("progreso: " + t.getProgreso());
+        try {
+            List<Tramite> tramites = tramiteRepository.findAll();
+            
+            // Mapear entidades a DTOs
+            Type listType = new TypeToken<List<TramiteDTO>>() {}.getType();
+            return modelMapper.map(tramites, listType);
+            
+        } catch (Exception e) {
+            throw new RuntimeException("Error al cargar trámites", e);
         }
-        // Define el tipo de destino
-        Type listType = new TypeToken<List<TramiteDTO>>() {}.getType();
-
-        // Convierte la lista de entidades a una lista de DTOs
-        return modelMapper.map(tramites, listType);
     }
 
     //Find by id
