@@ -405,5 +405,35 @@ public class DBInitializer implements CommandLineRunner {
                 solicitudRepository.save(solicitud31);
                 tramite31.setSolicitud(solicitud31);
                 tramiteRepository.save(tramite31);
+
+                Notificacion notificacion1 = new Notificacion("Asunto 1", "Mensaje 1", new Date(), solicitante1, tramite2, false);
+                notificacionRepository.save(notificacion1);
+        
+                Notificacion notificacion2 = new Notificacion("Asunto 1", "Mensaje 1", new Date(), admin, tramite3, false);
+                notificacionRepository.save(notificacion2);
+
+                Notificacion notificacion3 = new Notificacion("Asunto 2", "Mensaje 2", new Date(), solicitante1, tramite4, false);
+                notificacionRepository.save(notificacion3);
+
+                Notificacion notificacion4 = new Notificacion("Asunto 3", "Mensaje 3", new Date(), admin, tramite2, false);
+                notificacionRepository.save(notificacion4);
+
+                Notificacion notificacion5 = new Notificacion("Asunto 4", "Mensaje 4", new Date(), solicitante2, tramite3, false);
+                notificacionRepository.save(notificacion5);
+
+                Notificacion notificacion6 = new Notificacion("Asunto 5", "Mensaje 5", new Date(), admin, tramite4, false);
+                notificacionRepository.save(notificacion6);
+
+                Notificacion notificacion7 = new Notificacion("Asunto 6", "Mensaje 6", new Date(), solicitante3, tramite14, false);
+                notificacionRepository.save(notificacion7);
+                
+                Notificacion notificacion8 = new Notificacion("Asunto 7", "Mensaje 7", new Date(), solicitante2, tramite4, false);
+                notificacionRepository.save(notificacion8);
+
+                Notificacion notificacion9 = new Notificacion("Asunto 8", "Mensaje 8", new Date(), admin, tramite12, false);
+                notificacionRepository.save(notificacion9);
+
+                Notificacion notificacion10 = new Notificacion("Asunto 9", "Mensaje 9", new Date(), solicitante3, tramite3, false);
+                notificacionRepository.save(notificacion10);
         }
 }

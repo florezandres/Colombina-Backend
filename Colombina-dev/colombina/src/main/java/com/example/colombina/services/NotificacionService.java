@@ -84,6 +84,24 @@ public class NotificacionService {
         guardarNotificacion(tramiteId, "Expiración de Trámite", mensaje);
     }
 
+    public void enviarNotificacionDocumentoNoCumpleNormativas(Long tramiteId, String tipoDocumento) {
+        Usuario destinatario = usuarioRepository.findSolicitanteByTramiteId(tramiteId);
+        String mensaje = "El documento de tipo '" + tipoDocumento + "' asociado a su trámite con ID " + tramiteId 
+                        + " no cumple con las normativas requeridas. Por favor, revise y envíe un documento que cumpla con los requisitos.";
+    
+        enviarCorreo(destinatario.getCorreoElectronico(), "Documento No Cumple Normativas", mensaje);
+        guardarNotificacion(tramiteId, "Documento No Cumple Normativas", mensaje);
+    }
+    
+    public void enviarNotificacionDocumentoVencido(Long tramiteId, String tipoDocumento) {
+        Usuario destinatario = usuarioRepository.findSolicitanteByTramiteId(tramiteId);
+        String mensaje = "El documento de tipo '" + tipoDocumento + "' asociado a su trámite con ID " + tramiteId 
+                        + " ha vencido. Por favor, adjunte un documento vigente para continuar con el proceso.";
+    
+        enviarCorreo(destinatario.getCorreoElectronico(), "Documento Vencido", mensaje);
+        guardarNotificacion(tramiteId, "Documento Vencido", mensaje);
+    }
+
     public List<Notificacion> obtenerNotificacionesPorUsuario(Long usuarioId) {
         Usuario destinatario = usuarioRepository.findById(usuarioId).orElse(null);
         return notificacionRepository.findByDestinatario(destinatario);
