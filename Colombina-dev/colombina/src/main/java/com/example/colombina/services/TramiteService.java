@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 import com.example.colombina.DTOs.EntidadSanitariaDTO;
 import org.modelmapper.ModelMapper;
@@ -17,10 +18,6 @@ import org.springframework.stereotype.Service;
 
 import com.example.colombina.DTOs.EstadisticasDTO;
 import com.example.colombina.DTOs.TramiteDTO;
-import com.example.colombina.model.Documento;
-import com.example.colombina.model.Seguimiento;
-import com.example.colombina.model.Tramite;
-import com.example.colombina.model.Usuario;
 import com.example.colombina.repositories.SeguimientoRepository;
 import com.example.colombina.repositories.TramiteRepository;
 
@@ -245,5 +242,15 @@ public void modificarTramite(Long idTramite, String nuevoEstado) {
         // Guardar los cambios en la base de datos
         tramiteRepository.save(tramite);
     }
-   
+
+    public Optional<Tramite> obtenerTramitePorId(Long id) {
+        return tramiteRepository.findById(id);
+    }
+    
+    public Tramite actualizarTramite(Long id, Tramite detallesTramite) {
+    
+        // Guardar el trámite actualizado en el repositorio
+        return tramiteRepository.save(detallesTramite);
+    }
+    
 }
