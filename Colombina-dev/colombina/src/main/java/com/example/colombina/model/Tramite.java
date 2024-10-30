@@ -90,6 +90,27 @@ public class Tramite {
     @Column()
     private double llave;
 
+    @Column()
+    private String pt;
+
+    @Column()
+    private String unidadNegocio;
+
+    @Column()
+    private Integer numProyectoSap;
+
+    @Column()
+    private String proyecto;
+
+    @Column()
+    private String tipoModificacion;
+
+    @Column()
+    private String descripcionTramite;
+
+    @Column()
+    private String claseTramite;
+
     @OneToOne
     @JoinColumn(name = "solicitud_id")
     @JsonIgnore
