@@ -127,6 +127,11 @@ public class DBInitializer implements CommandLineRunner {
                                 "lauramartinez@example.com", rolSolicitante, new ArrayList<>(), new ArrayList<>(),
                                 new ArrayList<>());
                 usuarioRepository.save(solicitante4);
+                Usuario solicitante5 = new Usuario(8L, "PedroGarcia", passwordEncoder.encode("solicitantepass5"),
+                                "PedroGarcia@example.com", rolSolicitante, new ArrayList<>(), new ArrayList<>(),
+                                new ArrayList<>());
+                usuarioRepository.save(solicitante5);
+
 
                 cal.set(2023, Calendar.OCTOBER, 10);
                 Date fechaOctubre2023 = cal.getTime();

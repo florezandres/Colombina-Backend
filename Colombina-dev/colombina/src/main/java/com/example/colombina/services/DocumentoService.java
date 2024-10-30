@@ -178,4 +178,56 @@ public class DocumentoService {
         }
         return null;
     }
+
+    public boolean validacionAutomaticaDocumentos(Long tramiteId) {
+        List<Documento> documentos = documentoRepository.findByTramiteId(tramiteId);
+        boolean todosDocumentosValidos = true;
+
+        // Validar la presencia de todos los documentos requeridos
+        for (String tipoRequerido : DOCUMENTOS_REQUERIDOS) {
+            boolean presente = documentos.stream().anyMatch(d -> d.getTipo().equals(tipoRequerido));
+            if (!presente) {
+                notificacionService.enviarNotificacionDocumentosFaltantes(tramiteId);
+                todosDocumentosValidos = false;
+            }
+        }
+
+        // Validar el formato y tamaño de cada documento
+        for (Documento documento : documentos) {
+            if (!TIPOS_PERMITIDOS.contains(documento.getTipoContenido()) || documento.getTamano() > LIMITE_TAMANO_ARCHIVO) {
+                notificacionService.enviarNotificacionDocumentoFormatoIncorrecto(tramiteId, documento.getTipo());
+                todosDocumentosValidos = false;
+            }
+        }
+
+        return todosDocumentosValidos;
+    }
+
+     /**
+     * Permitir corrección de documentos inválidos por el solicitante.
+     *
+     * @param tramiteId    El ID del trámite.
+     * @param archivos     Archivos corregidos a subir.
+     * @return Lista de nombres de archivos corregidos.
+     * @throws Exception si ocurre algún error en la subida o validación.
+     */
+    public List<String> corregirDocumentos(Long tramiteId, MultipartFile[] archivos) throws Exception {
+        List<String> nombresCorregidos = new ArrayList<>();
+
+        for (MultipartFile archivo : archivos) {
+            if (!TIPOS_PERMITIDOS.contains(archivo.getContentType()) || archivo.getSize() > LIMITE_TAMANO_ARCHIVO) {
+                throw new IllegalArgumentException("Archivo " + archivo.getOriginalFilename() + " no cumple con los criterios.");
+            }
+
+            // Actualizar estado de documento y subir el archivo
+            Documento documento = new Documento();
+            documento.setTramite(tramiteRepository.findById(tramiteId).orElseThrow(() -> new IllegalArgumentException("Trámite no encontrado")));
+            documento.setTipo(archivo.getOriginalFilename());
+            documento.setCumpleNormativas(true);
+            documentoRepository.save(documento);
+
+            nombresCorregidos.add(archivo.getOriginalFilename());
+        }
+        return nombresCorregidos;
+    }
 }
