@@ -2,11 +2,10 @@ package com.example.colombina.services;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
-import com.example.colombina.DTOs.EntidadSanitariaDTO;
 import org.modelmapper.ModelMapper;
 import com.example.colombina.DTOs.ComentarioDTO;
 import com.example.colombina.model.*;
@@ -15,12 +14,7 @@ import org.modelmapper.TypeToken;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.example.colombina.DTOs.EstadisticasDTO;
 import com.example.colombina.DTOs.TramiteDTO;
-import com.example.colombina.model.Documento;
-import com.example.colombina.model.Seguimiento;
-import com.example.colombina.model.Tramite;
-import com.example.colombina.model.Usuario;
 import com.example.colombina.repositories.SeguimientoRepository;
 import com.example.colombina.repositories.TramiteRepository;
 
@@ -245,5 +239,33 @@ public void modificarTramite(Long idTramite, String nuevoEstado) {
         // Guardar los cambios en la base de datos
         tramiteRepository.save(tramite);
     }
-   
+
+    public void agregarInfoControl(Long idTramite, TramiteDTO tramiteDTO) {
+        // Buscar el trámite por su ID
+        Tramite tramite = tramiteRepository.findById(idTramite)
+                .orElseThrow(() -> new IllegalArgumentException("El trámite con ID " + idTramite + " no existe."));
+
+        // Actualizar los campos de información de control
+        tramite.setPt(tramiteDTO.getPt());
+        tramite.setUnidadNegocio(tramiteDTO.getUnidadNegocio());
+        tramite.setNumProyectoSap(tramiteDTO.getNumProyectoSap());
+        tramite.setProyecto(tramiteDTO.getProyecto());
+        tramite.setTipoModificacion(tramiteDTO.getTipoModificacion());
+        tramite.setDescripcionTramite(tramiteDTO.getDescripcionTramite());
+        tramite.setClaseTramite(tramiteDTO.getClaseTramite());
+
+        // Guardar los cambios en la base de datos
+        tramiteRepository.save(tramite);
+    }
+
+    public Optional<Tramite> obtenerTramitePorId(Long id) {
+        return tramiteRepository.findById(id);
+    }
+    
+    public Tramite actualizarTramite(Long id, Tramite detallesTramite) {
+    
+        // Guardar el trámite actualizado en el repositorio
+        return tramiteRepository.save(detallesTramite);
+    }
+    
 }

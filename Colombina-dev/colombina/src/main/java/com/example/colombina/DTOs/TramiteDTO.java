@@ -1,6 +1,7 @@
 package com.example.colombina.DTOs;
 
 import com.example.colombina.model.Tramite;
+
 import lombok.Getter;
 import lombok.Setter;
 
@@ -22,6 +23,14 @@ public class TramiteDTO {
     private Long entidadSanitariaId;  // Referencia a la EntidadSanitaria
     private Double progreso;
     private Double llave;
+    private String etapa;
+    private String pt;
+    private String unidadNegocio;
+    private Integer numProyectoSap;
+    private String proyecto;
+    private String tipoModificacion;
+    private String descripcionTramite;
+    private String claseTramite;
     private List<HistorialCambioDTO> historialCambioDTOList;
 }
 
