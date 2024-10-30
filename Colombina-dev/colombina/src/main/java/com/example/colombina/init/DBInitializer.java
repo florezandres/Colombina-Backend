@@ -142,7 +142,7 @@ public class DBInitializer implements CommandLineRunner {
                 Date fechaMarzo2024 = cal.getTime();
                 cal.set(2024, Calendar.APRIL, 10);
                 Date fechaAbril2024 = cal.getTime();
-                cal.set(2024, Calendar.MAY, 30);
+                cal.set(2024, Calendar.OCTOBER, 30);
                 Date fechaMayo2024 = cal.getTime();
 
                 Tramite tramite2 = new Tramite("AR-2", "Producto 2", "Descripción 2", "Tipo 2",
