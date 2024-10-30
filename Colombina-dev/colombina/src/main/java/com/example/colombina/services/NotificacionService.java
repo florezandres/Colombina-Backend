@@ -1,22 +1,22 @@
 package com.example.colombina.services;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
+
 import com.example.colombina.model.Notificacion;
-import com.example.colombina.model.Usuario;
 import com.example.colombina.model.Tramite;
+import com.example.colombina.model.Usuario;
 import com.example.colombina.repositories.NotificacionRepository;
-import com.example.colombina.repositories.UsuarioRepository;
 import com.example.colombina.repositories.TramiteRepository;
+import com.example.colombina.repositories.UsuarioRepository;
 import com.resend.Resend;
 import com.resend.core.exception.ResendException;
 import com.resend.services.emails.model.CreateEmailOptions;
 import com.resend.services.emails.model.CreateEmailResponse;
-
-import java.util.Calendar;
-import java.util.Date;
 
 @Service
 public class NotificacionService {
@@ -56,73 +56,71 @@ public class NotificacionService {
             if (fechaLimite.before(fechaActual)) {
                 enviarNotificacionExpiracionTramite(tramite.getId());
             }
-    }
-}
-
-     // Método para notificar que un documento no cumple con las normativas
-     public void enviarNotificacionDocumentoNoCumpleNormativas(Long tramiteId, String tipoDocumento) {
-        Usuario destinatario = usuarioRepository.findSolicitanteByTramiteId(tramiteId);
-        String mensaje = "El documento " + tipoDocumento + " no cumple con las normativas requeridas.";
-        
-        // Enviar notificación por correo
-        enviarCorreo(destinatario.getCorreoElectronico(), "Documento No Cumple Normativas", mensaje);
-        
-        // Guardar la notificación en la base de datos
-        guardarNotificacion(tramiteId, "Documento No Cumple Normativas", mensaje);
+        }
     }
 
-    // Método para notificar que un documento está vencido
-    public void enviarNotificacionDocumentoVencido(Long tramiteId, String tipoDocumento) {
+    public void enviarNotificacionEstadoTramite(Long tramiteId, String nuevoEstado) {
         Usuario destinatario = usuarioRepository.findSolicitanteByTramiteId(tramiteId);
-        String mensaje = "El documento " + tipoDocumento + " está vencido y requiere actualización.";
-        
-        // Enviar notificación por correo
-        enviarCorreo(destinatario.getCorreoElectronico(), "Documento Vencido", mensaje);
-        
-        // Guardar la notificación en la base de datos
-        guardarNotificacion(tramiteId, "Documento Vencido", mensaje);
-    }
-    
-    // Notificación automática cuando el estado del trámite cambia
-    public void enviarNotificacionEstadoTramite(Long tramiteId) {
-        // Obtiene el usuario solicitante asociado al trámite
-        Usuario destinatario = usuarioRepository.findSolicitanteByTramiteId(tramiteId);
-        String mensaje = "Su trámite ha cambiado de estado.";
-        
-        // Enviar correo electrónico
+        String mensaje = "Su trámite con ID " + tramiteId + " ha cambiado de estado a: " + nuevoEstado + ".";
+
         enviarCorreo(destinatario.getCorreoElectronico(), "Cambio de estado del trámite", mensaje);
-        
-        // Crear y guardar notificación en la base de datos
-        guardarNotificacion(tramiteId, "Estado de Trámite", mensaje);
+        guardarNotificacion(tramiteId, "Cambio de estado del trámite", mensaje);
     }
 
-    // Notificación de documentos faltantes
-    public void enviarNotificacionDocumentosFaltantes(Long tramiteId) {
+    public void enviarNotificacionDocumentosFaltantes(Long tramiteId, List<String> documentosFaltantes) {
         Usuario destinatario = usuarioRepository.findSolicitanteByTramiteId(tramiteId);
-        String mensaje = "Faltan documentos para su trámite. Por favor, adjúntelos para continuar.";
-        
+        String documentos = String.join(", ", documentosFaltantes); // Convierte la lista en una cadena
+        String mensaje = "Faltan los siguientes documentos para su trámite con ID " + tramiteId + ": " + documentos + ". Por favor, adjúntelos para continuar.";
+
         enviarCorreo(destinatario.getCorreoElectronico(), "Documentos Faltantes", mensaje);
         guardarNotificacion(tramiteId, "Documentos Faltantes", mensaje);
     }
 
-    // Notificación de expiración de trámite
     public void enviarNotificacionExpiracionTramite(Long tramiteId) {
         Usuario destinatario = usuarioRepository.findSolicitanteByTramiteId(tramiteId);
-        String mensaje = "Su trámite está a punto de expirar. Renueve su solicitud a tiempo.";
-        
+        String mensaje = "Su trámite con ID " + tramiteId + " está a punto de expirar. Renueve su solicitud a tiempo.";
+
         enviarCorreo(destinatario.getCorreoElectronico(), "Expiración de Trámite", mensaje);
         guardarNotificacion(tramiteId, "Expiración de Trámite", mensaje);
     }
 
-    // Método auxiliar para enviar correos
+    public List<Notificacion> obtenerNotificacionesPorUsuario(Long usuarioId) {
+        Usuario destinatario = usuarioRepository.findById(usuarioId).orElse(null);
+        return notificacionRepository.findByDestinatario(destinatario);
+    }
+
+    public void marcarNotificacionComoLeida(Long notificacionId) {
+        Notificacion notificacion = notificacionRepository.findById(notificacionId).orElse(null);
+        if (notificacion != null) {
+            notificacion.setLeida(true);
+            notificacionRepository.save(notificacion);
+        }
+    }
+
+
     public void enviarCorreo(String destinatario, String asunto, String mensaje) {
+        String firmaUrl = "http://localhost:8080/images/firma.png";
+        String mensajeHtml = "<html>" +
+                "<body style='font-family: Arial, sans-serif; color: #333;'>" +
+                "<h2 style='color: #0066CC;'>Estimado usuario,</h2>" +
+                "<p style='font-size: 14px;'>" + mensaje + "</p>" +
+                "<br>" +
+                "<p style='font-size: 12px; color: #888;'>Gracias por su atención.</p>" +
+                "<br><br>" +
+                "<hr style='border: 0; height: 1px; background-color: #ddd;'/>" +
+                "<p style='font-size: 12px; color: #333;'>Atentamente,</p>" +
+                "<p style='font-size: 14px; font-weight: bold; color: #0066CC;'>Colombina</p>" +
+                "<img src='" + firmaUrl + "' alt='Firma' style='width: 200px; margin-top: 20px;'/>" +
+                "</body>" +
+                "</html>";
+    
         CreateEmailOptions params = CreateEmailOptions.builder()
                 .from(emailFrom)
                 .to(destinatario)
                 .subject(asunto)
-                .html("<strong>" + mensaje + "</strong>")
+                .html(mensajeHtml)
                 .build();
-
+    
         try {
             CreateEmailResponse data = resendClient.emails().send(params);
             System.out.println("Email enviado: " + data.getId());
@@ -131,21 +129,51 @@ public class NotificacionService {
             System.err.println("Error al enviar el correo: " + e.getMessage());
         }
     }
+    
 
     // Método auxiliar para guardar la notificación en la base de datos
     public void guardarNotificacion(Long tramiteId, String titulo, String mensaje) {
 
         Usuario destinatario = usuarioRepository.findSolicitanteByTramiteId(tramiteId);
         Notificacion notificacion = new Notificacion();
-        notificacion.setMensaje(titulo + ": " + mensaje);
+        notificacion.setAsunto(titulo);
+        notificacion.setMensaje(mensaje);
         notificacion.setFecha(new Date());
-        notificacion.setDestinatario(destinatario); // Se asegura de que se guarde el destinatario
+        notificacion.setDestinatario(destinatario);
+        notificacion.setLeida(false);
 
         
-
         notificacionRepository.save(notificacion);
         System.out.println(
                 "Notificación registrada en la base de datos para el usuario: " + destinatario.getCorreoElectronico());
+    }
+
+    public List<Notificacion> obtenerTodasLasNotificaciones() {
+        return notificacionRepository.findAll();
+    }
+
+    public Notificacion obtenerNotificacionPorId(Long id) {
+        return notificacionRepository.findById(id).orElse(null);
+    }
+
+    public Notificacion crearNotificacion(Notificacion notificacion) {
+        return notificacionRepository.save(notificacion);
+    }
+
+    public Notificacion actualizarNotificacion(Long id, Notificacion notificacion) {
+        if (notificacionRepository.existsById(id)) {
+            notificacion.setId(id);
+            return notificacionRepository.save(notificacion);
+        }
+        return null;
+    }
+
+    public boolean eliminarNotificacion(Long id) {
+        if (notificacionRepository.existsById(id)) {
+            notificacionRepository.deleteById(id);
+            return true;
+        }
+        return false;
     }
 
     public void recuperarContrasena(String nombre) {

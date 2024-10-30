@@ -1,8 +1,9 @@
 package com.example.colombina.init;
 
-import com.example.colombina.model.*;
-import com.example.colombina.repositories.*;
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,8 +11,18 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
-import java.util.Date;
+import com.example.colombina.model.EntidadSanitaria;
+import com.example.colombina.model.Notificacion;
+import com.example.colombina.model.Rol;
+import com.example.colombina.model.Solicitud;
+import com.example.colombina.model.Tramite;
+import com.example.colombina.model.Usuario;
+import com.example.colombina.repositories.EntidadSanitariaRepository;
+import com.example.colombina.repositories.NotificacionRepository;
+import com.example.colombina.repositories.RolRepository;
+import com.example.colombina.repositories.SolicitudRepository;
+import com.example.colombina.repositories.TramiteRepository;
+import com.example.colombina.repositories.UsuarioRepository;
 
 @Component
 public class DBInitializer implements CommandLineRunner {
@@ -30,6 +41,9 @@ public class DBInitializer implements CommandLineRunner {
 
         @Autowired
         private TramiteRepository tramiteRepository;
+
+        @Autowired
+        private NotificacionRepository notificacionRepository;
 
         @Autowired
         private PasswordEncoder passwordEncoder;
