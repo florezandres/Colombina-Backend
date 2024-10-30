@@ -10,5 +10,6 @@ import java.util.Date;
 public class SolicitudDTO {
     private Long id;
     private Date fechaSolicitud;
+    private TramiteDTO tramite;
 }
 
