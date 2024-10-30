@@ -4,6 +4,7 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 import org.modelmapper.ModelMapper;
 import com.example.colombina.DTOs.ComentarioDTO;
@@ -256,4 +257,15 @@ public void modificarTramite(Long idTramite, String nuevoEstado) {
         // Guardar los cambios en la base de datos
         tramiteRepository.save(tramite);
     }
+
+    public Optional<Tramite> obtenerTramitePorId(Long id) {
+        return tramiteRepository.findById(id);
+    }
+    
+    public Tramite actualizarTramite(Long id, Tramite detallesTramite) {
+    
+        // Guardar el trámite actualizado en el repositorio
+        return tramiteRepository.save(detallesTramite);
+    }
+    
 }
