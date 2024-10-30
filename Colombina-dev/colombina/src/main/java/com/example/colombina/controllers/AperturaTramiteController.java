@@ -1,9 +1,11 @@
-packagecom.example.colombina.controlador;
+//package com.example.colombina.controlador;
 
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
+import com.example.colombina.model.Tramite;
+import com.example.colombina.services.TramiteService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,12 +18,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.example.colombina.entidad.ArchivoControlDeTramites;
-import com.example.colombina.entidad.Tramite;
-import com.example.colombina.servicio.ArchivoControlDeTramitesService;
-import com.example.colombina.servicio.TramiteService;
 
-@RestController
+/*@RestController
 @RequestMapping("/api/apertura")
 public class AperturaTramiteController {
 
@@ -34,7 +32,7 @@ public class AperturaTramiteController {
     
     @GetMapping("/{id}")
     public ResponseEntity<Tramite> obtenerTramiteParaApertura(@PathVariable Long id) {
-        Optional<Tramite> tramite = tramiteService.obtenerTramitePorId(id);
+        Optional<Tramite> tramite = tramiteService.findById(id);
         return tramite.map(value -> new ResponseEntity<>(value, HttpStatus.OK))
                       .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
@@ -43,10 +41,10 @@ public class AperturaTramiteController {
     @PutMapping("/{id}")
     public ResponseEntity<Tramite> modificarTramite(@PathVariable Long id, @RequestBody Tramite detallesTramite) {
         try {
-            Tramite tramiteActualizado = tramiteService.actualizarTramite(id, detallesTramite);
+            Tramite tramiteActualizado = tramiteService.modificarTramite(id, detallesTramite);
             return new ResponseEntity<>(tramiteActualizado, HttpStatus.OK);
         } catch (RuntimeException e) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
-}
+} */
