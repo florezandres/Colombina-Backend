@@ -1,4 +1,4 @@
-packagecom.example.colombina.controlador;
+package com.example.colombina.controllers;
 
 import java.util.Date;
 import java.util.List;
@@ -16,10 +16,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.example.colombina.entidad.ArchivoControlDeTramites;
-import com.example.colombina.entidad.Tramite;
-import com.example.colombina.servicio.ArchivoControlDeTramitesService;
-import com.example.colombina.servicio.TramiteService;
+import com.example.colombina.model.Tramite;
+import com.example.colombina.services.TramiteService;
+
+
 
 @RestController
 @RequestMapping("/api/apertura")
