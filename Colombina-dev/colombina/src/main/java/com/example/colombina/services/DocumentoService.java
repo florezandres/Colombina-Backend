@@ -1,116 +1,144 @@
 package com.example.colombina.services;
 
 import java.lang.reflect.Type;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 import com.example.colombina.DTOs.DocumentoDTO;
-import com.example.colombina.DTOs.TramiteDTO;
+import com.example.colombina.model.Documento;
+import com.example.colombina.model.Tramite;
+import com.example.colombina.services.NotificacionService;
+import com.example.colombina.repositories.DocumentoRepository;
+import com.example.colombina.repositories.TramiteRepository;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.example.colombina.model.Documento;
-import com.example.colombina.model.Tramite;
-import com.example.colombina.repositories.DocumentoRepository;
-import com.example.colombina.repositories.TramiteRepository;
-
 @Service
 public class DocumentoService {
 
     @Autowired
     private DocumentoRepository documentoRepository;
-    // HU 38
+
     @Autowired
     private TramiteRepository tramiteRepository;
-    //
+
     @Autowired
     private NotificacionService notificacionService;
 
-    // Lista de tipos de documentos requeridos para validar su presencia
     private static final List<String> DOCUMENTOS_REQUERIDOS = List.of("Documento A", "Documento B", "Documento C");
-    // HU 38
-    // Tipos de archivo permitidos PDF
     private static final List<String> TIPOS_PERMITIDOS = List.of("application/pdf");
 
-    ////
-    // Verifica si todos los documentos de un trámite están aprobados
+    // Límite de tamaño de archivo en bytes (2 GB)
+    private static final long LIMITE_TAMANO_ARCHIVO = 2L * 1024 * 1024 * 1024; // 2 GB en bytes
+
+    /**
+     * Verifica si todos los documentos de un trámite están aprobados.
+     *
+     * @param tramiteId El ID del trámite a verificar.
+     * @return true si todos los documentos están aprobados, de lo contrario false.
+     */
     public boolean verificarDocumentosCompletos(Long tramiteId) {
         List<Documento> documentos = documentoRepository.findByTramiteId(tramiteId);
         return documentos.stream().allMatch(Documento::isAprobado);
     }
 
-    // HU 38 Subida de Múltiples Archivos
-    // Método para manejar la subida de múltiples archivos
+    /**
+     * Guarda múltiples documentos asociados a un trámite.
+     *
+     * @param tramiteId El ID del trámite al que se asociarán los documentos.
+     * @param archivos  Lista de archivos a guardar.
+     * @return Lista de nombres de archivos guardados.
+     * @throws IllegalArgumentException si algún archivo no cumple con el tipo o tamaño permitido.
+     */
     public List<String> guardarDocumentos(Long tramiteId, MultipartFile[] archivos) {
         List<String> nombresGuardados = new ArrayList<>();
         Tramite tramite = tramiteRepository.findById(tramiteId)
                 .orElseThrow(() -> new IllegalArgumentException("Trámite no encontrado."));
 
         for (MultipartFile archivo : archivos) {
-            // Validación de tipo de archivo
+            // Validación del tipo de archivo (solo permitidos archivos PDF)
             if (!TIPOS_PERMITIDOS.contains(archivo.getContentType())) {
                 throw new IllegalArgumentException(
                         "El archivo " + archivo.getOriginalFilename() + " tiene un formato no permitido.");
             }
 
-            // Crear y guardar el documento en la base de datos
+            // Validación del tamaño del archivo (no excede 2 GB)
+            if (archivo.getSize() > LIMITE_TAMANO_ARCHIVO) {
+                throw new IllegalArgumentException(
+                        "El archivo " + archivo.getOriginalFilename() + " excede el tamaño máximo permitido de 2 GB.");
+            }
+
+            // Crear y configurar el documento a guardar
             Documento documento = new Documento();
             documento.setTramite(tramite);
-            documento.setCumpleNormativas(true); // Se asume que el documento cumple normativas al ser subido
-            documento.setAprobado(false); // Se marca como no aprobado inicialmente
+            documento.setCumpleNormativas(true); // Asumimos que cumple las normativas al ser subido
+            documento.setAprobado(false); // Marcado como no aprobado inicialmente
             documentoRepository.save(documento);
 
             nombresGuardados.add(archivo.getOriginalFilename());
         }
 
-        // Notificar que los archivos han sido subidos correctamente
-        // Adecuacion con la clase NotificacionService Faltante
-        // notificacionService.enviarNotificacionDocumentosSubidos(tramiteId,
-        // nombresGuardados);
+        // Retorna los nombres de los archivos guardados
         return nombresGuardados;
     }
 
-    // HU 38 Subida de Múltiples Archivos
-
-    // Método para validar los documentos enviados y notificar en caso de problemas
+    /**
+     * Valida todos los documentos de un trámite para verificar que cumplan con las normativas
+     * y estén vigentes. Envía notificaciones al usuario en caso de problemas.
+     *
+     * @param tramiteId El ID del trámite cuyos documentos se validarán.
+     * @return true si todos los documentos son válidos, de lo contrario false.
+     */
     public boolean validarDocumentos(Long tramiteId) {
         List<Documento> documentos = documentoRepository.findByTramiteId(tramiteId);
         boolean todosDocumentosValidos = true;
 
-        // Verificar presencia de todos los documentos requeridos
+        // Verificación de la presencia de todos los documentos requeridos
         for (String tipoRequerido : DOCUMENTOS_REQUERIDOS) {
             boolean presente = documentos.stream().anyMatch(d -> d.getTipo().equals(tipoRequerido));
             if (!presente) {
+                // Enviar notificación de documentos faltantes al solicitante
                 String mensaje = "Falta el documento requerido: " + tipoRequerido;
-                System.out.println(mensaje);
+                System.out.println(mensaje); // Registro en consola
                 notificacionService.enviarNotificacionDocumentosFaltantes(tramiteId);
                 todosDocumentosValidos = false;
             }
         }
 
-        // Verificar si los documentos presentes son válidos
+        // Validación de cumplimiento de normativas y vigencia de cada documento
         for (Documento documento : documentos) {
             if (!documento.isCumpleNormativas()) {
+                // Notificar que el documento no cumple con las normativas
                 String mensaje = "El documento " + documento.getTipo() + " no cumple con las normativas.";
-                System.out.println(mensaje);
-                notificacionService.enviarNotificacionDocumentosFaltantes(tramiteId);
+                System.out.println(mensaje); // Registro en consola
+                notificacionService.enviarNotificacionDocumentoNoCumpleNormativas(tramiteId, documento.getTipo());
                 todosDocumentosValidos = false;
             }
-            if (documento.isVencido()) {
+
+            // Verificación de vencimiento del documento
+            if (documento.getFechaExpiracion() != null && documento.getFechaExpiracion().isBefore(LocalDate.now())) {
+                // Notificar que el documento está vencido
                 String mensaje = "El documento " + documento.getTipo() + " está vencido.";
-                System.out.println(mensaje);
-                notificacionService.enviarNotificacionDocumentosFaltantes(tramiteId);
+                System.out.println(mensaje); // Registro en consola
+                notificacionService.enviarNotificacionDocumentoVencido(tramiteId, documento.getTipo());
                 todosDocumentosValidos = false;
             }
         }
 
+        // Retorna true si todos los documentos son válidos; false si alguno no cumple
         return todosDocumentosValidos;
     }
 
+    /**
+     * Recupera todos los documentos en forma de DTO.
+     *
+     * @return Lista de Documentos como DocumentoDTO.
+     */
     public List<DocumentoDTO> recuperarTodoDocumento(){
         ModelMapper modelMapper = new ModelMapper();
         List<Documento> documentos = documentoRepository.findAll();
@@ -118,18 +146,27 @@ public class DocumentoService {
         return modelMapper.map(documentos, listType);
     }
 
+    /**
+     * Recupera un documento específico y lo convierte a DTO.
+     *
+     * @param id ID del documento a recuperar.
+     * @return DocumentoDTO si se encuentra el documento, de lo contrario null.
+     */
     public DocumentoDTO verDocumento(Long id) {
         ModelMapper modelMapper = new ModelMapper();
-
-        // Busca el documento por ID
         Optional<Documento> documentoOptional = documentoRepository.findById(id);
-
-        // Convierte a DTO si el documento existe
         return documentoOptional
                 .map(documento -> modelMapper.map(documento, DocumentoDTO.class))
-                .orElse(null); // o lanza una excepción según sea necesario
+                .orElse(null); // Devuelve null si el documento no existe
     }
 
+    /**
+     * Actualiza el estado de aprobación de un documento.
+     *
+     * @param id       ID del documento a actualizar.
+     * @param aprobado Nuevo estado de aprobación.
+     * @return DocumentoDTO actualizado, o null si no se encontró el documento.
+     */
     public DocumentoDTO actualizarAprobado(Long id, boolean aprobado) {
         ModelMapper modelMapper = new ModelMapper();
         Optional<Documento> documentoOptional = documentoRepository.findById(id);
