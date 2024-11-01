@@ -4,6 +4,7 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 import org.modelmapper.ModelMapper;
 import com.example.colombina.DTOs.ComentarioDTO;
@@ -13,12 +14,7 @@ import org.modelmapper.TypeToken;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.example.colombina.DTOs.EstadisticasDTO;
 import com.example.colombina.DTOs.TramiteDTO;
-import com.example.colombina.model.Documento;
-import com.example.colombina.model.Seguimiento;
-import com.example.colombina.model.Tramite;
-import com.example.colombina.model.Usuario;
 import com.example.colombina.repositories.SeguimientoRepository;
 import com.example.colombina.repositories.TramiteRepository;
 
@@ -84,19 +80,24 @@ public class TramiteService {
     }*/
 
     public List<TramiteDTO> findAll() {
-        ModelMapper modelMapper = new ModelMapper();
-        List<Tramite> tramites = tramiteRepository.findAll();
-        for(Tramite t: tramites){
-            System.out.println("etapa: " + t.getEtapa());
-            System.out.println("progreso: " + t.getProgreso());
+        try {
+            List<Tramite> tramites = tramiteRepository.findAll();
+            
+            // Mapear entidades a DTOs
+            Type listType = new TypeToken<List<TramiteDTO>>() {}.getType();
+            return modelMapper.map(tramites, listType);
+            
+        } catch (Exception e) {
+            throw new RuntimeException("Error al cargar trámites", e);
         }
-        // Define el tipo de destino
-        Type listType = new TypeToken<List<TramiteDTO>>() {}.getType();
-
-        // Convierte la lista de entidades a una lista de DTOs
-        return modelMapper.map(tramites, listType);
     }
 
+    //Find by id
+    public TramiteDTO findById(Long id) {
+        Tramite tramite = tramiteRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("El trámite con ID " + id + " no existe."));
+        return modelMapper.map(tramite, TramiteDTO.class);
+    }
 
 
     //HU-39 - Filtrar tramites por estado
@@ -238,6 +239,32 @@ public void modificarTramite(Long idTramite, String nuevoEstado) {
         tramiteRepository.save(tramite);
     }
 
+    public void agregarInfoControl(Long idTramite, TramiteDTO tramiteDTO) {
+        // Buscar el trámite por su ID
+        Tramite tramite = tramiteRepository.findById(idTramite)
+                .orElseThrow(() -> new IllegalArgumentException("El trámite con ID " + idTramite + " no existe."));
 
-   
+        // Actualizar los campos de información de control
+        tramite.setPt(tramiteDTO.getPt());
+        tramite.setUnidadNegocio(tramiteDTO.getUnidadNegocio());
+        tramite.setNumProyectoSap(tramiteDTO.getNumProyectoSap());
+        tramite.setProyecto(tramiteDTO.getProyecto());
+        tramite.setTipoModificacion(tramiteDTO.getTipoModificacion());
+        tramite.setDescripcionTramite(tramiteDTO.getDescripcionTramite());
+        tramite.setClaseTramite(tramiteDTO.getClaseTramite());
+
+        // Guardar los cambios en la base de datos
+        tramiteRepository.save(tramite);
+    }
+
+    public Optional<Tramite> obtenerTramitePorId(Long id) {
+        return tramiteRepository.findById(id);
+    }
+    
+    public Tramite actualizarTramite(Long id, Tramite detallesTramite) {
+    
+        // Guardar el trámite actualizado en el repositorio
+        return tramiteRepository.save(detallesTramite);
+    }
+    
 }

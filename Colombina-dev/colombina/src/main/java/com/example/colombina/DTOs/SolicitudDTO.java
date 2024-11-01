@@ -10,6 +10,6 @@ import java.util.Date;
 public class SolicitudDTO {
     private Long id;
     private Date fechaSolicitud;
-    private Long solicitanteId;  // Referencia al Usuario
+    private TramiteDTO tramite;
 }
 

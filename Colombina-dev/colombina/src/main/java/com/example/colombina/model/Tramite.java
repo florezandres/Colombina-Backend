@@ -62,10 +62,10 @@ public class Tramite {
     private TipoTramite tipoTramite;
 
     @Column(nullable = false)
-    private Double etapa;
+    private Integer etapa;
 
     @ManyToOne
-    @JoinColumn(name = "entidad_sanitaria_id", nullable = false)
+    @JoinColumn(name = "entidad_sanitaria_id")
     private EntidadSanitaria entidadSanitaria;
 
     @JsonIgnore
@@ -90,13 +90,34 @@ public class Tramite {
     @Column()
     private double llave;
 
+    @Column()
+    private String pt;
+
+    @Column()
+    private String unidadNegocio;
+
+    @Column()
+    private Integer numProyectoSap;
+
+    @Column()
+    private String proyecto;
+
+    @Column()
+    private String tipoModificacion;
+
+    @Column()
+    private String descripcionTramite;
+
+    @Column()
+    private String claseTramite;
+
     @OneToOne
     @JoinColumn(name = "solicitud_id")
     @JsonIgnore
     private Solicitud solicitud;
 
     public Tramite(String numeroRadicado, String nombreProducto, String descripcionProducto, String tipoProducto,
-            EstadoTramite estado, Date fechaRadicacion, TipoTramite tipoTramite, Double etapa,
+            EstadoTramite estado, Date fechaRadicacion, TipoTramite tipoTramite, Integer etapa,
             EntidadSanitaria entidadSanitaria, Solicitud solicitud) {
         this.numeroRadicado = numeroRadicado;
         this.nombreProducto = nombreProducto;
@@ -108,7 +129,7 @@ public class Tramite {
         this.etapa = etapa;
         this.entidadSanitaria = entidadSanitaria;
         this.solicitud = solicitud;
-        this.progreso = this.tipoTramite == TipoTramite.NACIONAL ? etapa / 9 : etapa / 8;
+        this.progreso = this.tipoTramite == TipoTramite.NACIONAL ? (double) etapa / 9 : (double) etapa / 8;
         this.llave = 0;
         this.documentos = null;
         this.pagos = null;
@@ -123,6 +144,10 @@ public class Tramite {
     public Double getProgreso() {
         BigDecimal bd = new BigDecimal(this.progreso).setScale(2, RoundingMode.HALF_UP);
         return bd.doubleValue();
+    }
+
+    public void setProgreso() {
+        this.progreso = this.tipoTramite == TipoTramite.NACIONAL ? (double) etapa / 9 : (double) etapa / 8;
     }
 
     // Enum definido dentro de TramiteRegulatorio (opcional)

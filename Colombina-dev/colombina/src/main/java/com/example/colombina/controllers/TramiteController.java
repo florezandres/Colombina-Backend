@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.example.colombina.DTOs.EstadisticasDTO;
 import com.example.colombina.DTOs.TramiteDTO;
 import com.example.colombina.model.Seguimiento;
 import com.example.colombina.model.Tramite;
@@ -24,6 +23,9 @@ import com.example.colombina.services.NotificacionService;
 import com.example.colombina.services.TramiteService;
 
 import java.util.Date;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+
 
 @RestController
 @RequestMapping("/tramites")
@@ -93,7 +95,18 @@ public class TramiteController {
         } catch (Exception e) {
             return ResponseEntity.status(500).body("Error al traer todos los trámites.");
         }
-    }    
+    }
+
+    @CrossOrigin
+    @GetMapping("/{id}")
+    public ResponseEntity<?> findById(@PathVariable Long id) {
+        try {
+            TramiteDTO tramite = tramiteService.findById(id);
+            return ResponseEntity.ok(tramite);
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body("Error al traer el trámite.");
+        }
+    }
 
     // HU-39 - Filtrar trámites por estado
     // Rol que utiliza el método: SOLICITANTE
@@ -149,6 +162,12 @@ public class TramiteController {
         } catch (Exception e) {
             return ResponseEntity.status(500).body("Error al modificar el trámite.");
         }
+    }
+
+    @PutMapping("/{idTramite}/info-control")
+    public ResponseEntity<?> agregarInfoControl(@PathVariable Long idTramite, @RequestBody TramiteDTO tramite) {
+        tramiteService.agregarInfoControl(idTramite, tramite);
+        return ResponseEntity.ok("Información de control agregada correctamente.");
     }
 
     // HU-38 - Subir múltiples archivos para un trámite

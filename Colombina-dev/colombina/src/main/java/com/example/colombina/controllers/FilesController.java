@@ -10,14 +10,7 @@ import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.example.colombina.DTOs.DocumentoDTO;
 import com.example.colombina.model.TipoDocumento;
@@ -49,6 +42,12 @@ public class FilesController {
             log.error("Error al subir archivo para el trámite " + idTramite, e);
             return ResponseEntity.status(500).body("Error al subir el archivo.");
         }
+    }
+
+    @CrossOrigin
+    @GetMapping("/{idDocumento}")
+    public DocumentoDTO verDocumentoDTO(@RequestParam Long id){
+        return documentoService.verDocumento(id);
     }
 
     @CrossOrigin
