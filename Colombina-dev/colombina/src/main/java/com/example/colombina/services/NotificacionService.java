@@ -4,6 +4,7 @@ import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
@@ -33,6 +34,9 @@ public class NotificacionService {
     @Autowired
     private TramiteRepository tramiteRepository;
 
+    @Autowired
+    private SimpMessagingTemplate messagingTemplate;
+
     private final String emailFrom = "Colombina <colombina@santicm.com>";
 
     @Scheduled(cron = "0 0 10 * * ?")
@@ -41,16 +45,14 @@ public class NotificacionService {
         Date fechaActual = new Date();
         
         for (Tramite tramite : tramites) {
-            // Simulación de la fecha de expiración: 30 días después de la fecha de radicación
             Calendar calendar = Calendar.getInstance();
             calendar.setTime(tramite.getFechaRadicacion());
-            calendar.add(Calendar.DAY_OF_MONTH, 30); // Establecer la fecha de expiración a 30 días después
+            calendar.add(Calendar.DAY_OF_MONTH, 30); // Expiración 30 días después
             Date fechaExpiracion = calendar.getTime();
 
-            // Verificar si el trámite está próximo a expirar (30 días o menos)
             Calendar calendarLimite = Calendar.getInstance();
             calendarLimite.setTime(fechaExpiracion);
-            calendarLimite.add(Calendar.DAY_OF_MONTH, -30); // Resta 30 días para la comparación
+            calendarLimite.add(Calendar.DAY_OF_MONTH, -30);
             Date fechaLimite = calendarLimite.getTime();
 
             if (fechaLimite.before(fechaActual)) {
@@ -63,14 +65,19 @@ public class NotificacionService {
         Usuario destinatario = usuarioRepository.findSolicitanteByTramiteId(tramiteId);
         String mensaje = "Su trámite con ID " + tramiteId + " ha cambiado de estado a: " + nuevoEstado + ".";
 
+        // Enviar notificación en tiempo real a través de WebSocket
+        messagingTemplate.convertAndSend("/topic/notificaciones/" + destinatario.getId(), mensaje);
+
         enviarCorreo(destinatario.getCorreoElectronico(), "Cambio de estado del trámite", mensaje);
         guardarNotificacion(tramiteId, "Cambio de estado del trámite", mensaje);
     }
 
     public void enviarNotificacionDocumentosFaltantes(Long tramiteId, List<String> documentosFaltantes) {
         Usuario destinatario = usuarioRepository.findSolicitanteByTramiteId(tramiteId);
-        String documentos = String.join(", ", documentosFaltantes); // Convierte la lista en una cadena
+        String documentos = String.join(", ", documentosFaltantes);
         String mensaje = "Faltan los siguientes documentos para su trámite con ID " + tramiteId + ": " + documentos + ". Por favor, adjúntelos para continuar.";
+
+        messagingTemplate.convertAndSend("/topic/notificaciones/" + destinatario.getId(), mensaje);
 
         enviarCorreo(destinatario.getCorreoElectronico(), "Documentos Faltantes", mensaje);
         guardarNotificacion(tramiteId, "Documentos Faltantes", mensaje);
@@ -80,24 +87,28 @@ public class NotificacionService {
         Usuario destinatario = usuarioRepository.findSolicitanteByTramiteId(tramiteId);
         String mensaje = "Su trámite con ID " + tramiteId + " está a punto de expirar. Renueve su solicitud a tiempo.";
 
+        messagingTemplate.convertAndSend("/topic/notificaciones/" + destinatario.getId(), mensaje);
+
         enviarCorreo(destinatario.getCorreoElectronico(), "Expiración de Trámite", mensaje);
         guardarNotificacion(tramiteId, "Expiración de Trámite", mensaje);
     }
 
     public void enviarNotificacionDocumentoNoCumpleNormativas(Long tramiteId, String tipoDocumento) {
         Usuario destinatario = usuarioRepository.findSolicitanteByTramiteId(tramiteId);
-        String mensaje = "El documento de tipo '" + tipoDocumento + "' asociado a su trámite con ID " + tramiteId 
-                        + " no cumple con las normativas requeridas. Por favor, revise y envíe un documento que cumpla con los requisitos.";
-    
+        String mensaje = "El documento de tipo '" + tipoDocumento + "' asociado a su trámite con ID " + tramiteId + " no cumple con las normativas requeridas. Por favor, revise y envíe un documento que cumpla con los requisitos.";
+
+        messagingTemplate.convertAndSend("/topic/notificaciones/" + destinatario.getId(), mensaje);
+
         enviarCorreo(destinatario.getCorreoElectronico(), "Documento No Cumple Normativas", mensaje);
         guardarNotificacion(tramiteId, "Documento No Cumple Normativas", mensaje);
     }
-    
+
     public void enviarNotificacionDocumentoVencido(Long tramiteId, String tipoDocumento) {
         Usuario destinatario = usuarioRepository.findSolicitanteByTramiteId(tramiteId);
-        String mensaje = "El documento de tipo '" + tipoDocumento + "' asociado a su trámite con ID " + tramiteId 
-                        + " ha vencido. Por favor, adjunte un documento vigente para continuar con el proceso.";
-    
+        String mensaje = "El documento de tipo '" + tipoDocumento + "' asociado a su trámite con ID " + tramiteId + " ha vencido. Por favor, adjunte un documento vigente para continuar con el proceso.";
+
+        messagingTemplate.convertAndSend("/topic/notificaciones/" + destinatario.getId(), mensaje);
+
         enviarCorreo(destinatario.getCorreoElectronico(), "Documento Vencido", mensaje);
         guardarNotificacion(tramiteId, "Documento Vencido", mensaje);
     }
