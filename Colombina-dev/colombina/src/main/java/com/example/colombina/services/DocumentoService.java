@@ -105,7 +105,7 @@ public class DocumentoService {
                 // Enviar notificación de documentos faltantes al solicitante
                 String mensaje = "Falta el documento requerido: " + tipoRequerido;
                 System.out.println(mensaje); // Registro en consola
-                notificacionService.enviarNotificacionDocumentosFaltantes(tramiteId);
+                notificacionService.enviarNotificacionDocumentosFaltantes(tramiteId,new ArrayList<String>());//solucion provicional
                 todosDocumentosValidos = false;
             }
         }
