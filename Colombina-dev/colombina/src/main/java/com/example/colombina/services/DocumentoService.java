@@ -96,46 +96,42 @@ public class DocumentoService {
      */
     public boolean validarDocumentos(Long tramiteId) {
         List<Documento> documentos = documentoRepository.findByTramiteId(tramiteId);
+        List<String> documentosFaltantes = new ArrayList<>();
         boolean todosDocumentosValidos = true;
 
-        // Verificación de la presencia de todos los documentos requeridos
+        // Verificar la presencia de todos los documentos requeridos
         for (String tipoRequerido : DOCUMENTOS_REQUERIDOS) {
-            boolean presente = documentos.stream().anyMatch(d -> d.getTipo().equals(tipoRequerido));
-            if (!presente) {
-                // Enviar notificación de documentos faltantes al solicitante
-                String mensaje = "Falta el documento requerido: " + tipoRequerido;
-                List<String> documentosFaltantes = new ArrayList<>();
-                System.out.println(mensaje);
-                notificacionService.enviarNotificacionDocumentosFaltantes(tramiteId,documentosFaltantes);
+            if (documentos.stream().noneMatch(d -> d.getTipo().equals(tipoRequerido))) {
+                // Si falta un documento, agregarlo a la lista y notificar
+                documentosFaltantes.add(tipoRequerido);
+                System.out.println("Falta el documento requerido: " + tipoRequerido);
                 todosDocumentosValidos = false;
             }
         }
 
-        // Validación de cumplimiento de normativas y vigencia de cada documento
+        // Validar cumplimiento de normativas y vigencia
         for (Documento documento : documentos) {
             if (!documento.isCumpleNormativas()) {
-                // Notificar que el documento no cumple con las normativas
-                String mensaje = "El documento " + documento.getTipo() + " no cumple con las normativas.";
-                System.out.println(mensaje);
-                List<String> documentosFaltantes = new ArrayList<>();
-                notificacionService.enviarNotificacionDocumentosFaltantes(tramiteId,documentosFaltantes);
+                // Si no cumple normativas, agregar a la lista y notificar
+                documentosFaltantes.add(documento.getTipo());
+                System.out.println("El documento " + documento.getTipo() + " no cumple con las normativas.");
                 todosDocumentosValidos = false;
-            }
-
-            // Verificación de vencimiento del documento
-            if (documento.getFechaExpiracion() != null && documento.getFechaExpiracion().isBefore(LocalDate.now())) {
-                // Notificar que el documento está vencido
-                String mensaje = "El documento " + documento.getTipo() + " está vencido.";
-                System.out.println(mensaje);
-                List<String> documentosFaltantes = new ArrayList<>();
-                notificacionService.enviarNotificacionDocumentosFaltantes(tramiteId,documentosFaltantes);
+            } else if (documento.getFechaExpiracion() != null && documento.getFechaExpiracion().isBefore(LocalDate.now())) {
+                // Si está vencido, agregar a la lista y notificar
+                documentosFaltantes.add(documento.getTipo());
+                System.out.println("El documento " + documento.getTipo() + " está vencido.");
                 todosDocumentosValidos = false;
             }
         }
 
-        // Retorna true si todos los documentos son válidos; false si alguno no cumple
+        // Notificar documentos faltantes
+        if (!documentosFaltantes.isEmpty()) {
+            notificacionService.enviarNotificacionDocumentosFaltantes(tramiteId, documentosFaltantes);
+        }
+
         return todosDocumentosValidos;
     }
+
 
     /**
      * Recupera todos los documentos en forma de DTO.
