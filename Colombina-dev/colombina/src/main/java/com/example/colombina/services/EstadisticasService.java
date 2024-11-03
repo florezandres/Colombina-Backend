@@ -169,6 +169,22 @@ public Map<String, Object> getTramitesActivosYCerradosPorTipo() {
     
         return result;
     }
+
+    public Map<String, Object> getRegistrosPorVencer() {
+        List<Object[]> data = tramiteRepository.countRegistrosPorVencer();
+        List<String> meses = new ArrayList<>();
+        List<Long> counts = new ArrayList<>();
+
+        for (Object[] row : data) {
+            meses.add((String) row[0]);
+            counts.add((Long) row[1]);
+        }
+
+        Map<String, Object> result = new HashMap<>();
+        result.put("labels", meses);
+        result.put("values", counts);
+        return result;
+    }
     
     
     

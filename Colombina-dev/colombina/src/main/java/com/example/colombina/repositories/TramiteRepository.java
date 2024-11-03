@@ -188,6 +188,16 @@ public interface TramiteRepository extends JpaRepository<Tramite, Long> {
 
 
 
+      
+      @Query("SELECT to_char(t.fechaRadicacion, 'Month') AS mes, COUNT(t.id) " +
+            "FROM Tramite t " +
+            "WHERE t.fechaRadicacion IS NOT NULL " +
+            "GROUP BY to_char(t.fechaRadicacion, 'Month'), extract(month from t.fechaRadicacion) " +
+            "ORDER BY extract(month from t.fechaRadicacion)")
+      List<Object[]> countRegistrosPorVencer();
+      
+
+
 
     //********************************************************************** */
     //FIN NUEVOS
