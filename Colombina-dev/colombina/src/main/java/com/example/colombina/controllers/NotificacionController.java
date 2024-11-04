@@ -63,4 +63,9 @@ public class NotificacionController {
         return ResponseEntity.status(HttpStatus.OK).body(notificaciones);
     }
 
+    @GetMapping("/{id}")
+    public Notificacion obtenerNotificacionPorId(@PathVariable("id") Long id) {
+        return notificacionService.obtenerNotificacionPorId(id);
+    }
+
 }
