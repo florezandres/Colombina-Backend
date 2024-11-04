@@ -101,6 +101,7 @@ public class DocumentoService {
 
         // Verificar la presencia de todos los documentos requeridos
         for (String tipoRequerido : DOCUMENTOS_REQUERIDOS) {
+
             if (documentos.stream().noneMatch(d -> d.getTipo().equals(tipoRequerido))) {
                 // Si falta un documento, agregarlo a la lista y notificar
                 documentosFaltantes.add(tipoRequerido);
