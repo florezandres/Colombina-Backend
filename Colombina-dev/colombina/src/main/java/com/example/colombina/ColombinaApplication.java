@@ -7,8 +7,8 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 @SpringBootApplication
 @EnableScheduling
 public class ColombinaApplication {
-
-	public static void main(String[] args) {
+//SE CORRE
+	public static void main(String[] args) { 
 		SpringApplication.run(ColombinaApplication.class, args);
 	}
 
