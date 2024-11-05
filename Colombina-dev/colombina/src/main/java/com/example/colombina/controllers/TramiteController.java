@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.example.colombina.DTOs.InfoAperturaTramiteDTO;
 import com.example.colombina.DTOs.TramiteDTO;
 import com.example.colombina.model.Seguimiento;
 import com.example.colombina.model.Tramite;
@@ -57,16 +58,13 @@ public class TramiteController {
     // Apertura de un trámite por su ID -> ASUNTOS REGULATORIOS
     @CrossOrigin
     @PostMapping("/{idTramite}/apertura")
-    public ResponseEntity<?> abrirTramite(@PathVariable Long idTramite) {
+    public ResponseEntity<?> abrirTramite(@PathVariable Long idTramite, @RequestBody InfoAperturaTramiteDTO infoTramite) {
         try {
             // Llamar al servicio para abrir el trámite
-            tramiteService.abrirTramite(idTramite);
-            notificacionService.enviarNotificacionEstadoTramite(idTramite,"EN_REVISION"); // Enviar notificación de cambio de estado
+            tramiteService.abrirTramite(idTramite, infoTramite);
             return ResponseEntity.ok("Trámite abierto correctamente.");
         } catch (IllegalArgumentException e) {
             return ResponseEntity.status(404).body(e.getMessage()); // Error si el trámite no se encuentra
-        } catch (Exception e) {
-            return ResponseEntity.status(500).body("Error al abrir el trámite.");
         }
     }
 

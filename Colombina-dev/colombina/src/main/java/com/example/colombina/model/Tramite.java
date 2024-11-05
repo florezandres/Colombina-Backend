@@ -3,6 +3,7 @@ package com.example.colombina.model;
 import java.util.Date;
 import java.util.List;
 
+import com.example.colombina.DTOs.InfoAperturaTramiteDTO;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import jakarta.persistence.CascadeType;
@@ -151,6 +152,14 @@ public class Tramite {
         } else {
             this.progreso = this.tipoTramite == TipoTramite.NACIONAL ? (double) (etapa - 1) / 9 : (double) (etapa - 1) / 8;
         }
+    }
+
+    public void addInfoAperturaTramite(InfoAperturaTramiteDTO data) {
+        this.pt = data.getPt();
+        this.unidadNegocio = data.getUnidadNegocio();
+        this.numProyectoSap = data.getNumProyectoSap();
+        this.proyecto = data.getProyecto();
+        this.tipoModificacion = data.getTipoModificacion();
     }
 
     // Enum definido dentro de TramiteRegulatorio (opcional)

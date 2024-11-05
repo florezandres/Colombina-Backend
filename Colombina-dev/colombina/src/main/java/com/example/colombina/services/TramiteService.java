@@ -8,6 +8,7 @@ import java.util.Optional;
 
 import org.modelmapper.ModelMapper;
 import com.example.colombina.DTOs.ComentarioDTO;
+import com.example.colombina.DTOs.InfoAperturaTramiteDTO;
 import com.example.colombina.model.*;
 import com.example.colombina.repositories.HistorialCambioRepository;
 import org.modelmapper.TypeToken;
@@ -41,21 +42,17 @@ public class TramiteService {
     private HistorialCambioRepository historialCambioRepository;
 
     // Cambia el estado de un trámite a EN_REVISION
-    public void abrirTramite(Long idTramite) {
-        // 1. Buscar el trámite por su ID
+    public void abrirTramite(Long idTramite, InfoAperturaTramiteDTO infoTramite) {
         Tramite tramite = tramiteRepository.findById(idTramite)
                 .orElseThrow(() -> new IllegalArgumentException("El trámite con ID " + idTramite + " no existe."));
-
-        // 2. Verificar si el estado actual es PENDIENTE
-        if (tramite.getEstado() != Tramite.EstadoTramite.PENDIENTE) {
-            throw new IllegalArgumentException("El trámite no está en estado PENDIENTE, no puede ser abierto.");
-        }
-
-        // 3. Cambiar el estado del trámite a EN_REVISION
-        tramite.setEstado(Tramite.EstadoTramite.EN_REVISION);
-
-        // 4. Guardar los cambios en la base de datos
+        tramite.setPt(infoTramite.getPt());
+        tramite.setUnidadNegocio(infoTramite.getUnidadNegocio());
+        tramite.setNumProyectoSap(infoTramite.getNumProyectoSap());
+        tramite.setProyecto(infoTramite.getProyecto());
+        tramite.setTipoModificacion(infoTramite.getTipoModificacion());
+        tramite.setEtapa(4);
         tramiteRepository.save(tramite);
+        System.out.println("Trámite abierto correctamente.");
     }
     
     //HU-43 - Elimina un tramite que este incompleto
