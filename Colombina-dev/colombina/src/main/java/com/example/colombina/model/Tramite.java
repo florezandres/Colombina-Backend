@@ -69,56 +69,17 @@ public class Tramite {
     private EntidadSanitaria entidadSanitaria;
 
     @JsonIgnore
-    @OneToMany(mappedBy = "tramite", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<Documento> documentos;
-
-    @JsonIgnore
-    @OneToMany(mappedBy = "tramite", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<Pago> pagos;
-
-    @JsonIgnore
-    @OneToMany(mappedBy = "tramite", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<Seguimiento> seguimientos;
-
-    @JsonIgnore
-    @OneToMany(mappedBy = "tramite", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<HistorialCambio> historialCambios;
+    @OneToOne
+    @JoinColumn(name = "solicitud_id")
+    private Solicitud solicitud;
 
     @Column(nullable = false)
     private double progreso;
 
-    @Column()
-    private double llave;
-
-    @Column()
-    private String pt;
-
-    @Column()
-    private String unidadNegocio;
-
-    @Column()
-    private Integer numProyectoSap;
-
-    @Column()
-    private String proyecto;
-
-    @Column()
-    private String tipoModificacion;
-
-    @Column()
-    private String descripcionTramite;
-
-    @Column()
-    private String claseTramite;
-
-    @OneToOne
-    @JoinColumn(name = "solicitud_id")
-    @JsonIgnore
-    private Solicitud solicitud;
-
+    // Constructor simplificado
     public Tramite(String numeroRadicado, String nombreProducto, String descripcionProducto, String tipoProducto,
-            EstadoTramite estado, Date fechaRadicacion, TipoTramite tipoTramite, Integer etapa,
-            EntidadSanitaria entidadSanitaria, Solicitud solicitud) {
+                   EstadoTramite estado, Date fechaRadicacion, TipoTramite tipoTramite, Integer etapa,
+                   EntidadSanitaria entidadSanitaria, Solicitud solicitud) {
         this.numeroRadicado = numeroRadicado;
         this.nombreProducto = nombreProducto;
         this.descripcionProducto = descripcionProducto;
@@ -129,16 +90,11 @@ public class Tramite {
         this.etapa = etapa;
         this.entidadSanitaria = entidadSanitaria;
         this.solicitud = solicitud;
-        this.progreso = this.tipoTramite == TipoTramite.NACIONAL ? (double) etapa / 9 : (double) etapa / 8;
-        this.llave = 0;
-        this.documentos = null;
-        this.pagos = null;
-        this.seguimientos = null;
-        this.historialCambios = null;
+        this.progreso = calcularProgreso();
     }
 
     public String getEtapa() {
-        return this.tipoTramite == TipoTramite.NACIONAL ? "A" + etapa.intValue() : "B" + etapa.intValue();
+        return this.tipoTramite == TipoTramite.NACIONAL ? "A" + etapa : "B" + etapa;
     }
 
     public Double getProgreso() {
@@ -147,20 +103,19 @@ public class Tramite {
     }
 
     public void setProgreso() {
-        this.progreso = this.tipoTramite == TipoTramite.NACIONAL ? (double) etapa / 9 : (double) etapa / 8;
+        this.progreso = calcularProgreso();
     }
 
-    // Enum definido dentro de TramiteRegulatorio (opcional)
+    private double calcularProgreso() {
+        return this.tipoTramite == TipoTramite.NACIONAL ? (double) etapa / 9 : (double) etapa / 8;
+    }
+
     public enum EstadoTramite {
-        EN_REVISION, // Asuntos regulatorios revisando
-        APROBADO, // Aprobado
-        RECHAZADO, // Rechazado
-        PENDIENTE, // Pendiente a procesar la solicitud
+        EN_REVISION, APROBADO, RECHAZADO, PENDIENTE
     }
 
     public enum TipoTramite {
-        NACIONAL,
-        INTERNACIONAL
+        NACIONAL, INTERNACIONAL
     }
 
     public void setNumeroRadicado() {

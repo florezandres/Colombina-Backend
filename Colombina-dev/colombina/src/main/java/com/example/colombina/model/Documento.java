@@ -33,7 +33,6 @@ public class Documento {
     private String tempUrl;
 
     @ManyToOne
-    @ToString.Exclude
     @JoinColumn(name = "tramite_id", nullable = false)
     @JsonIgnore
     private Tramite tramite;

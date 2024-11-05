@@ -31,11 +31,9 @@ public class HistorialCambio {
     private Date fechaCambio;
 
     @ManyToOne
-    @ToString.Exclude
     @JoinColumn(name = "tramite_id", nullable = false)
     @JsonIgnore
     private Tramite tramite;
-
     @OneToMany(mappedBy = "historialCambio", cascade = CascadeType.ALL)
     private List<Comentario> comentarios = new ArrayList<>();
 
