@@ -51,6 +51,7 @@ public class SolicitudService {
         nuevoTramite.setFechaRadicacion(new Date()); // Asignar la fecha actual
         nuevoTramite.setEtapa(2);
         nuevoTramite.setProgreso();
+        System.out.println("Progresoooo: " + nuevoTramite.getProgreso());
         System.out.println("Antes de guardar tramite: " + nuevoTramite.getNumeroRadicado());
         Tramite tramiteGuardado = tramiteRepository.save(nuevoTramite);
         System.out.println("Tramite guardado: " + tramiteGuardado.getNumeroRadicado());

@@ -88,7 +88,7 @@ public class TramiteController {
     // Traer todos los trámites
     @CrossOrigin
     @GetMapping("/todos")
-    public ResponseEntity<?> findAll() {
+    public ResponseEntity<?> findAll(@RequestParam(defaultValue = "1") Integer page, @RequestParam(defaultValue = "10") Integer limit) {
         try {
             List<TramiteDTO> tramites = tramiteService.findAll();
             return ResponseEntity.ok(tramites);
