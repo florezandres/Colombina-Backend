@@ -149,7 +149,7 @@ public class Tramite {
         } else if (this.estado == EstadoTramite.RECHAZADO) {
             this.progreso = 0;
         } else {
-            this.progreso = this.tipoTramite == TipoTramite.NACIONAL ? (double) etapa - 1 / 9 : (double) etapa - 1 / 8;
+            this.progreso = this.tipoTramite == TipoTramite.NACIONAL ? (double) (etapa - 1) / 9 : (double) (etapa - 1) / 8;
         }
     }
 
