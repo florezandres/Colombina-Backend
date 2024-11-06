@@ -48,6 +48,8 @@ public class SecurityConfiguration {
                 .authorizeHttpRequests(request -> request
                         .requestMatchers("/autenticacion/**")
                         .permitAll()
+                        .requestMatchers("/files/aprobar-documento/**")
+                        .permitAll()
                         .requestMatchers("/notificacion/**")
                         .hasAnyAuthority("ADMIN")
                         .anyRequest()

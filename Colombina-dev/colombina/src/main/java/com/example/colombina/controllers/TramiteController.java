@@ -20,8 +20,6 @@ import com.example.colombina.DTOs.TramiteDTO;
 import com.example.colombina.model.Seguimiento;
 import com.example.colombina.model.Tramite;
 import com.example.colombina.repositories.SeguimientoRepository;
-import com.example.colombina.services.DocumentoService;
-import com.example.colombina.services.NotificacionService;
 import com.example.colombina.services.TramiteService;
 
 import java.util.Date;
@@ -39,23 +37,6 @@ public class TramiteController {
 
     @Autowired
     private SeguimientoRepository seguimientoRepository;
-
-    @Autowired
-    private DocumentoService documentoService;
-
-    @Autowired
-    private NotificacionService notificacionService;
-
-    // Validación automática de documentos
-    @GetMapping("/{idTramite}/validar-documentos")
-    public ResponseEntity<?> validarDocumentos(@PathVariable Long idTramite) {
-        try {
-            documentoService.validarDocumentos(idTramite);
-            return ResponseEntity.ok("Validación de documentos completada.");
-        } catch (Exception e) {
-            return ResponseEntity.status(500).body("Error en la validación de documentos.");
-        }
-    }
 
     // Apertura de un trámite por su ID -> ASUNTOS REGULATORIOS
     @CrossOrigin
@@ -140,29 +121,6 @@ public class TramiteController {
     public ResponseEntity<?> obtenerSeguimiento(@PathVariable Long idTramite) {
         List<Seguimiento> seguimientos = seguimientoRepository.findByTramiteId(idTramite);
         return ResponseEntity.ok(seguimientos);
-    }
-
-    // HU-46 - Validación Automática de Documentos y Consolidación
-    @CrossOrigin
-    @PostMapping("/{idTramite}/consolidacion")
-    public ResponseEntity<?> consolidarTramite(@PathVariable Long idTramite) {
-        try {
-            // Validación automática de documentos antes de la consolidación
-            boolean validacionExitosa = documentoService.validarDocumentos(idTramite);
-
-            if (!validacionExitosa) {
-                return ResponseEntity.status(400).body(
-                        "Existen documentos faltantes o incorrectos. Por favor, corrija los documentos antes de continuar.");
-            }
-
-            // Si los documentos son válidos, proceder con la consolidación del trámite
-            tramiteService.consolidarTramite(idTramite);
-            return ResponseEntity.ok("Consolidación completada correctamente.");
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.status(400).body(e.getMessage());
-        } catch (Exception e) {
-            return ResponseEntity.status(500).body("Error al consolidar el trámite.");
-        }
     }
 
     // HU-35 - Modificar un tramite

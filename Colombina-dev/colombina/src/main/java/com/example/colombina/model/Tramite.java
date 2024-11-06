@@ -118,6 +118,10 @@ public class Tramite {
     @JsonIgnore
     private Solicitud solicitud;
 
+    public Tramite(Long id) {
+        this.id = id;
+    }
+
     public Tramite(String numeroRadicado, String nombreProducto, String descripcionProducto, String tipoProducto,
             EstadoTramite estado, Date fechaRadicacion, TipoTramite tipoTramite, Integer etapa,
             EntidadSanitaria entidadSanitaria, Solicitud solicitud) {

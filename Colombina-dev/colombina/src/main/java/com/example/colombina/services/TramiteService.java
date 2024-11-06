@@ -28,12 +28,6 @@ public class TramiteService {
     private TramiteRepository tramiteRepository;
 
     @Autowired
-    private DocumentoService documentoService;
-
-    @Autowired
-    private NotificacionService notificacionService;
-
-    @Autowired
     private ModelMapper modelMapper;
 
     @Autowired
@@ -137,39 +131,6 @@ public class TramiteService {
         seguimientoRepository.save(seguimiento);
     }
 
-    public String generarResumenDocumentos(Long tramiteId) {
-        Tramite tramite = tramiteRepository.findById(tramiteId)
-            .orElseThrow(() -> new IllegalArgumentException("Trámite no encontrado"));
-        
-        List<Documento> documentos = tramite.getDocumentos();
-        StringBuilder resumen = new StringBuilder();
-
-        // Genera un resumen de los documentos y su estado
-        documentos.forEach(documento -> {
-            resumen.append("Documento: ")
-                   .append(documento.getTipo())
-                   .append(" - Aprobado: ")
-                   .append(documento.isAprobado() ? "Sí" : "No")
-                   .append("\n");
-        });
-
-        return resumen.toString();
-    }
-
-    public void consolidarTramite(Long tramiteId) {
-        //  Verifica que todos los documentos estén completos
-        if (!documentoService.verificarDocumentosCompletos(tramiteId)) {
-            throw new IllegalArgumentException("No todos los documentos están aprobados.");
-        }
-
-        // Genera el resumen
-        String resumen = generarResumenDocumentos(tramiteId);
-
-        // Envía la notificación
-        notificacionService.guardarNotificacion(tramiteId, "Consolidación completada", resumen);
-
-        // Puedes hacer más operaciones aquí si lo necesitas
-    }
    // HU-35 - Modificar un tramite
 public void modificarTramite(Long idTramite, String nuevoEstado) {
     Tramite tramite = tramiteRepository.findById(idTramite)
