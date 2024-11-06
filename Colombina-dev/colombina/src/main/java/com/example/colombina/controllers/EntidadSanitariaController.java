@@ -32,6 +32,16 @@ public class EntidadSanitariaController {
         }
     }
 
+    @CrossOrigin
+    @GetMapping("/{idEntidad}")
+    public ResponseEntity<?> obtenerEntidadPorId(@PathVariable Long idEntidad) {
+        try {
+            return ResponseEntity.ok(entidadSanitariaService.findById(idEntidad));
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body("Error al obtener la entidad sanitaria.");
+        }
+    }
+
 
     //Paso 5
     @CrossOrigin

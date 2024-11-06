@@ -33,6 +33,10 @@ public class EntidadSanitaria {
     @OneToMany(mappedBy = "entidadSanitaria", cascade = CascadeType.ALL)
     private List<Tramite>  tramites = new ArrayList<>();
 
+    public EntidadSanitaria(Long id) {
+        this.id = id;
+    }
+
     public EntidadSanitaria(String nombre, String pais) {
         this.nombre = nombre;
         this.pais = pais;

@@ -30,7 +30,6 @@ import java.util.HashMap;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
-
 @RestController
 @RequestMapping("/tramites")
 public class TramiteController {
@@ -61,7 +60,8 @@ public class TramiteController {
     // Apertura de un trámite por su ID -> ASUNTOS REGULATORIOS
     @CrossOrigin
     @PostMapping("/{idTramite}/apertura")
-    public ResponseEntity<?> abrirTramite(@PathVariable Long idTramite, @RequestBody InfoAperturaTramiteDTO infoTramite) {
+    public ResponseEntity<?> abrirTramite(@PathVariable Long idTramite,
+            @RequestBody InfoAperturaTramiteDTO infoTramite) {
         try {
             // Llamar al servicio para abrir el trámite
             tramiteService.abrirTramite(idTramite, infoTramite);
@@ -105,7 +105,8 @@ public class TramiteController {
     // Traer todos los trámites
     @CrossOrigin
     @GetMapping("/todos")
-    public ResponseEntity<?> findAll(@RequestParam(defaultValue = "1") Integer page, @RequestParam(defaultValue = "10") Integer limit) {
+    public ResponseEntity<?> findAll(@RequestParam(defaultValue = "1") Integer page,
+            @RequestParam(defaultValue = "10") Integer limit) {
         try {
             List<TramiteDTO> tramites = tramiteService.findAll();
             return ResponseEntity.ok(tramites);
@@ -117,12 +118,8 @@ public class TramiteController {
     @CrossOrigin
     @GetMapping("/{id}")
     public ResponseEntity<?> findById(@PathVariable Long id) {
-        try {
-            TramiteDTO tramite = tramiteService.findById(id);
-            return ResponseEntity.ok(tramite);
-        } catch (Exception e) {
-            return ResponseEntity.status(500).body("Error al traer el trámite.");
-        }
+        TramiteDTO tramite = tramiteService.findById(id);
+        return ResponseEntity.ok(tramite);
     }
 
     // HU-39 - Filtrar trámites por estado
@@ -215,10 +212,6 @@ public class TramiteController {
             return ResponseEntity.status(500).body("Error al generar el reporte.");
         }
     }
-
-    
-
-  
 
     /*
      * //HU 17

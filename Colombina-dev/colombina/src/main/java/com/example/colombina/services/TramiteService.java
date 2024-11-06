@@ -103,7 +103,10 @@ public class TramiteService {
     public TramiteDTO findById(Long id) {
         Tramite tramite = tramiteRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("El trámite con ID " + id + " no existe."));
-        return modelMapper.map(tramite, TramiteDTO.class);
+        TramiteDTO tramiteDTO = modelMapper.map(tramite, TramiteDTO.class);
+        System.out.println("Entidad sanitaria: " + tramite.getEntidadSanitaria().getId());
+        tramiteDTO.setEntidadSanitariaId(tramite.getEntidadSanitaria().getId());
+        return tramiteDTO;
     }
 
 

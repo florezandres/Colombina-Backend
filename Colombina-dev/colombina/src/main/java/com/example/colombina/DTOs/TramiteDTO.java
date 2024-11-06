@@ -32,5 +32,6 @@ public class TramiteDTO {
     private String descripcionTramite;
     private String claseTramite;
     private List<HistorialCambioDTO> historialCambioDTOList;
+    private Date fechaSolicitud;
 }
 
