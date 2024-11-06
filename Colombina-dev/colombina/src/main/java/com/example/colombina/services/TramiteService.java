@@ -8,6 +8,8 @@ import java.util.Optional;
 
 import org.modelmapper.ModelMapper;
 import com.example.colombina.DTOs.ComentarioDTO;
+import com.example.colombina.DTOs.InfoAperturaTramiteDTO;
+import com.example.colombina.DTOs.InfoControlTramiteDTO;
 import com.example.colombina.model.*;
 import com.example.colombina.repositories.HistorialCambioRepository;
 import org.modelmapper.TypeToken;
@@ -26,12 +28,6 @@ public class TramiteService {
     private TramiteRepository tramiteRepository;
 
     @Autowired
-    private DocumentoService documentoService;
-
-    @Autowired
-    private NotificacionService notificacionService;
-
-    @Autowired
     private ModelMapper modelMapper;
 
     @Autowired
@@ -41,21 +37,26 @@ public class TramiteService {
     private HistorialCambioRepository historialCambioRepository;
 
     // Cambia el estado de un trámite a EN_REVISION
-    public void abrirTramite(Long idTramite) {
-        // 1. Buscar el trámite por su ID
+    public void abrirTramite(Long idTramite, InfoAperturaTramiteDTO infoTramite) {
         Tramite tramite = tramiteRepository.findById(idTramite)
                 .orElseThrow(() -> new IllegalArgumentException("El trámite con ID " + idTramite + " no existe."));
-
-        // 2. Verificar si el estado actual es PENDIENTE
-        if (tramite.getEstado() != Tramite.EstadoTramite.PENDIENTE) {
-            throw new IllegalArgumentException("El trámite no está en estado PENDIENTE, no puede ser abierto.");
-        }
-
-        // 3. Cambiar el estado del trámite a EN_REVISION
-        tramite.setEstado(Tramite.EstadoTramite.EN_REVISION);
-
-        // 4. Guardar los cambios en la base de datos
+        tramite.setPt(infoTramite.getPt());
+        tramite.setUnidadNegocio(infoTramite.getUnidadNegocio());
+        tramite.setNumProyectoSap(infoTramite.getNumProyectoSap());
+        tramite.setProyecto(infoTramite.getProyecto());
+        tramite.setTipoModificacion(infoTramite.getTipoModificacion());
+        tramite.setEtapa(4);
         tramiteRepository.save(tramite);
+        System.out.println("Trámite abierto correctamente.");
+    }
+
+    public void infoControl(Long idTramite, InfoControlTramiteDTO infoTramite) {
+        Tramite tramite = tramiteRepository.findById(idTramite)
+                .orElseThrow(() -> new IllegalArgumentException("El trámite con ID " + idTramite + " no existe."));
+        
+        tramite.setEtapa(4);
+        tramiteRepository.save(tramite);
+        System.out.println("Trámite abierto correctamente.");
     }
     
     //HU-43 - Elimina un tramite que este incompleto
@@ -96,7 +97,10 @@ public class TramiteService {
     public TramiteDTO findById(Long id) {
         Tramite tramite = tramiteRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("El trámite con ID " + id + " no existe."));
-        return modelMapper.map(tramite, TramiteDTO.class);
+        TramiteDTO tramiteDTO = modelMapper.map(tramite, TramiteDTO.class);
+        System.out.println("Entidad sanitaria: " + tramite.getEntidadSanitaria().getId());
+        tramiteDTO.setEntidadSanitariaId(tramite.getEntidadSanitaria().getId());
+        return tramiteDTO;
     }
 
 
@@ -127,39 +131,6 @@ public class TramiteService {
         seguimientoRepository.save(seguimiento);
     }
 
-    public String generarResumenDocumentos(Long tramiteId) {
-        Tramite tramite = tramiteRepository.findById(tramiteId)
-            .orElseThrow(() -> new IllegalArgumentException("Trámite no encontrado"));
-        
-        List<Documento> documentos = tramite.getDocumentos();
-        StringBuilder resumen = new StringBuilder();
-
-        // Genera un resumen de los documentos y su estado
-        documentos.forEach(documento -> {
-            resumen.append("Documento: ")
-                   .append(documento.getTipo())
-                   .append(" - Aprobado: ")
-                   .append(documento.isAprobado() ? "Sí" : "No")
-                   .append("\n");
-        });
-
-        return resumen.toString();
-    }
-
-    public void consolidarTramite(Long tramiteId) {
-        //  Verifica que todos los documentos estén completos
-        if (!documentoService.verificarDocumentosCompletos(tramiteId)) {
-            throw new IllegalArgumentException("No todos los documentos están aprobados.");
-        }
-
-        // Genera el resumen
-        String resumen = generarResumenDocumentos(tramiteId);
-
-        // Envía la notificación
-        notificacionService.guardarNotificacion(tramiteId, "Consolidación completada", resumen);
-
-        // Puedes hacer más operaciones aquí si lo necesitas
-    }
    // HU-35 - Modificar un tramite
 public void modificarTramite(Long idTramite, String nuevoEstado) {
     Tramite tramite = tramiteRepository.findById(idTramite)

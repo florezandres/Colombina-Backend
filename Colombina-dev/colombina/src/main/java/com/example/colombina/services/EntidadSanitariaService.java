@@ -7,7 +7,6 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Collections;
 import java.util.List;
 import org.modelmapper.TypeToken;
 import java.lang.reflect.Type;
@@ -26,5 +25,11 @@ public class EntidadSanitariaService {
         Type listType = new TypeToken<List<EntidadSanitariaDTO>>() {}.getType();
         List<EntidadSanitariaDTO> listaEntidades = modelMapper.map(antes, listType);
         return listaEntidades;
+    }
+
+    public EntidadSanitariaDTO findById(Long id) {
+        EntidadSanitaria entidad = entidadSanitariaRepository.findById(id).orElse(null);
+        EntidadSanitariaDTO entidadDTO = modelMapper.map(entidad, EntidadSanitariaDTO.class);
+        return entidadDTO;
     }
 }

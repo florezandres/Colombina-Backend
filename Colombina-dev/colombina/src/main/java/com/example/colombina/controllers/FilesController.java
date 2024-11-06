@@ -2,6 +2,8 @@ package com.example.colombina.controllers;
 
 import java.io.InputStream;
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,9 +15,13 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import com.example.colombina.DTOs.DocumentoDTO;
+import com.example.colombina.model.Documento;
 import com.example.colombina.model.TipoDocumento;
+import com.example.colombina.model.Tramite;
+import com.example.colombina.repositories.DocumentoRepository;
 import com.example.colombina.services.AwsS3Service;
-import com.example.colombina.services.DocumentoService;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 
 @RestController
 @RequestMapping("/files")
@@ -27,16 +33,16 @@ public class FilesController {
     private AwsS3Service awsS3Service;
 
     @Autowired
-    private DocumentoService documentoService;
+    private DocumentoRepository documentoRepository;
 
     @CrossOrigin
     @PostMapping(value = "/subir-archivo/{idTramite}")
     public ResponseEntity<?> subirArchivo(
             @PathVariable Long idTramite,
-            @ModelAttribute DocumentoDTO documentoDTO
-    ) {
+            @ModelAttribute DocumentoDTO documentoDTO) {
         try {
             awsS3Service.uploadFile(documentoDTO.getName(), documentoDTO.getFile(), idTramite);
+            documentoRepository.save(new Documento(documentoDTO.getName(), false, new Tramite(idTramite)));
             return ResponseEntity.ok().build();
         } catch (Exception e) {
             log.error("Error al subir archivo para el trámite " + idTramite, e);
@@ -45,9 +51,33 @@ public class FilesController {
     }
 
     @CrossOrigin
-    @GetMapping("/{idDocumento}")
-    public DocumentoDTO verDocumentoDTO(@RequestParam Long id){
-        return documentoService.verDocumento(id);
+    @PostMapping("/aprobar-documento/{idTramite}/{nombreDocumento}")
+    public ResponseEntity<?> aprobarDocumento(@PathVariable Long idTramite, @PathVariable String nombreDocumento) {
+        System.out.println("Aprobando documento " + nombreDocumento + " para trámite " + idTramite);
+        Optional<Documento> documento = documentoRepository.findByTramiteIdAndNombre(idTramite, nombreDocumento);
+        if (documento.isEmpty()) {
+            return ResponseEntity.status(404).body("Documento no encontrado.");
+        }
+        Documento realDocumento = documento.get();
+        realDocumento.setAprobado(true);
+        documentoRepository.save(realDocumento);
+        return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/{idTramite}/aprobados")
+    public ResponseEntity<?> aprobados(@PathVariable Long idTramite) {
+        return ResponseEntity.ok(Map.of("aprobados",
+                documentoRepository.countByTramiteIdAndAprobadoTrue(idTramite), "total",
+                documentoRepository.countByTramiteId(idTramite)));
+    }
+
+    @GetMapping("/{idTramite}/{nombreDocumento}")
+    public ResponseEntity<?> getDocumento(@PathVariable Long idTramite, @PathVariable String nombreDocumento) {
+        Optional<Documento> documento = documentoRepository.findByTramiteIdAndNombre(idTramite, nombreDocumento);
+        if (documento.isEmpty()) {
+            return ResponseEntity.status(404).body("Documento no encontrado.");
+        }
+        return ResponseEntity.ok(documento.get());
     }
 
     @CrossOrigin
@@ -71,14 +101,13 @@ public class FilesController {
         try {
             InputStream inputStream = awsS3Service.getObject(filename, idTramite);
             return ResponseEntity.ok()
-            .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + filename + "\"")
+                    .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + filename + "\"")
                     .contentType(TipoDocumento.fromFilename(filename))
                     .body(new InputStreamResource(inputStream));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
     }
-
 
     @CrossOrigin
     @DeleteMapping("/eliminar-archivo/{idTramite}/{filename}")
@@ -91,19 +120,6 @@ public class FilesController {
         } catch (Exception e) {
             log.error("Error al eliminar el archivo " + filename + " para el trámite " + idTramite, e);
             return ResponseEntity.status(500).body("No se pudo eliminar el archivo");
-        }
-    }
-
-    // Endpoint para validar documentos
-    @CrossOrigin
-    @GetMapping("/validar-documentos/{idTramite}")
-    public ResponseEntity<?> validarDocumentos(@PathVariable Long idTramite) {
-        try {
-            documentoService.validarDocumentos(idTramite);
-            return ResponseEntity.ok("Validación completada.");
-        } catch (Exception e) {
-            log.error("Error al validar los documentos para el trámite " + idTramite, e);
-            return ResponseEntity.status(500).body("Error en la validación de documentos.");
         }
     }
 }

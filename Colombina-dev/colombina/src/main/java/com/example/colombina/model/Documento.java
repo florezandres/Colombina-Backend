@@ -1,7 +1,5 @@
 package com.example.colombina.model;
 
-import java.time.LocalDate;
-
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import jakarta.persistence.*;
@@ -16,7 +14,7 @@ import lombok.ToString;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "documento")
+@Table(name = "documento", uniqueConstraints = @UniqueConstraint(columnNames = {"nombre", "tramite_id"}))
 public class Documento {
 
     @Id
@@ -24,13 +22,10 @@ public class Documento {
     private Long id;
 
     @Column(nullable = false)
-    private String tipo;
+    private String nombre;
 
     @Column
-    private boolean aprobado;
-
-    @Column(nullable = false)
-    private String tempUrl;
+    private Boolean aprobado;
 
     @ManyToOne
     @ToString.Exclude
@@ -38,29 +33,14 @@ public class Documento {
     @JsonIgnore
     private Tramite tramite;
 
-    @Column
-    private LocalDate fechaExpiracion;
-
-    @Column
-    private boolean cumpleNormativas = true;
-
     // Constructor solo con id (para referencias rápidas)
     public Documento(Long id) {
         this.id = id;
     }
 
-    // Verifica si el documento ha vencido
-    public boolean isVencido() {
-        return fechaExpiracion != null && fechaExpiracion.isBefore(LocalDate.now());
-    }
-
-    // Verifica si el documento cumple con las normativas
-    public boolean isCumpleNormativas() {
-        return cumpleNormativas;
-    }
-
-    // Obtener el tipo de documento
-    public String getTipo() {
-        return tipo;
+    public Documento(String nombre, Boolean aprobado, Tramite tramite) {
+        this.nombre = nombre;
+        this.aprobado = aprobado;
+        this.tramite = tramite;
     }
 }

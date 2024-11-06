@@ -1,10 +1,9 @@
 package com.example.colombina.model;
 
-import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.util.Date;
 import java.util.List;
 
+import com.example.colombina.DTOs.InfoAperturaTramiteDTO;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import jakarta.persistence.CascadeType;
@@ -52,6 +51,9 @@ public class Tramite {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private EstadoTramite estado;
+
+    @Temporal(TemporalType.DATE)
+    private Date fechaSolicitud;
 
     @Temporal(TemporalType.DATE)
     @Column(nullable = false)
@@ -116,6 +118,10 @@ public class Tramite {
     @JsonIgnore
     private Solicitud solicitud;
 
+    public Tramite(Long id) {
+        this.id = id;
+    }
+
     public Tramite(String numeroRadicado, String nombreProducto, String descripcionProducto, String tipoProducto,
             EstadoTramite estado, Date fechaRadicacion, TipoTramite tipoTramite, Integer etapa,
             EntidadSanitaria entidadSanitaria, Solicitud solicitud) {
@@ -129,12 +135,13 @@ public class Tramite {
         this.etapa = etapa;
         this.entidadSanitaria = entidadSanitaria;
         this.solicitud = solicitud;
-        this.progreso = this.tipoTramite == TipoTramite.NACIONAL ? (double) etapa / 9 : (double) etapa / 8;
         this.llave = 0;
         this.documentos = null;
         this.pagos = null;
         this.seguimientos = null;
         this.historialCambios = null;
+        this.setProgreso();
+        this.fechaSolicitud = new Date();
     }
 
     public String getEtapa() {
@@ -142,12 +149,25 @@ public class Tramite {
     }
 
     public Double getProgreso() {
-        BigDecimal bd = new BigDecimal(this.progreso).setScale(2, RoundingMode.HALF_UP);
-        return bd.doubleValue();
+        return this.progreso;
     }
 
     public void setProgreso() {
-        this.progreso = this.tipoTramite == TipoTramite.NACIONAL ? (double) etapa / 9 : (double) etapa / 8;
+        if (this.estado == EstadoTramite.APROBADO) {
+            this.progreso = 1;
+        } else if (this.estado == EstadoTramite.RECHAZADO) {
+            this.progreso = 0;
+        } else {
+            this.progreso = this.tipoTramite == TipoTramite.NACIONAL ? (double) (etapa - 1) / 9 : (double) (etapa - 1) / 8;
+        }
+    }
+
+    public void addInfoAperturaTramite(InfoAperturaTramiteDTO data) {
+        this.pt = data.getPt();
+        this.unidadNegocio = data.getUnidadNegocio();
+        this.numProyectoSap = data.getNumProyectoSap();
+        this.proyecto = data.getProyecto();
+        this.tipoModificacion = data.getTipoModificacion();
     }
 
     // Enum definido dentro de TramiteRegulatorio (opcional)

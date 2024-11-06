@@ -2,6 +2,7 @@ package com.example.colombina.services;
 
 import com.example.colombina.DTOs.SolicitudDTO;
 import com.example.colombina.DTOs.TramiteDTO;
+import com.example.colombina.model.EntidadSanitaria;
 import com.example.colombina.model.Solicitud;
 import com.example.colombina.model.Tramite;
 import com.example.colombina.model.Usuario;
@@ -51,6 +52,9 @@ public class SolicitudService {
         nuevoTramite.setFechaRadicacion(new Date()); // Asignar la fecha actual
         nuevoTramite.setEtapa(2);
         nuevoTramite.setProgreso();
+        nuevoTramite.setFechaSolicitud(new Date());
+        nuevoTramite.setEntidadSanitaria(new EntidadSanitaria(tramiteDTO.getEntidadSanitariaId()));
+        System.out.println("Progresoooo: " + nuevoTramite.getProgreso());
         System.out.println("Antes de guardar tramite: " + nuevoTramite.getNumeroRadicado());
         Tramite tramiteGuardado = tramiteRepository.save(nuevoTramite);
         System.out.println("Tramite guardado: " + tramiteGuardado.getNumeroRadicado());
