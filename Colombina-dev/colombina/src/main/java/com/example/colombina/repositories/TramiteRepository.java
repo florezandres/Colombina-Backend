@@ -154,6 +154,49 @@ public interface TramiteRepository extends JpaRepository<Tramite, Long> {
     List<Object[]> countTramitesInternacionalesByMes();
 
 
+    
+    @Query("SELECT t.tipoTramite, " +
+    "SUM(CASE WHEN t.estado = 'EN_REVISION' OR t.estado = 'PENDIENTE' THEN 1 ELSE 0 END) AS activos, " +
+    "SUM(CASE WHEN t.estado = 'APROBADO' OR t.estado = 'RECHAZADO' THEN 1 ELSE 0 END) AS cerrados " +
+    "FROM Tramite t " +
+    "GROUP BY t.tipoTramite")
+   List<Object[]> countTramitesActivosYCerradosByTipoTramite();
+
+   @Query("SELECT TO_CHAR(t.fechaRadicacion, 'Month') AS mes, COUNT(t.id) " +
+       "FROM Tramite t " +
+       "WHERE EXTRACT(YEAR FROM t.fechaRadicacion) = :year " +
+       "GROUP BY TO_CHAR(t.fechaRadicacion, 'Month'), EXTRACT(MONTH FROM t.fechaRadicacion) " +
+       "ORDER BY EXTRACT(MONTH FROM t.fechaRadicacion)")
+      List<Object[]> countTramitesByYear(@Param("year") int year);
+
+
+
+
+      @Query("SELECT t.tipoProducto, " +
+            "SUM(CASE WHEN (t.estado = 'EN_REVISION' OR t.estado = 'PENDIENTE') AND t.tipoTramite = 'NACIONAL' THEN 1 ELSE 0 END) AS activos, " +
+            "SUM(CASE WHEN (t.estado = 'APROBADO' OR t.estado = 'RECHAZADO') AND t.tipoTramite = 'NACIONAL' THEN 1 ELSE 0 END) AS cerrados " +
+            "FROM Tramite t " +
+            "GROUP BY t.tipoProducto")
+      List<Object[]> countTramitesNacionalesActivosYCerradosByProducto();
+
+      @Query("SELECT t.tipoProducto, " +
+            "SUM(CASE WHEN (t.estado = 'EN_REVISION' OR t.estado = 'PENDIENTE') AND t.tipoTramite = 'INTERNACIONAL' THEN 1 ELSE 0 END) AS activos, " +
+            "SUM(CASE WHEN (t.estado = 'APROBADO' OR t.estado = 'RECHAZADO') AND t.tipoTramite = 'INTERNACIONAL' THEN 1 ELSE 0 END) AS cerrados " +
+            "FROM Tramite t " +
+            "GROUP BY t.tipoProducto")
+      List<Object[]> countTramitesInternacionalesActivosYCerradosByProducto();
+
+
+
+      
+      @Query("SELECT to_char(t.fechaRadicacion, 'Month') AS mes, COUNT(t.id) " +
+            "FROM Tramite t " +
+            "WHERE t.fechaRadicacion IS NOT NULL " +
+            "GROUP BY to_char(t.fechaRadicacion, 'Month'), extract(month from t.fechaRadicacion) " +
+            "ORDER BY extract(month from t.fechaRadicacion)")
+      List<Object[]> countRegistrosPorVencer();
+      
+
 
 
     //********************************************************************** */

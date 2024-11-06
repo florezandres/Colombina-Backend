@@ -7,9 +7,17 @@ import com.example.colombina.model.Tramite.EstadoTramite;
 import com.example.colombina.model.Tramite.TipoTramite;
 import com.example.colombina.repositories.TramiteRepository;
 
-import java.util.HashMap;
+import java.text.DateFormatSymbols;
+import java.time.LocalDate;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+
+
+import java.time.Month;
+import java.util.ArrayList;
+import java.util.HashMap;
+
 
 @Service
 public class EstadisticasService {
@@ -102,5 +110,82 @@ public class EstadisticasService {
 
     return totales;
 }
+
+public Map<String, Object> getTramitesActivosYCerradosPorTipo() {
+    Map<String, Object> result = new HashMap<>();
+    List<Object[]> data = tramiteRepository.countTramitesActivosYCerradosByTipoTramite();
+
+    result.put("labels", data.stream().map(d -> d[0]).toArray());
+    result.put("activos", data.stream().map(d -> d[1]).toArray());
+    result.put("cerrados", data.stream().map(d -> d[2]).toArray());
+
+    return result;
+}
+
+
+
+    public Map<String, Object> getTramitesTotalesDelAnoActual(int year) {
+        List<Object[]> data = tramiteRepository.countTramitesByYear(year);
+        Map<String, Integer> monthData = new HashMap<>();
+        for (Object[] record : data) {
+            String monthName = (String) record[0];
+            Long count = (Long) record[1];
+            monthData.put(monthName.trim(), count.intValue());
+        }
+
+        // Rellenar los meses faltantes con ceros
+        Map<String, Object> result = new HashMap<>();
+        List<String> labels = new ArrayList<>();
+        List<Integer> values = new ArrayList<>();
+        for (Month month : Month.values()) {
+            String monthName = month.name().substring(0, 1) + month.name().substring(1).toLowerCase();
+            labels.add(monthName);
+            values.add(monthData.getOrDefault(monthName, 0));
+        }
+        result.put("labels", labels);
+        result.put("values", values);
+        return result;
+    }
+
+
+    public Map<String, Object> getTramitesNacionalesActivosYCerradosPorProducto() {
+        Map<String, Object> result = new HashMap<>();
+        List<Object[]> data = tramiteRepository.countTramitesNacionalesActivosYCerradosByProducto();
+    
+        result.put("labels", data.stream().map(d -> d[0]).toArray());
+        result.put("activos", data.stream().map(d -> d[1]).toArray());
+        result.put("cerrados", data.stream().map(d -> d[2]).toArray());
+    
+        return result;
+    }
+    
+    public Map<String, Object> getTramitesInternacionalesActivosYCerradosPorProducto() {
+        Map<String, Object> result = new HashMap<>();
+        List<Object[]> data = tramiteRepository.countTramitesInternacionalesActivosYCerradosByProducto();
+    
+        result.put("labels", data.stream().map(d -> d[0]).toArray());
+        result.put("activos", data.stream().map(d -> d[1]).toArray());
+        result.put("cerrados", data.stream().map(d -> d[2]).toArray());
+    
+        return result;
+    }
+
+    public Map<String, Object> getRegistrosPorVencer() {
+        List<Object[]> data = tramiteRepository.countRegistrosPorVencer();
+        List<String> meses = new ArrayList<>();
+        List<Long> counts = new ArrayList<>();
+
+        for (Object[] row : data) {
+            meses.add((String) row[0]);
+            counts.add((Long) row[1]);
+        }
+
+        Map<String, Object> result = new HashMap<>();
+        result.put("labels", meses);
+        result.put("values", counts);
+        return result;
+    }
+    
+    
     
 }
