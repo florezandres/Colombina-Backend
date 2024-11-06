@@ -1,10 +1,15 @@
-FROM maven:3.8.1-jdk-11 AS build
+FROM openjdk:17-slim AS build
 WORKDIR /usr/src/app
 
-COPY src ./src
 COPY pom.xml ./pom.xml
+COPY mvnw ./mvnw
+COPY mvnw.cmd ./mvnw.cmd
+COPY .mvn ./.mvn
+COPY src ./src
 
-RUN mvn clean package
+RUN apt-get update && apt-get install dos2unix
+RUN chmod +x mvnw
+RUN dos2unix mvnw && ./mvnw clean install -DskipTests
 
 FROM openjdk:17-jdk-alpine AS runtime
 WORKDIR /usr/src/app
