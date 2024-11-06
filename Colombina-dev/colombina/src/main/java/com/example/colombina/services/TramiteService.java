@@ -9,6 +9,7 @@ import java.util.Optional;
 import org.modelmapper.ModelMapper;
 import com.example.colombina.DTOs.ComentarioDTO;
 import com.example.colombina.DTOs.InfoAperturaTramiteDTO;
+import com.example.colombina.DTOs.InfoControlTramiteDTO;
 import com.example.colombina.model.*;
 import com.example.colombina.repositories.HistorialCambioRepository;
 import org.modelmapper.TypeToken;
@@ -50,6 +51,15 @@ public class TramiteService {
         tramite.setNumProyectoSap(infoTramite.getNumProyectoSap());
         tramite.setProyecto(infoTramite.getProyecto());
         tramite.setTipoModificacion(infoTramite.getTipoModificacion());
+        tramite.setEtapa(4);
+        tramiteRepository.save(tramite);
+        System.out.println("Trámite abierto correctamente.");
+    }
+
+    public void infoControl(Long idTramite, InfoControlTramiteDTO infoTramite) {
+        Tramite tramite = tramiteRepository.findById(idTramite)
+                .orElseThrow(() -> new IllegalArgumentException("El trámite con ID " + idTramite + " no existe."));
+        
         tramite.setEtapa(4);
         tramiteRepository.save(tramite);
         System.out.println("Trámite abierto correctamente.");

@@ -53,6 +53,9 @@ public class Tramite {
     private EstadoTramite estado;
 
     @Temporal(TemporalType.DATE)
+    private Date fechaSolicitud;
+
+    @Temporal(TemporalType.DATE)
     @Column(nullable = false)
     private Date fechaRadicacion;
 
@@ -134,6 +137,7 @@ public class Tramite {
         this.seguimientos = null;
         this.historialCambios = null;
         this.setProgreso();
+        this.fechaSolicitud = new Date();
     }
 
     public String getEtapa() {

@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.example.colombina.DTOs.InfoAperturaTramiteDTO;
+import com.example.colombina.DTOs.InfoControlTramiteDTO;
 import com.example.colombina.DTOs.TramiteDTO;
 import com.example.colombina.model.Seguimiento;
 import com.example.colombina.model.Tramite;
@@ -24,6 +25,8 @@ import com.example.colombina.services.NotificacionService;
 import com.example.colombina.services.TramiteService;
 
 import java.util.Date;
+import java.util.HashMap;
+
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
@@ -62,7 +65,23 @@ public class TramiteController {
         try {
             // Llamar al servicio para abrir el trámite
             tramiteService.abrirTramite(idTramite, infoTramite);
-            return ResponseEntity.ok("Trámite abierto correctamente.");
+            HashMap<String, String> map = new HashMap<>();
+            map.put("message", "Trámite abierto correctamente.");
+            return ResponseEntity.ok(map);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(404).body(e.getMessage()); // Error si el trámite no se encuentra
+        }
+    }
+
+    @CrossOrigin
+    @PostMapping("/{idTramite}/info-control")
+    public ResponseEntity<?> infoControl(@PathVariable Long idTramite, @RequestBody InfoControlTramiteDTO infoTramite) {
+        try {
+            // Llamar al servicio para abrir el trámite
+            tramiteService.infoControl(idTramite, infoTramite);
+            HashMap<String, String> map = new HashMap<>();
+            map.put("message", "Información de control registrada correctamente.");
+            return ResponseEntity.ok(map);
         } catch (IllegalArgumentException e) {
             return ResponseEntity.status(404).body(e.getMessage()); // Error si el trámite no se encuentra
         }
