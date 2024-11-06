@@ -48,8 +48,6 @@ public class SecurityConfiguration {
                 .authorizeHttpRequests(request -> request
                         .requestMatchers("/autenticacion/**")
                         .permitAll()
-                        .requestMatchers("/notificacion/**")
-                        .hasAnyAuthority("ADMIN")
                         .anyRequest()
                         .authenticated())
                 .exceptionHandling(exception -> exception
