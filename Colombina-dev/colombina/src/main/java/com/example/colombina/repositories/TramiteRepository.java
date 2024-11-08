@@ -10,12 +10,10 @@ import org.springframework.data.repository.query.Param;
 
 import org.springframework.stereotype.Repository;
 
-import com.example.colombina.DTOs.EstadisticasDTO;
 import com.example.colombina.model.Tramite;
 import com.example.colombina.model.Tramite.EstadoTramite;
 import com.example.colombina.model.Tramite.TipoTramite;
 
-import java.util.Date;
 
 
 @Repository
@@ -29,6 +27,8 @@ public interface TramiteRepository extends JpaRepository<Tramite, Long> {
 
   @NotNull
   Optional<Tramite> findById(Long id);
+
+  List<Tramite> findAllByOrderByIdDesc();
 
   // filtros para Estadisticas
   
