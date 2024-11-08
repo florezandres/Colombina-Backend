@@ -11,6 +11,8 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface SolicitudRepository extends JpaRepository<Solicitud, Long> {
-    @Query("SELECT s FROM Solicitud s LEFT JOIN FETCH s.tramite WHERE s.solicitante = :solicitante")
+    List<Solicitud> findAllByOrderByIdDesc();
+
+    @Query("SELECT s FROM Solicitud s LEFT JOIN FETCH s.tramite WHERE s.solicitante = :solicitante ORDER BY s.id DESC")
     List<Solicitud> findBySolicitanteWithTramite(Usuario solicitante);
 }

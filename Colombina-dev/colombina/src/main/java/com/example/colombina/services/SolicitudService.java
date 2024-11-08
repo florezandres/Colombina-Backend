@@ -77,6 +77,6 @@ public class SolicitudService {
     }
 
     public List<Solicitud> getSolicitudes() {
-        return solicitudRepository.findAll();
+        return solicitudRepository.findAllByOrderByIdDesc();
     }
 }
