@@ -6,6 +6,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
+import jakarta.transaction.Transactional;
 import org.modelmapper.ModelMapper;
 import com.example.colombina.DTOs.ComentarioDTO;
 import com.example.colombina.DTOs.InfoAperturaTramiteDTO;
@@ -135,7 +136,6 @@ public class TramiteService {
 public void modificarTramite(Long idTramite, String nuevoEstado) {
     Tramite tramite = tramiteRepository.findById(idTramite)
             .orElseThrow(() -> new IllegalArgumentException("El trámite con ID " + idTramite + " no existe."));
-
     // Verificar si el nuevo estado es válido
     try {
         Tramite.EstadoTramite estado = Tramite.EstadoTramite.valueOf(nuevoEstado);
@@ -145,6 +145,7 @@ public void modificarTramite(Long idTramite, String nuevoEstado) {
         throw new IllegalArgumentException("Estado no válido.");
     }
 }
+
     // HU-53 - Generar reportes personalizados
     public List<TramiteDTO> generarReportePersonalizado(String estado, Date fechaInicio, Date fechaFin) {
         // Filtrar por estado

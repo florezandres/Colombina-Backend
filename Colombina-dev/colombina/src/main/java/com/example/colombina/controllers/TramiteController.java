@@ -1,5 +1,6 @@
 package com.example.colombina.controllers;
 
+import java.util.Collections;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -133,6 +134,29 @@ public class TramiteController {
             return ResponseEntity.status(400).body(e.getMessage());
         } catch (Exception e) {
             return ResponseEntity.status(500).body("Error al modificar el trámite.");
+        }
+    }
+
+
+    @CrossOrigin
+    @PostMapping("/{idTramite}/aceptar")
+    public ResponseEntity<?> aceptarTramite(
+            @PathVariable Long idTramite,
+            @RequestParam("numeroRadicado") String numeroRadicado,
+            @RequestParam("llave") Double llave) {
+        try {
+            if (numeroRadicado == null || llave == null) {
+                return ResponseEntity.status(400).body("Número de radicado y llave son requeridos.");
+            }
+
+            // Llamar al servicio para actualizar el trámite con el número de radicado y la llave
+            tramiteService.asociarNumeroRadicadoYLLave(idTramite, numeroRadicado, llave);
+
+            return ResponseEntity.ok(Collections.singletonMap("message", "Trámite aceptado y número de radicado asignado."));
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(404).body(e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body("Error al aceptar el trámite.");
         }
     }
 

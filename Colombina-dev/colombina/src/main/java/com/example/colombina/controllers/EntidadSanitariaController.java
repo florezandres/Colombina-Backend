@@ -44,30 +44,7 @@ public class EntidadSanitariaController {
 
 
     //Paso 5
-    @CrossOrigin
-    @PostMapping("/tramite/{idTramite}/aceptar")
-    public ResponseEntity<?> aceptarTramite(
-            @PathVariable Long idTramite,
-            @RequestParam("numeroRadicado") String numeroRadicado,
-            @RequestParam("llave") Double llave) {
-        try {
-            if (numeroRadicado == null || llave == null) {
-                return ResponseEntity.status(400).body("Número de radicado y llave son requeridos.");
-            }
 
-
-
-            // Llamar al servicio para actualizar el trámite con el número de radicado y la llave
-            tramiteService.asociarNumeroRadicadoYLLave(idTramite, numeroRadicado, llave);
-            progresoService.actualizarProgreso(idTramite, 61.0);
-
-            return ResponseEntity.ok("Trámite aceptado y número de radicado asignado.");
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.status(404).body(e.getMessage());
-        } catch (Exception e) {
-            return ResponseEntity.status(500).body("Error al aceptar el trámite.");
-        }
-    }
 
     //Paso 5
     @CrossOrigin
