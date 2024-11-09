@@ -12,7 +12,14 @@ import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import com.example.colombina.DTOs.DocumentoDTO;
 import com.example.colombina.model.Documento;
@@ -20,8 +27,7 @@ import com.example.colombina.model.TipoDocumento;
 import com.example.colombina.model.Tramite;
 import com.example.colombina.repositories.DocumentoRepository;
 import com.example.colombina.services.AwsS3Service;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.GetMapping;
+import com.example.colombina.services.DocumentoService;
 
 @RestController
 @RequestMapping("/files")
@@ -34,6 +40,9 @@ public class FilesController {
 
     @Autowired
     private DocumentoRepository documentoRepository;
+
+    @Autowired
+    private DocumentoService documentoService;
 
     @CrossOrigin
     @PostMapping(value = "/subir-archivo/{idTramite}")
@@ -64,6 +73,20 @@ public class FilesController {
         return ResponseEntity.ok().build();
     }
 
+    @CrossOrigin
+    @PostMapping("/negar-documento/{idTramite}/{nombreDocumento}")
+    public ResponseEntity<?> negarDocumento(@PathVariable Long idTramite, @PathVariable String nombreDocumento) {
+        System.out.println("Negando documento " + nombreDocumento + " para trámite " + idTramite);
+        Optional<Documento> documento = documentoRepository.findByTramiteIdAndNombre(idTramite, nombreDocumento);
+        if (documento.isEmpty()) {
+            return ResponseEntity.status(404).body("Documento no encontrado.");
+        }
+        Documento realDocumento = documento.get();
+        realDocumento.setAprobado(false); 
+        documentoRepository.save(realDocumento);
+        return ResponseEntity.ok().build();
+    }
+
     @GetMapping("/{idTramite}/aprobados")
     public ResponseEntity<?> aprobados(@PathVariable Long idTramite) {
         return ResponseEntity.ok(Map.of("aprobados",
@@ -82,15 +105,17 @@ public class FilesController {
 
     @CrossOrigin
     @GetMapping("/listar-archivos/{idTramite}")
-    public ResponseEntity<List<DocumentoDTO>> obtenerArchivos(@PathVariable Long idTramite) {
+    public ResponseEntity<List<?>> obtenerArchivos(@PathVariable Long idTramite) {
         try {
-            List<DocumentoDTO> archivos = awsS3Service.listFiles(idTramite);
-            return ResponseEntity.ok(archivos);
+            List<Documento> archivos = documentoService.getDocumentsByTramiteId(idTramite);
+            return ResponseEntity.status(200).body(archivos);
         } catch (Exception e) {
             log.error("Error al obtener archivos para el trámite " + idTramite, e);
             return ResponseEntity.status(500).body(null);
         }
     }
+
+    
 
     @GetMapping("/descargar-archivo/{idTramite}/{filename}")
     public ResponseEntity<InputStreamResource> descargarArchivo(
