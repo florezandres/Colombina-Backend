@@ -46,14 +46,15 @@ public class SolicitudController {
     }
 
     @GetMapping()
-    public ResponseEntity<?> getSolicitudesPorSolicitante(Principal principal) {
+    public ResponseEntity<?> getSolicitudesPorSolicitante(Principal principal, @RequestParam(defaultValue = "1") Integer page,
+            @RequestParam(defaultValue = "5") Integer limit) {
         log.info(principal.getName());
-        return ResponseEntity.ok().body(solicitudService.getSolicitudesPorSolicitante(principal.getName()));
+        return ResponseEntity.ok().body(solicitudService.getSolicitudesPorSolicitante(principal.getName(), page, limit));
     }
 
     @GetMapping(value = "/todos")
-    public ResponseEntity<?> findAll() {
-        return ResponseEntity.ok().body(solicitudService.getSolicitudes());
+    public ResponseEntity<?> findAll(@RequestParam(defaultValue = "1") int page, @RequestParam(defaultValue = "5") int limit) {
+        return ResponseEntity.ok().body(solicitudService.getSolicitudes(page, limit));
     }
 
 }
