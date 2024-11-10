@@ -13,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 
 
 @RestController
@@ -34,7 +35,7 @@ public class AutenticacionController {
             autenticacionService.login(body.getUsername(), body.getPassword())
         );
     }
-    
+
     @PostMapping("/recuperar/{nombre}")
     public ResponseEntity<?> recuperarContraseña(@PathVariable String nombre) {
         if (!usuarioService.usuarioExistePorNombre(nombre)) {
@@ -45,6 +46,14 @@ public class AutenticacionController {
 
         return ResponseEntity.ok(
             "Se ha enviado un correo con las instrucciones para recuperar la contraseña"
+        );
+    }
+
+    @PostMapping("/refresh")
+    public ResponseEntity<?> refresh(@RequestHeader("Authorization") String token) {
+        System.out.println("refresh" + token);
+        return ResponseEntity.ok(
+            autenticacionService.refresh(token)
         );
     }
 

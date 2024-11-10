@@ -37,4 +37,18 @@ public class AutenticacionService {
         return new LoginResponseDTO(token, username, usuario.get().getRol().getTipoRol());
     }
 
+    public LoginResponseDTO refresh(String token) {
+        token = token.substring(7);
+        String username = jwtService.extractUserName(token);
+        Optional<Usuario> usuario = usuarioRepository.findByNombre(username);
+
+        if (usuario == null) {
+            throw new UsernameNotFoundException("Usuario no encontrado");
+        }
+
+        token = jwtService.generateToken(usuario.get());
+
+        return new LoginResponseDTO(token, username, usuario.get().getRol().getTipoRol());
+    }
+
 }

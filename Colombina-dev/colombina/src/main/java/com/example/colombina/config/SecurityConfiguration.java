@@ -46,6 +46,8 @@ public class SecurityConfiguration {
                 .cors(Customizer.withDefaults())
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(request -> request
+                        .requestMatchers("/autenticacion/refresh/**")
+                        .authenticated()
                         .requestMatchers("/autenticacion/**")
                         .permitAll()
                         .requestMatchers("/files/aprobar-documento/**")
