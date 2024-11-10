@@ -47,7 +47,9 @@ public class SolicitudService {
 
         Long nextId = solicitudRepository.count();
 
+        
         // Crear y guardar el nuevo Tramite
+        tramiteDTO.setEtapa("2");
         Tramite nuevoTramite = modelMapper.map(tramiteDTO, Tramite.class); // Convertir el DTO a entidad
         nuevoTramite.setEstado(Tramite.EstadoTramite.PENDIENTE); // Asignar estado pendiente
         nuevoTramite.setNumeroRadicado("AR-" + (nextId + 50)); // Generar número de radicado

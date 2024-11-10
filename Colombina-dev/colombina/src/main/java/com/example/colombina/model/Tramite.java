@@ -50,7 +50,7 @@ public class Tramite {
     private TipoTramite tipoTramite;
 
     @Column(nullable = false)
-    private Integer etapa;
+    private Integer etapa = 1;
 
     private String nombreEtapa;
 
