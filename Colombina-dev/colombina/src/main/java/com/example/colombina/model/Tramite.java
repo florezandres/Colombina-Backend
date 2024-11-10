@@ -66,6 +66,8 @@ public class Tramite {
     @Column(nullable = false)
     private Integer etapa;
 
+    private String nombreEtapa;
+
     @ManyToOne
     @JoinColumn(name = "entidad_sanitaria_id")
     private EntidadSanitaria entidadSanitaria;
@@ -107,12 +109,6 @@ public class Tramite {
     @Column()
     private String tipoModificacion;
 
-    @Column()
-    private String descripcionTramite;
-
-    @Column()
-    private String claseTramite;
-
     @OneToOne
     @JoinColumn(name = "solicitud_id")
     @JsonIgnore
@@ -153,13 +149,20 @@ public class Tramite {
     }
 
     public void setProgreso() {
+        setNombreEtapa();
         if (this.estado == EstadoTramite.APROBADO) {
             this.progreso = 1;
         } else if (this.estado == EstadoTramite.RECHAZADO) {
             this.progreso = 0;
         } else {
-            this.progreso = this.tipoTramite == TipoTramite.NACIONAL ? (double) (etapa - 1) / 9 : (double) (etapa - 1) / 8;
+            this.progreso = this.tipoTramite == TipoTramite.NACIONAL ? (double) (etapa - 1) / 9
+                    : (double) (etapa - 1) / 8;
         }
+    }
+
+    public void setEtapa(Integer etapa) {
+        this.etapa = etapa;
+        setProgreso();
     }
 
     public void addInfoAperturaTramite(InfoAperturaTramiteDTO data) {
@@ -181,6 +184,38 @@ public class Tramite {
     public enum TipoTramite {
         NACIONAL,
         INTERNACIONAL
+    }
+
+    public void setNombreEtapa() {
+        switch (this.etapa) {
+            case 1:
+                this.nombreEtapa = "Solicitud de trámite";
+                break;
+            case 2:
+                this.nombreEtapa = "Apertura del trámite";
+                break;
+            case 3:
+                this.nombreEtapa = "Diligenciar información de control";
+                break;
+            case 4:
+                this.nombreEtapa = "Revisión de documentación";
+                break;
+            case 5:
+                this.nombreEtapa = "Consolidación/Radicación del trámite";
+                break;
+            case 6:
+                this.nombreEtapa = "Seguimiento del trámite";
+                break;
+            case 7:
+                this.nombreEtapa = "Aprobación del trámite (Entidad Sanitaria)";
+                break;
+            case 8:
+                this.nombreEtapa = "Aprobación del trámite (Solicitante)";
+                break;
+            case 9:
+                this.nombreEtapa = "Control posterior";
+                break;
+        }
     }
 
     public void setNumeroRadicado() {

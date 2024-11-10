@@ -3,13 +3,16 @@ package com.example.colombina.controllers;
 import com.example.colombina.DTOs.RequestTramiteSolicitudDTO;
 import com.example.colombina.DTOs.SolicitudDTO;
 import com.example.colombina.DTOs.TramiteDTO;
+import com.example.colombina.model.Tramite;
 import com.example.colombina.services.SolicitudService;
 
 import lombok.extern.slf4j.Slf4j;
 
 import java.security.Principal;
+import java.util.Date;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -46,14 +49,47 @@ public class SolicitudController {
     }
 
     @GetMapping()
-    public ResponseEntity<?> getSolicitudesPorSolicitante(Principal principal) {
+    public ResponseEntity<?> getSolicitudesPorSolicitante(Principal principal,
+            @RequestParam(defaultValue = "1") Integer page,
+            @RequestParam(defaultValue = "5") Integer limit) {
         log.info(principal.getName());
-        return ResponseEntity.ok().body(solicitudService.getSolicitudesPorSolicitante(principal.getName()));
+        return ResponseEntity.ok()
+                .body(solicitudService.getSolicitudesPorSolicitante(principal.getName(), page, limit));
+    }
+
+    @GetMapping(value = "/filtros")
+    public ResponseEntity<?> findByFiltersAndSolicitante(Principal principal,
+            @RequestParam(defaultValue = "1") Integer page,
+            @RequestParam(defaultValue = "5") Integer limit,
+            @RequestParam(required = false) Tramite.EstadoTramite estado,
+            @RequestParam(required = false) String tipo,
+            @RequestParam(required = false) Tramite.TipoTramite nacionalidad,
+            @RequestParam(required = false) @DateTimeFormat(pattern="yyyy-MM-dd") Date fechaInicio,
+            @RequestParam(required = false) @DateTimeFormat(pattern="yyyy-MM-dd") Date fechaFin,
+            @RequestParam(required = false) String filtro) {
+        return ResponseEntity.ok().body(solicitudService.findByFiltersAndSolicitante(principal.getName(),page, limit, estado, tipo, nacionalidad,
+                fechaInicio, fechaFin, filtro));
     }
 
     @GetMapping(value = "/todos")
-    public ResponseEntity<?> findAll() {
-        return ResponseEntity.ok().body(solicitudService.getSolicitudes());
+    public ResponseEntity<?> findAll(@RequestParam(defaultValue = "1") int page,
+            @RequestParam(defaultValue = "5") int limit) {
+        return ResponseEntity.ok().body(solicitudService.getSolicitudes(page, limit));
+    }
+
+    @GetMapping(value = "/todos/filtros")
+    public ResponseEntity<?> findByFilters(@RequestParam(defaultValue = "1") Integer page,
+            @RequestParam(defaultValue = "5") Integer limit,
+            @RequestParam(required = false) Tramite.EstadoTramite estado,
+            @RequestParam(required = false) String tipo,
+            @RequestParam(required = false) Tramite.TipoTramite nacionalidad,
+            @RequestParam(required = false) @DateTimeFormat(pattern="yyyy-MM-dd") Date fechaInicio,
+            @RequestParam(required = false) @DateTimeFormat(pattern="yyyy-MM-dd") Date fechaFin,
+            @RequestParam(required = false) String filtro) {
+        System.out.println("fechaInicio: " + fechaInicio);
+        System.out.println("fechaFin: " + fechaFin);
+        return ResponseEntity.ok().body(solicitudService.findByFilters(page, limit, estado, tipo, nacionalidad,
+                fechaInicio, fechaFin, filtro));
     }
 
 }

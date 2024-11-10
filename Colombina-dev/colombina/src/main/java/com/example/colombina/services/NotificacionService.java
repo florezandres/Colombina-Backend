@@ -79,7 +79,7 @@ public class NotificacionService {
 
         messagingTemplate.convertAndSend("/topic/notificaciones/" + destinatario.getId(), mensaje);
 
-        enviarCorreo(destinatario.getCorreoElectronico(), "Documentos Faltantes", mensaje);
+        enviarCorreo("sergioasenciorodriguez@gmail.com", "Documentos Faltantes", mensaje);
         guardarNotificacion(tramiteId, "Documentos Faltantes", mensaje);
     }
 
@@ -89,7 +89,7 @@ public class NotificacionService {
 
         messagingTemplate.convertAndSend("/topic/notificaciones/" + destinatario.getId(), mensaje);
 
-        enviarCorreo(destinatario.getCorreoElectronico(), "Expiración de Trámite", mensaje);
+        enviarCorreo("sergioasenciorodriguez@gmail.com", "Expiración de Trámite", mensaje);
         guardarNotificacion(tramiteId, "Expiración de Trámite", mensaje);
     }
 

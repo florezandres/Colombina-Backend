@@ -46,6 +46,7 @@ public class TramiteService {
         tramite.setProyecto(infoTramite.getProyecto());
         tramite.setTipoModificacion(infoTramite.getTipoModificacion());
         tramite.setEtapa(4);
+        tramite.setProgreso();
         tramiteRepository.save(tramite);
         System.out.println("Trámite abierto correctamente.");
     }
@@ -55,6 +56,7 @@ public class TramiteService {
                 .orElseThrow(() -> new IllegalArgumentException("El trámite con ID " + idTramite + " no existe."));
         
         tramite.setEtapa(4);
+        tramite.setProgreso();
         tramiteRepository.save(tramite);
         System.out.println("Trámite abierto correctamente.");
     }
@@ -135,7 +137,6 @@ public class TramiteService {
 public void modificarTramite(Long idTramite, String nuevoEstado) {
     Tramite tramite = tramiteRepository.findById(idTramite)
             .orElseThrow(() -> new IllegalArgumentException("El trámite con ID " + idTramite + " no existe."));
-
     // Verificar si el nuevo estado es válido
     try {
         Tramite.EstadoTramite estado = Tramite.EstadoTramite.valueOf(nuevoEstado);
@@ -145,6 +146,7 @@ public void modificarTramite(Long idTramite, String nuevoEstado) {
         throw new IllegalArgumentException("Estado no válido.");
     }
 }
+
     // HU-53 - Generar reportes personalizados
     public List<TramiteDTO> generarReportePersonalizado(String estado, Date fechaInicio, Date fechaFin) {
         // Filtrar por estado
@@ -221,8 +223,6 @@ public void modificarTramite(Long idTramite, String nuevoEstado) {
         tramite.setNumProyectoSap(tramiteDTO.getNumProyectoSap());
         tramite.setProyecto(tramiteDTO.getProyecto());
         tramite.setTipoModificacion(tramiteDTO.getTipoModificacion());
-        tramite.setDescripcionTramite(tramiteDTO.getDescripcionTramite());
-        tramite.setClaseTramite(tramiteDTO.getClaseTramite());
 
         // Guardar los cambios en la base de datos
         tramiteRepository.save(tramite);

@@ -7,9 +7,6 @@ import com.example.colombina.model.Tramite.EstadoTramite;
 import com.example.colombina.model.Tramite.TipoTramite;
 import com.example.colombina.repositories.TramiteRepository;
 
-import java.text.DateFormatSymbols;
-import java.time.LocalDate;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 

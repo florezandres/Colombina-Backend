@@ -14,6 +14,8 @@ import lombok.extern.slf4j.Slf4j;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
@@ -70,13 +72,31 @@ public class SolicitudService {
         return modelMapper.map(solicitudGuardada, SolicitudDTO.class);
     }
 
-    public List<Solicitud> getSolicitudesPorSolicitante(String username) {
+    public List<Solicitud> getSolicitudesPorSolicitante(String username, Integer page, Integer limit) {
         Usuario solicitante = usuarioRepository.findByNombre(username)
                 .orElseThrow(() -> new IllegalArgumentException("Usuario no encontrado con el nombre: " + username));
-        return solicitudRepository.findBySolicitanteWithTramite(solicitante);
+        Pageable pageable = PageRequest.of(page - 1, limit);
+        return solicitudRepository.findBySolicitanteWithTramite(solicitante, pageable);
     }
 
-    public List<Solicitud> getSolicitudes() {
-        return solicitudRepository.findAllByOrderByIdDesc();
+    public List<Solicitud> findByFiltersAndSolicitante(String username, Integer page, Integer limit, Tramite.EstadoTramite estado, String tipoTramite,
+            Tramite.TipoTramite nacionalidad, Date fechaInicio, Date fechaFin, String filtro) {
+        Usuario solicitante = usuarioRepository.findByNombre(username)
+                .orElseThrow(() -> new IllegalArgumentException("Usuario no encontrado con el nombre: " + username));
+        filtro = filtro == null ? "" : filtro;
+        Pageable pageable = PageRequest.of(page - 1, limit);
+        return solicitudRepository.findByFiltersAndSolicitante(solicitante, estado, tipoTramite, nacionalidad, fechaInicio, fechaFin, filtro, pageable);
+    }
+
+    public List<Solicitud> getSolicitudes(Integer page, Integer limit) {
+        Pageable pageable = PageRequest.of(page - 1, limit);
+        return solicitudRepository.findAllByOrderByIdDesc(pageable);
+    }
+
+    public List<Solicitud> findByFilters(Integer page, Integer limit, Tramite.EstadoTramite estado, String tipoTramite, Tramite.TipoTramite nacionalidad, Date fechaInicio,
+    Date fechaFin, String filtro) {
+        filtro = filtro == null ? "" : filtro;
+        Pageable pageable = PageRequest.of(page - 1, limit);
+        return solicitudRepository.findByFilters(estado, tipoTramite, nacionalidad, fechaInicio, fechaFin, filtro, pageable);
     }
 }
