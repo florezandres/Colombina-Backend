@@ -3,6 +3,7 @@ package com.example.colombina.controllers;
 import com.example.colombina.DTOs.RequestTramiteSolicitudDTO;
 import com.example.colombina.DTOs.SolicitudDTO;
 import com.example.colombina.DTOs.TramiteDTO;
+import com.example.colombina.model.Tramite;
 import com.example.colombina.services.SolicitudService;
 
 import lombok.extern.slf4j.Slf4j;
@@ -46,15 +47,45 @@ public class SolicitudController {
     }
 
     @GetMapping()
-    public ResponseEntity<?> getSolicitudesPorSolicitante(Principal principal, @RequestParam(defaultValue = "1") Integer page,
+    public ResponseEntity<?> getSolicitudesPorSolicitante(Principal principal,
+            @RequestParam(defaultValue = "1") Integer page,
             @RequestParam(defaultValue = "5") Integer limit) {
         log.info(principal.getName());
-        return ResponseEntity.ok().body(solicitudService.getSolicitudesPorSolicitante(principal.getName(), page, limit));
+        return ResponseEntity.ok()
+                .body(solicitudService.getSolicitudesPorSolicitante(principal.getName(), page, limit));
+    }
+
+    @GetMapping(value = "/filtros")
+    public ResponseEntity<?> findByFiltersAndSolicitante(Principal principal,
+            @RequestParam(defaultValue = "1") Integer page,
+            @RequestParam(defaultValue = "5") Integer limit,
+            @RequestParam(required = false) Tramite.EstadoTramite estado,
+            @RequestParam(required = false) String tipo,
+            @RequestParam(required = false) Tramite.TipoTramite nacionalidad,
+            @RequestParam(required = false) String fechaInicio,
+            @RequestParam(required = false) String fechaFin,
+            @RequestParam(required = false) String filtro) {
+        return ResponseEntity.ok().body(solicitudService.findByFiltersAndSolicitante(principal.getName(),page, limit, estado, tipo, nacionalidad,
+                fechaInicio, fechaFin, filtro));
     }
 
     @GetMapping(value = "/todos")
-    public ResponseEntity<?> findAll(@RequestParam(defaultValue = "1") int page, @RequestParam(defaultValue = "5") int limit) {
+    public ResponseEntity<?> findAll(@RequestParam(defaultValue = "1") int page,
+            @RequestParam(defaultValue = "5") int limit) {
         return ResponseEntity.ok().body(solicitudService.getSolicitudes(page, limit));
+    }
+
+    @GetMapping(value = "/todos/filtros")
+    public ResponseEntity<?> findByFilters(@RequestParam(defaultValue = "1") Integer page,
+            @RequestParam(defaultValue = "5") Integer limit,
+            @RequestParam(required = false) Tramite.EstadoTramite estado,
+            @RequestParam(required = false) String tipo,
+            @RequestParam(required = false) Tramite.TipoTramite nacionalidad,
+            @RequestParam(required = false) String fechaInicio,
+            @RequestParam(required = false) String fechaFin,
+            @RequestParam(required = false) String filtro) {
+        return ResponseEntity.ok().body(solicitudService.findByFilters(page, limit, estado, tipo, nacionalidad,
+                fechaInicio, fechaFin, filtro));
     }
 
 }

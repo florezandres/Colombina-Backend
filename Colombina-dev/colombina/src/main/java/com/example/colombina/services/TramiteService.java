@@ -6,7 +6,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
-import jakarta.transaction.Transactional;
 import org.modelmapper.ModelMapper;
 import com.example.colombina.DTOs.ComentarioDTO;
 import com.example.colombina.DTOs.InfoAperturaTramiteDTO;
@@ -47,6 +46,7 @@ public class TramiteService {
         tramite.setProyecto(infoTramite.getProyecto());
         tramite.setTipoModificacion(infoTramite.getTipoModificacion());
         tramite.setEtapa(4);
+        tramite.setProgreso();
         tramiteRepository.save(tramite);
         System.out.println("Trámite abierto correctamente.");
     }
@@ -56,6 +56,7 @@ public class TramiteService {
                 .orElseThrow(() -> new IllegalArgumentException("El trámite con ID " + idTramite + " no existe."));
         
         tramite.setEtapa(4);
+        tramite.setProgreso();
         tramiteRepository.save(tramite);
         System.out.println("Trámite abierto correctamente.");
     }

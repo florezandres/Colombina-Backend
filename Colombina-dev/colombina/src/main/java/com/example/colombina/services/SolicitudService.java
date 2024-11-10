@@ -79,8 +79,24 @@ public class SolicitudService {
         return solicitudRepository.findBySolicitanteWithTramite(solicitante, pageable);
     }
 
+    public List<Solicitud> findByFiltersAndSolicitante(String username, Integer page, Integer limit, Tramite.EstadoTramite estado, String tipoTramite,
+            Tramite.TipoTramite nacionalidad, String fechaInicio, String fechaFin, String filtro) {
+        Usuario solicitante = usuarioRepository.findByNombre(username)
+                .orElseThrow(() -> new IllegalArgumentException("Usuario no encontrado con el nombre: " + username));
+        filtro = filtro == null ? "" : filtro;
+        Pageable pageable = PageRequest.of(page - 1, limit);
+        return solicitudRepository.findByFiltersAndSolicitante(solicitante, estado, tipoTramite, nacionalidad, fechaInicio, fechaFin, filtro, pageable);
+    }
+
     public List<Solicitud> getSolicitudes(Integer page, Integer limit) {
         Pageable pageable = PageRequest.of(page - 1, limit);
         return solicitudRepository.findAllByOrderByIdDesc(pageable);
+    }
+
+    public List<Solicitud> findByFilters(Integer page, Integer limit, Tramite.EstadoTramite estado, String tipoTramite, Tramite.TipoTramite nacionalidad, String fechaInicio,
+            String fechaFin, String filtro) {
+        filtro = filtro == null ? "" : filtro;
+        Pageable pageable = PageRequest.of(page - 1, limit);
+        return solicitudRepository.findByFilters(estado, tipoTramite, nacionalidad, fechaInicio, fechaFin, filtro, pageable);
     }
 }

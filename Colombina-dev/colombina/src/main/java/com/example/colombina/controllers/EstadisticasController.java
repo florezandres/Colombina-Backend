@@ -7,14 +7,7 @@ import org.springframework.web.bind.annotation.*;
 import com.example.colombina.services.EstadisticasService;
 
 import java.time.Year;
-import java.util.HashMap;
 import java.util.Map;
-import java.util.List;
-
-
-import java.text.DateFormatSymbols;
-import java.time.LocalDate;
-import java.util.LinkedHashMap;
 
 @RestController
 @RequestMapping("/api/estadisticas/tramites")
