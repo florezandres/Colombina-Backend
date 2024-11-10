@@ -80,7 +80,7 @@ public class SolicitudService {
     }
 
     public List<Solicitud> findByFiltersAndSolicitante(String username, Integer page, Integer limit, Tramite.EstadoTramite estado, String tipoTramite,
-            Tramite.TipoTramite nacionalidad, String fechaInicio, String fechaFin, String filtro) {
+            Tramite.TipoTramite nacionalidad, Date fechaInicio, Date fechaFin, String filtro) {
         Usuario solicitante = usuarioRepository.findByNombre(username)
                 .orElseThrow(() -> new IllegalArgumentException("Usuario no encontrado con el nombre: " + username));
         filtro = filtro == null ? "" : filtro;
@@ -93,8 +93,8 @@ public class SolicitudService {
         return solicitudRepository.findAllByOrderByIdDesc(pageable);
     }
 
-    public List<Solicitud> findByFilters(Integer page, Integer limit, Tramite.EstadoTramite estado, String tipoTramite, Tramite.TipoTramite nacionalidad, String fechaInicio,
-            String fechaFin, String filtro) {
+    public List<Solicitud> findByFilters(Integer page, Integer limit, Tramite.EstadoTramite estado, String tipoTramite, Tramite.TipoTramite nacionalidad, Date fechaInicio,
+    Date fechaFin, String filtro) {
         filtro = filtro == null ? "" : filtro;
         Pageable pageable = PageRequest.of(page - 1, limit);
         return solicitudRepository.findByFilters(estado, tipoTramite, nacionalidad, fechaInicio, fechaFin, filtro, pageable);

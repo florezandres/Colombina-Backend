@@ -9,8 +9,10 @@ import com.example.colombina.services.SolicitudService;
 import lombok.extern.slf4j.Slf4j;
 
 import java.security.Principal;
+import java.util.Date;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -62,8 +64,8 @@ public class SolicitudController {
             @RequestParam(required = false) Tramite.EstadoTramite estado,
             @RequestParam(required = false) String tipo,
             @RequestParam(required = false) Tramite.TipoTramite nacionalidad,
-            @RequestParam(required = false) String fechaInicio,
-            @RequestParam(required = false) String fechaFin,
+            @RequestParam(required = false) @DateTimeFormat(pattern="yyyy-MM-dd") Date fechaInicio,
+            @RequestParam(required = false) @DateTimeFormat(pattern="yyyy-MM-dd") Date fechaFin,
             @RequestParam(required = false) String filtro) {
         return ResponseEntity.ok().body(solicitudService.findByFiltersAndSolicitante(principal.getName(),page, limit, estado, tipo, nacionalidad,
                 fechaInicio, fechaFin, filtro));
@@ -81,8 +83,8 @@ public class SolicitudController {
             @RequestParam(required = false) Tramite.EstadoTramite estado,
             @RequestParam(required = false) String tipo,
             @RequestParam(required = false) Tramite.TipoTramite nacionalidad,
-            @RequestParam(required = false) String fechaInicio,
-            @RequestParam(required = false) String fechaFin,
+            @RequestParam(required = false) @DateTimeFormat(pattern="yyyy-MM-dd") Date fechaInicio,
+            @RequestParam(required = false) @DateTimeFormat(pattern="yyyy-MM-dd") Date fechaFin,
             @RequestParam(required = false) String filtro) {
         return ResponseEntity.ok().body(solicitudService.findByFilters(page, limit, estado, tipo, nacionalidad,
                 fechaInicio, fechaFin, filtro));

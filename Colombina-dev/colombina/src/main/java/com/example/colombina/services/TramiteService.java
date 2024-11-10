@@ -223,8 +223,6 @@ public void modificarTramite(Long idTramite, String nuevoEstado) {
         tramite.setNumProyectoSap(tramiteDTO.getNumProyectoSap());
         tramite.setProyecto(tramiteDTO.getProyecto());
         tramite.setTipoModificacion(tramiteDTO.getTipoModificacion());
-        tramite.setDescripcionTramite(tramiteDTO.getDescripcionTramite());
-        tramite.setClaseTramite(tramiteDTO.getClaseTramite());
 
         // Guardar los cambios en la base de datos
         tramiteRepository.save(tramite);
