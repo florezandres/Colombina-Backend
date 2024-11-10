@@ -46,7 +46,6 @@ public class Usuario implements UserDetails {
 
     @ManyToOne
     @JoinColumn(name = "rol_id", nullable = false)
-    @JsonIgnore
     private Rol rol;
 
     @OneToMany(mappedBy = "solicitante", cascade = CascadeType.ALL, orphanRemoval = true)

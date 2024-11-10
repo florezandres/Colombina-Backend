@@ -72,6 +72,11 @@ public class SolicitudService {
         return modelMapper.map(solicitudGuardada, SolicitudDTO.class);
     }
 
+    public SolicitudDTO getSolicitudByTramite(Long id) {
+        Solicitud solicitud = solicitudRepository.findByTramiteId(id);
+        return modelMapper.map(solicitud, SolicitudDTO.class);
+    }
+
     public List<Solicitud> getSolicitudesPorSolicitante(String username, Integer page, Integer limit) {
         Usuario solicitante = usuarioRepository.findByNombre(username)
                 .orElseThrow(() -> new IllegalArgumentException("Usuario no encontrado con el nombre: " + username));

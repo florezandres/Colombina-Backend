@@ -25,8 +25,6 @@ public class SolicitudController {
     @Autowired
     private SolicitudService solicitudService;
 
-    // Crear solicitud y trámite -> SOLICITANTE DEI
-    @CrossOrigin
     @PostMapping(value = "/crear-solicitud", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> crearSolicitud(
             @RequestBody RequestTramiteSolicitudDTO requestTramiteSolicitudDTO,
@@ -46,6 +44,11 @@ public class SolicitudController {
         } catch (IllegalArgumentException e) {
             return ResponseEntity.status(400).body(e.getMessage()); // Error en caso de duplicado o validaciones
         }
+    }
+
+    @GetMapping(value = "tramite/{id}")
+    public ResponseEntity<?> getTramite(@PathVariable Long id) {
+        return ResponseEntity.ok().body(solicitudService.getSolicitudByTramite(id));
     }
 
     @GetMapping()
@@ -86,8 +89,6 @@ public class SolicitudController {
             @RequestParam(required = false) @DateTimeFormat(pattern="yyyy-MM-dd") Date fechaInicio,
             @RequestParam(required = false) @DateTimeFormat(pattern="yyyy-MM-dd") Date fechaFin,
             @RequestParam(required = false) String filtro) {
-        System.out.println("fechaInicio: " + fechaInicio);
-        System.out.println("fechaFin: " + fechaFin);
         return ResponseEntity.ok().body(solicitudService.findByFilters(page, limit, estado, tipo, nacionalidad,
                 fechaInicio, fechaFin, filtro));
     }

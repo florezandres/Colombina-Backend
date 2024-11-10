@@ -20,11 +20,10 @@ public class Solicitud {
     private Date fechaSolicitud;
 
     @ManyToOne
-    @ToString.Exclude
     @JoinColumn(name = "solicitante_id", nullable = false)
     private Usuario solicitante;
 
-    @OneToOne(fetch = FetchType.EAGER)
+    @OneToOne
     @JoinColumn(name = "tramite_id")
     private Tramite tramite;
 }

@@ -50,4 +50,6 @@ public interface SolicitudRepository extends JpaRepository<Solicitud, Long> {
 
         @Query("SELECT s FROM Solicitud s LEFT JOIN FETCH s.tramite t LEFT JOIN FETCH s.solicitante u WHERE s.solicitante = :solicitante ORDER BY s.id DESC")
         List<Solicitud> findBySolicitanteWithTramite(Usuario solicitante, Pageable pageable);
+
+        Solicitud findByTramiteId(Long id);
 }

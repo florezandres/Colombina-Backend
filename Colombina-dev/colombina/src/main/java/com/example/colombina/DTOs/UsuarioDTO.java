@@ -3,10 +3,12 @@ package com.example.colombina.DTOs;
 import com.example.colombina.model.Rol;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Getter
 @Setter
+@NoArgsConstructor
 public class UsuarioDTO {
     private Long id;
     private String nombre;
