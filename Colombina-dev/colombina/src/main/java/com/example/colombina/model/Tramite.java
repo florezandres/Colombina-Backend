@@ -6,20 +6,6 @@ import java.util.List;
 import com.example.colombina.DTOs.InfoAperturaTramiteDTO;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.OneToOne;
-import jakarta.persistence.Temporal;
-import jakarta.persistence.TemporalType;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -108,6 +94,33 @@ public class Tramite {
 
     @Column()
     private String tipoModificacion;
+
+    @Column()
+    private Date fechaNotificacion;
+    
+    @Column()
+    private Long idSeguimiento;
+    
+    @Column()
+    private String registroSanitario;
+    
+    @Column()
+    private String expedienteRSA;
+    
+    @Column()
+    private Long numeroRSA;
+    
+    @Column()
+    private Date fechaVencimientoRSA;
+    
+    @Column()
+    private String planta;
+    
+    @Column()
+    private String numeroFactura;
+    
+    @Column()
+    private String observaciones;
 
     @OneToOne
     @JoinColumn(name = "solicitud_id")
