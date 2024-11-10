@@ -16,4 +16,6 @@ WORKDIR /usr/src/app
 
 COPY --from=build /usr/src/app/target/colombina-*.jar java-app.jar
 
+EXPOSE 8080
+
 ENTRYPOINT [ "java", "-jar", "java-app.jar"]
