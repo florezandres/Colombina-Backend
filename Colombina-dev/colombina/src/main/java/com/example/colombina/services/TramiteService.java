@@ -65,6 +65,8 @@ public class TramiteService {
     public void infoControl(Long idTramite, InfoControlTramiteDTO infoTramite) {
         Tramite tramite = tramiteRepository.findById(idTramite)
                 .orElseThrow(() -> new IllegalArgumentException("El trámite con ID " + idTramite + " no existe."));
+
+        tramite.setFechaTerminacion(infoTramite.getFechaTerminacion());
         tramite.setFechaNotificacion(infoTramite.getFechaNotificacion());
         tramite.setIdSeguimiento(infoTramite.getIdSeguimiento());
         tramite.setRegistroSanitario(infoTramite.getRegistroSanitario());

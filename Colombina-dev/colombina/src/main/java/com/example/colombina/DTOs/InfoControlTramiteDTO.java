@@ -6,6 +6,7 @@ import lombok.Data;
 
 @Data
 public class InfoControlTramiteDTO {
+    private Date fechaTerminacion;
     private Date fechaNotificacion;
     private Long idSeguimiento;
     private String registroSanitario;

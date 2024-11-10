@@ -96,6 +96,9 @@ public class Tramite {
     private String tipoModificacion;
 
     @Column()
+    private Date fechaTerminacion;
+
+    @Column()
     private Date fechaNotificacion;
     
     @Column()
