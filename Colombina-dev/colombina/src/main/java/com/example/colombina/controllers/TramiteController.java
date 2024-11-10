@@ -13,20 +13,17 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.multipart.MultipartFile;
 
 import com.example.colombina.DTOs.InfoAperturaTramiteDTO;
 import com.example.colombina.DTOs.InfoControlTramiteDTO;
 import com.example.colombina.DTOs.TramiteDTO;
 import com.example.colombina.model.Seguimiento;
-import com.example.colombina.model.Tramite;
 import com.example.colombina.repositories.SeguimientoRepository;
 import com.example.colombina.services.TramiteService;
 
 import java.util.Date;
 import java.util.HashMap;
 
-import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
 @RestController
@@ -39,8 +36,6 @@ public class TramiteController {
     @Autowired
     private SeguimientoRepository seguimientoRepository;
 
-    // Apertura de un trámite por su ID -> ASUNTOS REGULATORIOS
-    @CrossOrigin
     @PostMapping("/{idTramite}/apertura")
     public ResponseEntity<?> abrirTramite(@PathVariable Long idTramite,
             @RequestBody InfoAperturaTramiteDTO infoTramite) {
@@ -55,17 +50,27 @@ public class TramiteController {
         }
     }
 
-    @CrossOrigin
+    @PostMapping("/{idTramite}/documentacion-revisada")
+    public ResponseEntity<?> documentacionRevisada(@PathVariable Long idTramite) {
+        try {
+            tramiteService.documentacionRevisada(idTramite);
+            HashMap<String, String> map = new HashMap<>();
+            map.put("message", "Documentación revisada correctamente.");
+            return ResponseEntity.ok(map);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(404).body(e.getMessage());
+        }
+    }
+
     @PostMapping("/{idTramite}/info-control")
     public ResponseEntity<?> infoControl(@PathVariable Long idTramite, @RequestBody InfoControlTramiteDTO infoTramite) {
         try {
-            // Llamar al servicio para abrir el trámite
             tramiteService.infoControl(idTramite, infoTramite);
             HashMap<String, String> map = new HashMap<>();
             map.put("message", "Información de control registrada correctamente.");
             return ResponseEntity.ok(map);
         } catch (IllegalArgumentException e) {
-            return ResponseEntity.status(404).body(e.getMessage()); // Error si el trámite no se encuentra
+            return ResponseEntity.status(404).body(e.getMessage());
         }
     }
 
@@ -84,8 +89,6 @@ public class TramiteController {
         }
     }
 
-    // Traer todos los trámites
-    @CrossOrigin
     @GetMapping("/todos")
     public ResponseEntity<?> findAll(@RequestParam(defaultValue = "1") Integer page,
             @RequestParam(defaultValue = "10") Integer limit) {
@@ -97,24 +100,10 @@ public class TramiteController {
         }
     }
 
-    @CrossOrigin
     @GetMapping("/{id}")
     public ResponseEntity<?> findById(@PathVariable Long id) {
         TramiteDTO tramite = tramiteService.findById(id);
         return ResponseEntity.ok(tramite);
-    }
-
-    // HU-39 - Filtrar trámites por estado
-    // Rol que utiliza el método: SOLICITANTE
-    @CrossOrigin
-    @GetMapping("/filtrado/estado")
-    public ResponseEntity<?> filtrarTramitesPorEstado(@RequestParam Tramite.EstadoTramite estado) {
-        try {
-            List<TramiteDTO> tramitesFiltrados = tramiteService.filtrarTramitesPorEstado(estado);
-            return ResponseEntity.ok(tramitesFiltrados);
-        } catch (Exception e) {
-            return ResponseEntity.status(500).body("Error al filtrar los trámites.");
-        }
     }
 
     // HU-13 - Obtener seguimiento de un trámite
@@ -160,27 +149,6 @@ public class TramiteController {
         }
     }
 
-    @PutMapping("/{idTramite}/info-control")
-    public ResponseEntity<?> agregarInfoControl(@PathVariable Long idTramite, @RequestBody TramiteDTO tramite) {
-        tramiteService.agregarInfoControl(idTramite, tramite);
-        return ResponseEntity.ok("Información de control agregada correctamente.");
-    }
-
-    // HU-38 - Subir múltiples archivos para un trámite
-    @PostMapping("/{idTramite}/subir-archivos")
-    public ResponseEntity<?> subirArchivos(@PathVariable Long idTramite,
-            @RequestParam("archivos") MultipartFile[] archivos) {
-        try {
-            // List<String> resultado = documentoService.guardarDocumentos(idTramite,
-            // archivos);
-            return ResponseEntity.ok("Archivos subidos correctamente: ");
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.status(400).body(e.getMessage());
-        } catch (Exception e) {
-            return ResponseEntity.status(500).body("Error al subir los archivos.");
-        }
-    }
-
     // HU-53 - Generar reportes personalizados
     @GetMapping("/reportes/personalizados")
     public ResponseEntity<?> generarReportePersonalizado(
@@ -194,19 +162,4 @@ public class TramiteController {
             return ResponseEntity.status(500).body("Error al generar el reporte.");
         }
     }
-
-    /*
-     * //HU 17
-     * 
-     * @PostMapping("/{idTramite}/escalar")
-     * public ResponseEntity<?> escalarTramite(@PathVariable Long idTramite) {
-     * try {
-     * // Escalar el trámite y crear la notificación
-     * tramiteService.escalarTramite(idTramite);
-     * return ResponseEntity.ok("El trámite ha sido escalado correctamente.");
-     * } catch (Exception e) {
-     * return ResponseEntity.status(500).body("Error al escalar el trámite.");
-     * }
-     * }
-     */
 }

@@ -20,7 +20,9 @@ import com.example.colombina.DTOs.TramiteDTO;
 import com.example.colombina.repositories.SeguimientoRepository;
 import com.example.colombina.repositories.TramiteRepository;
 
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @Service
 public class TramiteService {
 
@@ -48,7 +50,16 @@ public class TramiteService {
         tramite.setEtapa(4);
         tramite.setProgreso();
         tramiteRepository.save(tramite);
-        System.out.println("Trámite abierto correctamente.");
+        log.info("Trámite abierto correctamente.");
+    }
+
+    public void documentacionRevisada(Long idTramite) {
+        Tramite tramite = tramiteRepository.findById(idTramite)
+                .orElseThrow(() -> new IllegalArgumentException("El trámite con ID " + idTramite + " no existe."));
+        tramite.setEtapa(5);
+        tramite.setProgreso();
+        tramiteRepository.save(tramite);
+        log.info("Documentación revisada correctamente.");
     }
 
     public void infoControl(Long idTramite, InfoControlTramiteDTO infoTramite) {
@@ -58,7 +69,7 @@ public class TramiteService {
         tramite.setEtapa(4);
         tramite.setProgreso();
         tramiteRepository.save(tramite);
-        System.out.println("Trámite abierto correctamente.");
+        log.info("Trámite abierto correctamente.");
     }
     
     //HU-43 - Elimina un tramite que este incompleto
