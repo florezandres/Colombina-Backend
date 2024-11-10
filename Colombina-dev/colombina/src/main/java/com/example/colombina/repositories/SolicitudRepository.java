@@ -20,8 +20,8 @@ public interface SolicitudRepository extends JpaRepository<Solicitud, Long> {
                         "(:estado IS NULL OR t.estado = :estado) AND " +
                         "(:tipoTramite IS NULL OR t.tipoProducto = :tipoTramite) AND " +
                         "(:nacionalidad IS NULL OR t.tipoTramite = :nacionalidad) AND " +
-                        "(cast(:fechaInicio as date) IS NULL OR s.fechaSolicitud >= cast(:fechaInicio as date)) AND " +
-                        "(cast(:fechaFin as date) IS NULL OR t.fechaRadicacion <= cast(:fechaFin as date)) AND " +
+                        "(cast(cast(:fechaInicio as text) as date) IS NULL OR s.fechaSolicitud >= cast(cast(:fechaInicio as text) as date)) AND " +
+                        "(cast(cast(:fechaFin as text) as date) IS NULL OR t.fechaRadicacion <= cast(cast(:fechaFin as text) as date)) AND " +
                         "(:filtro IS NULL OR LOWER(u.nombre) LIKE LOWER(CONCAT('%', :filtro, '%')) OR " +
                         "LOWER(t.nombreProducto) LIKE LOWER(CONCAT('%', :filtro, '%')) OR " +
                         "LOWER(t.numeroRadicado) LIKE LOWER(CONCAT('%', :filtro, '%')) OR " +
@@ -37,8 +37,8 @@ public interface SolicitudRepository extends JpaRepository<Solicitud, Long> {
                         "(:estado IS NULL OR t.estado = :estado) AND " +
                         "(:tipoTramite IS NULL OR t.tipoProducto = :tipoTramite) AND " +
                         "(:nacionalidad IS NULL OR t.tipoTramite = :nacionalidad) AND " +
-                        "(cast(:fechaInicio as date) IS NULL OR s.fechaSolicitud >= cast(:fechaInicio as date)) AND " +
-                        "(cast(:fechaFin as date) IS NULL OR t.fechaRadicacion <= cast(:fechaFin as date)) AND " +
+                        "(cast(cast(:fechaInicio as text) as date) IS NULL OR s.fechaSolicitud >= cast(cast(:fechaInicio as text) as date)) AND " +
+                        "(cast(cast(:fechaFin as text) as date) IS NULL OR t.fechaRadicacion <= cast(cast(:fechaFin as text) as date)) AND " +
                         "(:filtro IS NULL OR LOWER(t.nombreProducto) LIKE LOWER(CONCAT('%', :filtro, '%')) OR " +
                         "LOWER(t.numeroRadicado) LIKE LOWER(CONCAT('%', :filtro, '%')) OR " +
                         "LOWER(t.nombreEtapa) LIKE LOWER(CONCAT('%', :filtro, '%'))) ORDER BY s.id DESC")

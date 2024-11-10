@@ -86,6 +86,8 @@ public class SolicitudController {
             @RequestParam(required = false) @DateTimeFormat(pattern="yyyy-MM-dd") Date fechaInicio,
             @RequestParam(required = false) @DateTimeFormat(pattern="yyyy-MM-dd") Date fechaFin,
             @RequestParam(required = false) String filtro) {
+        System.out.println("fechaInicio: " + fechaInicio);
+        System.out.println("fechaFin: " + fechaFin);
         return ResponseEntity.ok().body(solicitudService.findByFilters(page, limit, estado, tipo, nacionalidad,
                 fechaInicio, fechaFin, filtro));
     }
