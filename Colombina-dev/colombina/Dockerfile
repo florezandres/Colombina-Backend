@@ -1,4 +1,4 @@
-FROM openjdk:17-jdk-alpine AS build
+FROM openjdk:17-slim AS build
 WORKDIR /usr/src/app
 
 COPY pom.xml ./pom.xml
