@@ -186,7 +186,6 @@ public void modificarTramite(Long idTramite, String nuevoEstado) {
                     (fechaFin == null || !tramite.getFechaRadicacion().after(fechaFin))) {
                 TramiteDTO dto = new TramiteDTO();
                 dto.setId(tramite.getId());
-                dto.setNumeroRadicado(tramite.getNumeroRadicado());
                 dto.setEstado(tramite.getEstado());
                 dto.setFechaRadicacion(tramite.getFechaRadicacion());
                 reporte.add(dto);
@@ -226,7 +225,7 @@ public void modificarTramite(Long idTramite, String nuevoEstado) {
                 .orElseThrow(() -> new IllegalArgumentException("El trámite con ID " + idTramite + " no existe."));
 
         // Asociar el número de radicado y la llave
-        tramite.setNumeroRadicado(numeroRadicado);
+        tramite.setExpedienteRSA(numeroRadicado);
         tramite.setLlave(llave);
 
         // Guardar los cambios en la base de datos

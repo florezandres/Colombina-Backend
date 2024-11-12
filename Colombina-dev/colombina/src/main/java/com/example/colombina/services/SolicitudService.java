@@ -58,18 +58,16 @@ public class SolicitudService {
         nuevoTramite.setProgreso();
         nuevoTramite.setFechaSolicitud(new Date());
         nuevoTramite.setEntidadSanitaria(new EntidadSanitaria(tramiteDTO.getEntidadSanitariaId()));
-        System.out.println("Progresoooo: " + nuevoTramite.getProgreso());
-        System.out.println("Antes de guardar tramite: " + nuevoTramite.getNumeroRadicado());
         Tramite tramiteGuardado = tramiteRepository.save(nuevoTramite);
-        System.out.println("Tramite guardado: " + tramiteGuardado.getNumeroRadicado());
+        log.info("Tramite guardado: " + tramiteGuardado.getNumeroRadicado());
         // Crear y guardar la nueva Solicitud
         Solicitud nuevaSolicitud = modelMapper.map(solicitudDTO, Solicitud.class); // Convertir el DTO a entidad
         nuevaSolicitud.setSolicitante(solicitante); // Asociar el usuario solicitante
         nuevaSolicitud.setTramite(tramiteGuardado); // Asociar el trámite creado
 
         Solicitud solicitudGuardada = solicitudRepository.save(nuevaSolicitud);
+        log.info("Solicitud guardada: " + solicitudGuardada.getId());
 
-        log.info("Antes de return");
         // Convertir la solicitud guardada a DTO y devolverla
         return modelMapper.map(solicitudGuardada, SolicitudDTO.class);
     }
