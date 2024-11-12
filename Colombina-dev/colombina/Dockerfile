@@ -11,7 +11,7 @@ RUN apt-get update && apt-get install dos2unix
 RUN chmod +x mvnw
 RUN dos2unix mvnw && ./mvnw clean install -DskipTests
 
-FROM openjdk:17-jdk-alpine AS runtime
+FROM openjdk:17-jdk-slim AS runtime
 WORKDIR /usr/src/app
 
 COPY --from=build /usr/src/app/target/colombina-*.jar java-app.jar
