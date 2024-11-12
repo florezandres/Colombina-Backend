@@ -171,8 +171,70 @@ public class Tramite {
         } else if (this.estado == EstadoTramite.RECHAZADO) {
             this.progreso = 0;
         } else {
-            this.progreso = this.tipoTramite == TipoTramite.NACIONAL ? (double) (etapa - 1) / 9
-                    : (double) (etapa - 1) / 8;
+            if (this.tipoTramite == TipoTramite.NACIONAL) {
+                switch (etapa) {
+                    case 1:
+                        this.progreso = 0.05;
+                        break;
+                    case 2:
+                        this.progreso = 0.05;
+                        break;
+                    case 3:
+                        this.progreso = 0.15;
+                        break;
+                    case 4:
+                        this.progreso = 0.25;
+                        break;
+                    case 5:
+                        this.progreso = 0.4;
+                        break;
+                    case 6:
+                        this.progreso = 0.5;
+                        break;
+                    case 7:
+                        this.progreso = 0.75;
+                        break;
+                    case 8:
+                        this.progreso = 0.85;
+                        break;
+                    case 9:
+                        this.progreso = 0.95;
+                        break;
+                
+                    default:
+                        break;
+                }
+            } else {
+                switch (etapa) {
+                    case 1:
+                        this.progreso = 0.05;
+                        break;
+                    case 2:
+                        this.progreso = 0.15;
+                        break;
+                    case 3:
+                        this.progreso = 0.15;
+                        break;
+                    case 4:
+                        this.progreso = 0.3;
+                        break;
+                    case 5:
+                        this.progreso = 0.45;
+                        break;
+                    case 6:
+                        this.progreso = 0.6;
+                        break;
+                    case 7:
+                        this.progreso = 0.75;
+                        break;
+                    case 8:
+                        this.progreso = 0.9;
+                        break;
+                
+                    default:
+                        break;
+                }
+            }
         }
     }
 
