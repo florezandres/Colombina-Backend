@@ -47,6 +47,13 @@ public class TramiteService {
         tramite.setNumProyectoSap(infoTramite.getNumProyectoSap());
         tramite.setProyecto(infoTramite.getProyecto());
         tramite.setTipoModificacion(infoTramite.getTipoModificacion());
+        tramite.setNumeroRSA(infoTramite.getNumRSA().longValue());
+        tramite.setRegistroSanitario(infoTramite.getRegistroRSA());
+        tramite.setExpedienteRSA(infoTramite.getExpedienteRSA());
+        tramite.setUrgente(infoTramite.getUrgente());
+        tramite.setFechaVencimientoRSA(infoTramite.getVencimientoRSA());
+        tramite.setPlanta(infoTramite.getPlanta());
+        tramite.setObservaciones(infoTramite.getObservaciones());
         tramite.setEtapa(4);
         tramite.setProgreso();
         tramiteRepository.save(tramite);
@@ -96,6 +103,14 @@ public class TramiteService {
 
         // Elimina el trámite
         tramiteRepository.delete(tramite);
+    }
+
+    public void cambiarEtapa(Long idTramite, Integer etapa) {
+        Tramite tramite = tramiteRepository.findById(idTramite)
+                .orElseThrow(() -> new IllegalArgumentException("El trámite con ID " + idTramite + " no existe."));
+        tramite.setEtapa(etapa);
+        tramite.setProgreso();
+        tramiteRepository.save(tramite);
     }
 
     /*//Traer todos los tramites

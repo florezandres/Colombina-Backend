@@ -125,6 +125,9 @@ public class Tramite {
     @Column()
     private String observaciones;
 
+    @Column()
+    private Boolean urgente;
+
     @OneToOne
     @JoinColumn(name = "solicitud_id")
     @JsonIgnore

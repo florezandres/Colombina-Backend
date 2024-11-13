@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -121,8 +122,16 @@ public class TramiteController {
             return ResponseEntity.ok("Trámite modificado correctamente.");
         } catch (IllegalArgumentException e) {
             return ResponseEntity.status(400).body(e.getMessage());
-        } catch (Exception e) {
-            return ResponseEntity.status(500).body("Error al modificar el trámite.");
+        }
+    }
+
+    @PutMapping("/{idTramite}/cambiar-etapa")
+    public ResponseEntity<?> cambiarEtapa(@PathVariable Long idTramite, @RequestParam Integer nuevaEtapa) {
+        try {
+            tramiteService.cambiarEtapa(idTramite, nuevaEtapa);
+            return ResponseEntity.ok("Etapa cambiada correctamente.");
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(400).body(e.getMessage());
         }
     }
 

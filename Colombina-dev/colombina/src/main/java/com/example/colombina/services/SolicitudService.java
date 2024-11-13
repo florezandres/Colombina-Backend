@@ -53,10 +53,8 @@ public class SolicitudService {
         Tramite nuevoTramite = modelMapper.map(tramiteDTO, Tramite.class); // Convertir el DTO a entidad
         nuevoTramite.setEstado(Tramite.EstadoTramite.PENDIENTE); // Asignar estado pendiente
         nuevoTramite.setNumeroRadicado("AR-" + (nextId + 50)); // Generar número de radicado
-        nuevoTramite.setFechaRadicacion(new Date()); // Asignar la fecha actual
         nuevoTramite.setEtapa(2);
         nuevoTramite.setProgreso();
-        nuevoTramite.setFechaSolicitud(new Date());
         nuevoTramite.setEntidadSanitaria(new EntidadSanitaria(tramiteDTO.getEntidadSanitariaId()));
         Tramite tramiteGuardado = tramiteRepository.save(nuevoTramite);
         log.info("Tramite guardado: " + tramiteGuardado.getNumeroRadicado());
