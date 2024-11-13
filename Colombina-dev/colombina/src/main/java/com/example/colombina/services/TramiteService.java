@@ -65,7 +65,7 @@ public class TramiteService {
         tramite.setProgreso();
         tramiteRepository.save(tramite);
 
-        Long solicitudId =tramite.getId()-1;
+        Long solicitudId = tramite.getId() - 1;
         notificacionService.enviarNotificacionAperturaTramite(solicitudId);
         log.info("Trámite abierto correctamente.");
     }
@@ -302,6 +302,15 @@ public void modificarTramite(Long idTramite, String nuevoEstado) {
                 .orElseThrow(() -> new IllegalArgumentException("El trámite con ID " + idTramite + " no existe."));
 
         tramite.setEstado(Tramite.EstadoTramite.RECHAZADO);
+        tramite.setProgreso();
+        tramiteRepository.save(tramite);
+    }
+
+    public void aprobarTramiteEntidadSanitaria(Long idTramite) {
+        Tramite tramite = tramiteRepository.findById(idTramite)
+                .orElseThrow(() -> new IllegalArgumentException("El trámite con ID " + idTramite + " no existe."));
+
+        tramite.setEtapa(8);
         tramite.setProgreso();
         tramiteRepository.save(tramite);
     }

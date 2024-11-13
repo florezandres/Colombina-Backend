@@ -200,4 +200,16 @@ public class TramiteController {
             return ResponseEntity.status(404).body(e.getMessage());
         }
     }
+
+    @PostMapping("/{idTramite}/aprobar-entidad-sanitaria")
+    public ResponseEntity<?> aprobarEntidadSanitaria(
+            @PathVariable Long idTramite) {
+        try {
+            tramiteService.aprobarTramiteEntidadSanitaria(idTramite);
+
+            return ResponseEntity.ok(Collections.singletonMap("message", "Aprobación guardada correctamente."));
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(404).body(e.getMessage());
+        }
+    }
 }
