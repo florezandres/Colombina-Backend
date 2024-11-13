@@ -129,7 +129,9 @@ public class TramiteController {
     public ResponseEntity<?> cambiarEtapa(@PathVariable Long idTramite, @PathVariable Integer nuevaEtapa) {
         try {
             tramiteService.cambiarEtapa(idTramite, nuevaEtapa);
-            return ResponseEntity.ok("Etapa cambiada correctamente.");
+            HashMap<String, String> map = new HashMap<>();
+            map.put("message", "Etapa cambiada correctamente.");
+            return ResponseEntity.ok(map);
         } catch (IllegalArgumentException e) {
             return ResponseEntity.status(400).body(e.getMessage());
         }
