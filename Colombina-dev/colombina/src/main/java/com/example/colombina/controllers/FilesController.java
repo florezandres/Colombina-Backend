@@ -13,14 +13,7 @@ import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.example.colombina.DTOs.DocumentoDTO;
 import com.example.colombina.model.Documento;
@@ -80,9 +73,25 @@ public class FilesController {
 
 
     @CrossOrigin
+    @GetMapping("/comentario-documento/{idDocumento}")
+    public ResponseEntity<?> traerComentarios(@PathVariable Long idDocumento) {
+        try {
+            String comentarios = fileService.getComentario(idDocumento);
+            return ResponseEntity.status(200).body(comentarios);
+        } catch (Exception e) {
+            log.error("Error al obtener comentarios para el trámite " + idDocumento, e);
+            return ResponseEntity.status(500).body(null);
+        }
+    }
+
+    @CrossOrigin
     @PostMapping("/negar-documento/{idTramite}/{nombreDocumento}")
-    public ResponseEntity<?> negarDocumento(@PathVariable Long idTramite, @PathVariable String nombreDocumento) {
-        String result = fileService.negarDocumento(idTramite, nombreDocumento);
+    public ResponseEntity<?> negarDocumento(
+            @PathVariable Long idTramite,
+            @PathVariable String nombreDocumento,
+            @RequestBody Map<String, String> body) { // Recibir cuerpo de la solicitud
+        String comentario = body.get("comentario"); // Obtener el comentario del cuerpo
+        String result = fileService.negarDocumento(idTramite, nombreDocumento, comentario); // Pasar el comentario
 
         Map<String, String> response = new HashMap<>();
         if ("Documento no encontrado.".equals(result)) {
@@ -90,12 +99,13 @@ public class FilesController {
             return ResponseEntity.status(404).body(response);
         } else if ("Error interno al rechazar el documento".equals(result)) {
             response.put("error", result);
-            return ResponseEntity.status(500).body(response); // Devolver un error 500 en JSON
+            return ResponseEntity.status(500).body(response);
         }
 
         response.put("message", result); // Respuesta de éxito en JSON
         return ResponseEntity.ok(response);
     }
+
 
 
     @CrossOrigin
