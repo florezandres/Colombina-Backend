@@ -1,6 +1,8 @@
 package com.example.colombina.controllers;
 
 import java.util.Collections;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +13,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -18,16 +21,10 @@ import org.springframework.web.bind.annotation.RestController;
 import com.example.colombina.DTOs.InfoAperturaTramiteDTO;
 import com.example.colombina.DTOs.InfoControlTramiteDTO;
 import com.example.colombina.DTOs.TramiteDTO;
+import com.example.colombina.DTOs.UpdateStatusRequest;
 import com.example.colombina.model.Seguimiento;
 import com.example.colombina.repositories.SeguimientoRepository;
 import com.example.colombina.services.TramiteService;
-import com.example.colombina.DTOs.UpdateStatusRequest;
-
-
-import java.util.Date;
-import java.util.HashMap;
-
-import org.springframework.web.bind.annotation.RequestBody;
 
 @RestController
 @RequestMapping("/tramites")

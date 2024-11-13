@@ -1,5 +1,14 @@
 package com.example.colombina.services;
 
+import java.util.Date;
+import java.util.List;
+
+import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Service;
+
 import com.example.colombina.DTOs.SolicitudDTO;
 import com.example.colombina.DTOs.TramiteDTO;
 import com.example.colombina.model.EntidadSanitaria;
@@ -11,15 +20,6 @@ import com.example.colombina.repositories.TramiteRepository;
 import com.example.colombina.repositories.UsuarioRepository;
 
 import lombok.extern.slf4j.Slf4j;
-
-import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.stereotype.Service;
-
-import java.util.Date;
-import java.util.List;
 
 @Slf4j
 @Service
@@ -33,6 +33,9 @@ public class SolicitudService {
 
     @Autowired
     private UsuarioRepository usuarioRepository;
+
+    @Autowired
+    private NotificacionService notificacionService;
 
     @Autowired
     private ModelMapper modelMapper; // Usaremos ModelMapper para la conversión a DTO
@@ -67,7 +70,7 @@ public class SolicitudService {
 
         Solicitud solicitudGuardada = solicitudRepository.save(nuevaSolicitud);
         log.info("Solicitud guardada: " + solicitudGuardada.getId());
-
+        notificacionService.enviarNotificacionNuevaSolicitud(solicitudGuardada.getId());
         // Convertir la solicitud guardada a DTO y devolverla
         return modelMapper.map(solicitudGuardada, SolicitudDTO.class);
     }

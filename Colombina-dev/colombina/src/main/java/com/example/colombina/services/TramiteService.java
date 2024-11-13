@@ -7,16 +7,20 @@ import java.util.List;
 import java.util.Optional;
 
 import org.modelmapper.ModelMapper;
-import com.example.colombina.DTOs.ComentarioDTO;
-import com.example.colombina.DTOs.InfoAperturaTramiteDTO;
-import com.example.colombina.DTOs.InfoControlTramiteDTO;
-import com.example.colombina.model.*;
-import com.example.colombina.repositories.HistorialCambioRepository;
 import org.modelmapper.TypeToken;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.example.colombina.DTOs.ComentarioDTO;
+import com.example.colombina.DTOs.InfoAperturaTramiteDTO;
+import com.example.colombina.DTOs.InfoControlTramiteDTO;
 import com.example.colombina.DTOs.TramiteDTO;
+import com.example.colombina.model.Comentario;
+import com.example.colombina.model.HistorialCambio;
+import com.example.colombina.model.Seguimiento;
+import com.example.colombina.model.Tramite;
+import com.example.colombina.model.Usuario;
+import com.example.colombina.repositories.HistorialCambioRepository;
 import com.example.colombina.repositories.SeguimientoRepository;
 import com.example.colombina.repositories.TramiteRepository;
 
@@ -38,6 +42,9 @@ public class TramiteService {
     @Autowired
     private HistorialCambioRepository historialCambioRepository;
 
+    @Autowired
+    private NotificacionService notificacionService;
+
     // Cambia el estado de un trámite a EN_REVISION
     public void abrirTramite(Long idTramite, InfoAperturaTramiteDTO infoTramite) {
         Tramite tramite = tramiteRepository.findById(idTramite)
@@ -50,6 +57,9 @@ public class TramiteService {
         tramite.setEtapa(4);
         tramite.setProgreso();
         tramiteRepository.save(tramite);
+
+        Long solicitudId =tramite.getId()-1;
+        notificacionService.enviarNotificacionAperturaTramite(solicitudId);
         log.info("Trámite abierto correctamente.");
     }
     public void updateStatus(Long idTramite, String status, String rejectionReason) {
@@ -248,6 +258,9 @@ public void modificarTramite(Long idTramite, String nuevoEstado) {
 
         // Guardar los cambios en la base de datos
         tramiteRepository.save(tramite);
+
+        Long idSolicitud = tramite.getId()-1;
+        notificacionService.enviarNotificacionTramiteAceptadoInvima(idSolicitud);
     }
 
     public void agregarInfoControl(Long idTramite, TramiteDTO tramiteDTO) {
