@@ -1,20 +1,29 @@
 package com.example.colombina.repositories;
 
-import com.example.colombina.model.Solicitud;
-import com.example.colombina.model.Tramite;
-import com.example.colombina.model.Usuario;
-
 import java.util.Date;
 import java.util.List;
 
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
+
+import com.example.colombina.model.Solicitud;
+import com.example.colombina.model.Tramite;
+import com.example.colombina.model.Usuario;
 
 @Repository
 public interface SolicitudRepository extends JpaRepository<Solicitud, Long> {
         List<Solicitud> findAllByOrderByIdDesc(Pageable pageable);
+
+            // Consulta para obtener el ID del cliente a partir del ID de la solicitud
+    @Query("SELECT s.solicitante.id FROM Solicitud s WHERE s.id = :solicitudId")
+    Long findSolicitanteIdBySolicitudId(@Param("solicitudId") Long solicitudId);
+
+    // Consulta para obtener el ID del trámite a partir del ID de la solicitud
+    @Query("SELECT s.tramite.id FROM Solicitud s WHERE s.id = :solicitudId")
+    Long findTramiteIdBySolicitudId(@Param("solicitudId") Long solicitudId);
 
         @Query("SELECT s FROM Solicitud s LEFT JOIN FETCH s.tramite t LEFT JOIN FETCH s.solicitante u WHERE " +
                         "(:estado IS NULL OR t.estado = :estado) AND " +

@@ -7,7 +7,6 @@ import org.jetbrains.annotations.NotNull;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
-
 import org.springframework.stereotype.Repository;
 
 import com.example.colombina.model.Tramite;
@@ -30,6 +29,11 @@ public interface TramiteRepository extends JpaRepository<Tramite, Long> {
 
   List<Tramite> findAllByOrderByIdDesc();
 
+  @Query("SELECT t.id FROM Tramite t WHERE t.solicitud.id = :solicitudId")
+  Long findTramiteIdBySolicitudId(@Param("solicitudId") Long solicitudId);
+
+  @Query("SELECT t.solicitud.id FROM Tramite t WHERE t.id = :tramiteId")
+  Long findSolicitudIdByTramiteId(@Param("tramiteId") Long tramiteId);
   // filtros para Estadisticas
   
     //NUEVOS
