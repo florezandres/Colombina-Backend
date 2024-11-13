@@ -28,6 +28,9 @@ public class FileService {
     private TramiteRepository tramiteRepository;
 
 
+    public void eliminarDocumento(Long idDocumento) {
+        fileRepository.deleteById(idDocumento);
+    }
     public List<Documento> getDocumentosCorregir(Long tramiteId) {
         // Verificar si el trámite existe y si está en estado PENDIENTE
         Optional<Tramite> tramiteOpt = tramiteRepository.findById(tramiteId);

@@ -176,12 +176,15 @@ public class FilesController {
     }
 
     @CrossOrigin
-    @DeleteMapping("/eliminar-archivo/{idTramite}/{filename}")
+    @DeleteMapping("/eliminar-archivo/{idTramite}/{filename}/{idDocumento}")
     public ResponseEntity<?> eliminarArchivo(
             @PathVariable Long idTramite,
-            @PathVariable String filename) {
+            @PathVariable String filename,
+            @PathVariable Long idDocumento) {
+        System.out.println("Entra a endpoint eliminar archivo para eliminar: "+filename+ " del trámite: "+idTramite);
         try {
             awsS3Service.deleteFile(filename, idTramite);
+            fileService.eliminarDocumento(idDocumento);
             return ResponseEntity.ok().build();
         } catch (Exception e) {
             log.error("Error al eliminar el archivo " + filename + " para el trámite " + idTramite, e);
