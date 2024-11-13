@@ -125,8 +125,8 @@ public class TramiteController {
         }
     }
 
-    @PutMapping("/{idTramite}/cambiar-etapa")
-    public ResponseEntity<?> cambiarEtapa(@PathVariable Long idTramite, @RequestParam Integer nuevaEtapa) {
+    @PutMapping("/{idTramite}/cambiar-etapa/{nuevaEtapa}")
+    public ResponseEntity<?> cambiarEtapa(@PathVariable Long idTramite, @PathVariable Integer nuevaEtapa) {
         try {
             tramiteService.cambiarEtapa(idTramite, nuevaEtapa);
             return ResponseEntity.ok("Etapa cambiada correctamente.");
