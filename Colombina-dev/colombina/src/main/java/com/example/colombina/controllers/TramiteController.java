@@ -191,4 +191,16 @@ public class TramiteController {
             return ResponseEntity.status(500).body("Error al generar el reporte.");
         }
     }
+
+    @PostMapping("/{idTramite}/rechazar")
+    public ResponseEntity<?> rechazarTramite(
+            @PathVariable Long idTramite) {
+        try {
+            tramiteService.rechazarTramite(idTramite);
+
+            return ResponseEntity.ok(Collections.singletonMap("message", "Trámite rechazado correctamente."));
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(404).body(e.getMessage());
+        }
+    }
 }

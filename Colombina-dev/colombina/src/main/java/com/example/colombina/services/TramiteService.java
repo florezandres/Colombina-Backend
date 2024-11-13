@@ -284,4 +284,12 @@ public void modificarTramite(Long idTramite, String nuevoEstado) {
         return tramiteRepository.save(detallesTramite);
     }
     
+    public void rechazarTramite(Long idTramite) {
+        Tramite tramite = tramiteRepository.findById(idTramite)
+                .orElseThrow(() -> new IllegalArgumentException("El trámite con ID " + idTramite + " no existe."));
+
+        tramite.setEstado(Tramite.EstadoTramite.RECHAZADO);
+        tramite.setProgreso();
+        tramiteRepository.save(tramite);
+    }
 }

@@ -6,7 +6,6 @@ import java.util.stream.Collectors;
 
 import com.example.colombina.model.Tramite;
 import com.example.colombina.repositories.TramiteRepository;
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -24,9 +23,6 @@ public class FileService {
 
     @Autowired
     private TramiteService tramiteService;
-
-    @Autowired
-    private ModelMapper modelMapper;
 
     @Autowired
     private TramiteRepository tramiteRepository;
