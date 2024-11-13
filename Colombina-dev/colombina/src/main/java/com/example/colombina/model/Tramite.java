@@ -25,6 +25,9 @@ public class Tramite {
     @Column(nullable = false, unique = true)
     private String numeroRadicado;
 
+    @Column()
+    private String rejectionReason; 
+
     @Column(nullable = false)
     private String nombreProducto;
 
@@ -121,6 +124,7 @@ public class Tramite {
     
     @Column()
     private String numeroFactura;
+
     
     @Column()
     private String observaciones;
@@ -162,6 +166,16 @@ public class Tramite {
     public String getEtapa() {
         return this.tipoTramite == TipoTramite.NACIONAL ? "A" + etapa.intValue() : "B" + etapa.intValue();
     }
+
+    public String getRejectionReason() {
+        return rejectionReason;
+    }
+    
+    public void setRejectionReason(String rejectionReason) {
+        this.rejectionReason = rejectionReason;
+    }
+    
+    
 
     public Double getProgreso() {
         return this.progreso;

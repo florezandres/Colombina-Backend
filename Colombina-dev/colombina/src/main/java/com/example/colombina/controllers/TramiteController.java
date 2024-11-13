@@ -21,6 +21,8 @@ import com.example.colombina.DTOs.TramiteDTO;
 import com.example.colombina.model.Seguimiento;
 import com.example.colombina.repositories.SeguimientoRepository;
 import com.example.colombina.services.TramiteService;
+import com.example.colombina.DTOs.UpdateStatusRequest;
+
 
 import java.util.Date;
 import java.util.HashMap;
@@ -50,6 +52,7 @@ public class TramiteController {
             return ResponseEntity.status(404).body(e.getMessage()); // Error si el trámite no se encuentra
         }
     }
+    
 
     @PostMapping("/{idTramite}/documentacion-revisada")
     public ResponseEntity<?> documentacionRevisada(@PathVariable Long idTramite) {
@@ -157,6 +160,23 @@ public class TramiteController {
             return ResponseEntity.status(500).body("Error al aceptar el trámite.");
         }
     }
+    // Nuevo endpoint para actualizar el estado del trámite
+    // Endpoint en el controlador
+    @PutMapping("/{idTramite}/update-status")
+        public ResponseEntity<?> updateTramiteStatus(
+        @PathVariable Long idTramite,
+        @RequestBody UpdateStatusRequest request) {
+    try {
+        tramiteService.updateStatus(idTramite, request.getStatus(), request.getRejectionReason());
+        return ResponseEntity.ok(Collections.singletonMap("message", "Estado del trámite actualizado correctamente."));
+        } catch (IllegalArgumentException e) {
+        return ResponseEntity.status(404).body(e.getMessage());
+        } catch (Exception e) {
+        return ResponseEntity.status(500).body("Error al actualizar el estado del trámite.");
+        }
+}
+
+
 
     // HU-53 - Generar reportes personalizados
     @GetMapping("/reportes/personalizados")
