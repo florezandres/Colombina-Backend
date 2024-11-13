@@ -27,6 +27,9 @@ public class Documento {
     @Column
     private Boolean aprobado;
 
+    @Column
+    private String comentarios;
+
     @ManyToOne
     @ToString.Exclude
     @JoinColumn(name = "tramite_id", nullable = false)

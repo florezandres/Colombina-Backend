@@ -29,10 +29,21 @@ public class TramiteDTO {
     private Integer numProyectoSap;
     private String proyecto;
     private String tipoModificacion;
-    private String descripcionTramite;
     private String claseTramite;
     private List<HistorialCambioDTO> historialCambioDTOList;
     private Date fechaSolicitud;
     private EntidadSanitariaDTO entidadSanitaria;
+    private Date fechaTerminacion;
+    private Date fechaNotificacion;
+    private String idSeguimiento;
+    private String registroSanitario;
+    private String expedienteRSA;
+    private Long numeroRSA;
+    private Date fechaVencimientoRSA;
+    private String planta;
+    private String numeroFactura;
+    private String observaciones;
+    private Boolean urgente;
+    private Date fechaEnvioDocumentos;
 }
 

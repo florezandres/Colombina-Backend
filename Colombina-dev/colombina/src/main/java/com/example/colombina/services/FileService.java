@@ -51,6 +51,11 @@ public class FileService {
         return fileRepository.findByTramiteId(tramiteId);
     }
 
+    public String getComentario(Long idDocumento){
+        Optional<Documento> documentoOpt = fileRepository.findById(idDocumento);
+        return documentoOpt.get().getComentarios();
+    }
+
     public String aprobarDocumento(Long idTramite, String nombreDocumento) {
         System.out.println("Entra a service aprobar documento");
         try {
@@ -77,31 +82,30 @@ public class FileService {
         }
     }
 
-
-
-    public String negarDocumento(Long idTramite, String nombreDocumento) {
+    public String negarDocumento(Long idTramite, String nombreDocumento, String comentario) {
         try {
             Optional<Documento> documentoOpt = findDocumento(idTramite, nombreDocumento);
             if (documentoOpt.isEmpty()) {
                 return "Documento no encontrado.";
             }
 
-            // Cambiar estado trámite
+            // Cambiar el estado del trámite
             Tramite tramite = tramiteService.findByIdEntity(idTramite);
             tramite.setEstado(PENDIENTE);
             tramiteRepository.save(tramite);
 
+            // Guardar comentario y cambiar aprobación del documento
             Documento documento = documentoOpt.get();
             documento.setAprobado(false);
+            documento.setComentarios(comentario); // Almacenar el comentario
             fileRepository.save(documento);
+
             return "Documento rechazado exitosamente.";
         } catch (Exception e) {
-            // Imprimir error en los logs
             e.printStackTrace();
             return "Error interno al rechazar el documento.";
         }
     }
-
 
 
     public Optional<Documento> findDocumento(Long idTramite, String nombreDocumento) {

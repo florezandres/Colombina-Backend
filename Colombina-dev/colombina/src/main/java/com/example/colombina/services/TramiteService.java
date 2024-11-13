@@ -54,6 +54,13 @@ public class TramiteService {
         tramite.setNumProyectoSap(infoTramite.getNumProyectoSap());
         tramite.setProyecto(infoTramite.getProyecto());
         tramite.setTipoModificacion(infoTramite.getTipoModificacion());
+        tramite.setNumeroRSA(infoTramite.getNumRSA().longValue());
+        tramite.setRegistroSanitario(infoTramite.getRegistroRSA());
+        tramite.setExpedienteRSA(infoTramite.getExpedienteRSA());
+        tramite.setUrgente(infoTramite.getUrgente());
+        tramite.setFechaVencimientoRSA(infoTramite.getVencimientoRSA());
+        tramite.setPlanta(infoTramite.getPlanta());
+        tramite.setObservaciones(infoTramite.getObservaciones());
         tramite.setEtapa(4);
         tramite.setProgreso();
         tramiteRepository.save(tramite);
@@ -89,15 +96,8 @@ public class TramiteService {
         Tramite tramite = tramiteRepository.findById(idTramite)
                 .orElseThrow(() -> new IllegalArgumentException("El trámite con ID " + idTramite + " no existe."));
 
-        tramite.setFechaTerminacion(infoTramite.getFechaTerminacion());
-        tramite.setFechaNotificacion(infoTramite.getFechaNotificacion());
+        tramite.setFechaEnvioDocumentos(infoTramite.getFechaEnvioDocumnetos());
         tramite.setIdSeguimiento(infoTramite.getIdSeguimiento());
-        tramite.setRegistroSanitario(infoTramite.getRegistroSanitario());
-        tramite.setExpedienteRSA(infoTramite.getExpedienteRSA());
-        tramite.setNumeroRSA(infoTramite.getNumeroRSA());
-        tramite.setFechaVencimientoRSA(infoTramite.getFechaVencimientoRSA());
-        tramite.setPlanta(infoTramite.getPlanta());
-        tramite.setNumeroFactura(infoTramite.getNumeroFactura());
         tramite.setObservaciones(infoTramite.getObservaciones());
         tramite.setEtapa(6);
         tramite.setProgreso();
@@ -119,6 +119,14 @@ public class TramiteService {
 
         // Elimina el trámite
         tramiteRepository.delete(tramite);
+    }
+
+    public void cambiarEtapa(Long idTramite, Integer etapa) {
+        Tramite tramite = tramiteRepository.findById(idTramite)
+                .orElseThrow(() -> new IllegalArgumentException("El trámite con ID " + idTramite + " no existe."));
+        tramite.setEtapa(etapa);
+        tramite.setProgreso();
+        tramiteRepository.save(tramite);
     }
 
     /*//Traer todos los tramites
