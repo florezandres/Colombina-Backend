@@ -33,7 +33,7 @@ public class TramiteService {
     private ModelMapper modelMapper;
 
     @Autowired
-    private SeguimientoRepository seguimientoRepository;
+    private SeguimientoRepository seguimientoRepository;    
 
     @Autowired
     private HistorialCambioRepository historialCambioRepository;
@@ -52,6 +52,19 @@ public class TramiteService {
         tramiteRepository.save(tramite);
         log.info("Trámite abierto correctamente.");
     }
+    public void updateStatus(Long idTramite, String status, String rejectionReason) {
+        Tramite tramite = tramiteRepository.findById(idTramite)
+                .orElseThrow(() -> new IllegalArgumentException("El trámite con ID " + idTramite + " no existe."));
+        
+        tramite.setEstado(Tramite.EstadoTramite.valueOf(status));  // Actualizar el estado
+        if ("REJECTED".equals(status)) { // Si es rechazado, añadir razón de rechazo
+            tramite.setRejectionReason(rejectionReason); // Asegúrate de que este método exista en la clase Tramite
+        }
+        
+        tramiteRepository.save(tramite); // Guardar los cambios en la base de datos
+        log.info("Estado del trámite actualizado correctamente.");
+    }
+    
 
     public void documentacionRevisada(Long idTramite) {
         Tramite tramite = tramiteRepository.findById(idTramite)
