@@ -105,7 +105,7 @@ public class Tramite {
     private Date fechaNotificacion;
     
     @Column()
-    private Long idSeguimiento;
+    private String idSeguimiento;
     
     @Column()
     private String registroSanitario;
@@ -118,13 +118,15 @@ public class Tramite {
     
     @Column()
     private Date fechaVencimientoRSA;
+
+    @Column()
+    private Date fechaEnvioDocumentos;
     
     @Column()
     private String planta;
     
     @Column()
     private String numeroFactura;
-
     
     @Column()
     private String observaciones;

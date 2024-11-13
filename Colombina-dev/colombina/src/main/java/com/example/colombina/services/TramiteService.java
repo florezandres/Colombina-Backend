@@ -86,15 +86,8 @@ public class TramiteService {
         Tramite tramite = tramiteRepository.findById(idTramite)
                 .orElseThrow(() -> new IllegalArgumentException("El trámite con ID " + idTramite + " no existe."));
 
-        tramite.setFechaTerminacion(infoTramite.getFechaTerminacion());
-        tramite.setFechaNotificacion(infoTramite.getFechaNotificacion());
+        tramite.setFechaEnvioDocumentos(infoTramite.getFechaEnvioDocumnetos());
         tramite.setIdSeguimiento(infoTramite.getIdSeguimiento());
-        tramite.setRegistroSanitario(infoTramite.getRegistroSanitario());
-        tramite.setExpedienteRSA(infoTramite.getExpedienteRSA());
-        tramite.setNumeroRSA(infoTramite.getNumeroRSA());
-        tramite.setFechaVencimientoRSA(infoTramite.getFechaVencimientoRSA());
-        tramite.setPlanta(infoTramite.getPlanta());
-        tramite.setNumeroFactura(infoTramite.getNumeroFactura());
         tramite.setObservaciones(infoTramite.getObservaciones());
         tramite.setEtapa(6);
         tramite.setProgreso();
