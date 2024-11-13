@@ -126,6 +126,11 @@ public class TramiteService {
         return tramiteDTO;
     }
 
+    public Tramite findByIdEntity(Long id) {
+        return tramiteRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("El trámite con ID " + id + " no existe."));
+    }
+
 
     //HU-39 - Filtrar tramites por estado
     public List<TramiteDTO> filtrarTramitesPorEstado(Tramite.EstadoTramite estado) {
