@@ -62,7 +62,7 @@ public class TramiteService {
         tramite.setFechaVencimientoRSA(infoTramite.getVencimientoRSA());
         tramite.setPlanta(infoTramite.getPlanta());
         tramite.setObservaciones(infoTramite.getObservaciones());
-        tramite.setEtapa(4);
+        tramite.setEtapa(5);
         tramite.setProgreso();
         tramiteRepository.save(tramite);
 
@@ -87,7 +87,7 @@ public class TramiteService {
     public void documentacionRevisada(Long idTramite) {
         Tramite tramite = tramiteRepository.findById(idTramite)
                 .orElseThrow(() -> new IllegalArgumentException("El trámite con ID " + idTramite + " no existe."));
-        tramite.setEtapa(5);
+        tramite.setEtapa(4);
         tramite.setProgreso();
         tramiteRepository.save(tramite);
         log.info("Documentación revisada correctamente.");
