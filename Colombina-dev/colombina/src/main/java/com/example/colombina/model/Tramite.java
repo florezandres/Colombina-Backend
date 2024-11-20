@@ -81,7 +81,7 @@ public class Tramite {
     private double progreso;
 
     @Column()
-    private double llave;
+    private String llave;
 
     @Column()
     private String pt;
@@ -124,6 +124,9 @@ public class Tramite {
     
     @Column()
     private String planta;
+
+    @Column()
+    private Integer numExpediente;
     
     @Column()
     private String numeroFactura;
@@ -156,7 +159,7 @@ public class Tramite {
         this.etapa = etapa;
         this.entidadSanitaria = entidadSanitaria;
         this.solicitud = solicitud;
-        this.llave = 0;
+        this.llave = null;
         this.documentos = null;
         this.pagos = null;
         this.seguimientos = null;

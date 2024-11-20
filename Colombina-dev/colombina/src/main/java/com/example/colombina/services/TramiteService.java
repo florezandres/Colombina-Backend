@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.example.colombina.DTOs.ComentarioDTO;
+import com.example.colombina.DTOs.InfoAceptacionEntidadSanitariaDTO;
 import com.example.colombina.DTOs.InfoAperturaTramiteDTO;
 import com.example.colombina.DTOs.InfoControlTramiteDTO;
 import com.example.colombina.DTOs.TramiteDTO;
@@ -262,7 +263,6 @@ public void modificarTramite(Long idTramite, String nuevoEstado) {
 
         // Asociar el número de radicado y la llave
         tramite.setExpedienteRSA(numeroRadicado);
-        tramite.setLlave(llave);
 
         // Guardar los cambios en la base de datos
         tramiteRepository.save(tramite);
@@ -292,8 +292,6 @@ public void modificarTramite(Long idTramite, String nuevoEstado) {
     }
     
     public Tramite actualizarTramite(Long id, Tramite detallesTramite) {
-    
-        // Guardar el trámite actualizado en el repositorio
         return tramiteRepository.save(detallesTramite);
     }
     
@@ -306,11 +304,26 @@ public void modificarTramite(Long idTramite, String nuevoEstado) {
         tramiteRepository.save(tramite);
     }
 
-    public void aprobarTramiteEntidadSanitaria(Long idTramite) {
+    public void aprobarTramiteEntidadSanitaria(Long idTramite, InfoAceptacionEntidadSanitariaDTO infoAceptacion) {
         Tramite tramite = tramiteRepository.findById(idTramite)
                 .orElseThrow(() -> new IllegalArgumentException("El trámite con ID " + idTramite + " no existe."));
-
+        
+        tramite.setLlave(infoAceptacion.getLlaveRSA());
+        tramite.setNumExpediente(infoAceptacion.getNumExp());
+        tramite.setFechaRadicacion(infoAceptacion.getFechaRadicacion());
         tramite.setEtapa(8);
+        tramite.setProgreso();
+        tramiteRepository.save(tramite);
+    }
+
+    public void rechazarTramiteEntidadSanitaria(Long idTramite, InfoAceptacionEntidadSanitariaDTO infoAceptacion) {
+        Tramite tramite = tramiteRepository.findById(idTramite)
+                .orElseThrow(() -> new IllegalArgumentException("El trámite con ID " + idTramite + " no existe."));
+        
+        tramite.setLlave(infoAceptacion.getLlaveRSA());
+        tramite.setNumExpediente(infoAceptacion.getNumExp());
+        tramite.setFechaRadicacion(infoAceptacion.getFechaRadicacion());
+        tramite.setEstado(Tramite.EstadoTramite.RECHAZADO);
         tramite.setProgreso();
         tramiteRepository.save(tramite);
     }
