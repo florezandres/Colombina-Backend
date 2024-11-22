@@ -1,6 +1,8 @@
 package com.example.colombina.controllers;
 
 import java.util.Collections;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,21 +12,20 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.colombina.DTOs.InfoAceptacionEntidadSanitariaDTO;
 import com.example.colombina.DTOs.InfoAperturaTramiteDTO;
 import com.example.colombina.DTOs.InfoControlTramiteDTO;
 import com.example.colombina.DTOs.TramiteDTO;
+import com.example.colombina.DTOs.UpdateStatusRequest;
 import com.example.colombina.model.Seguimiento;
 import com.example.colombina.repositories.SeguimientoRepository;
 import com.example.colombina.services.TramiteService;
-
-import java.util.Date;
-import java.util.HashMap;
-
-import org.springframework.web.bind.annotation.RequestBody;
 
 @RestController
 @RequestMapping("/tramites")
@@ -121,11 +122,20 @@ public class TramiteController {
             return ResponseEntity.ok("Trámite modificado correctamente.");
         } catch (IllegalArgumentException e) {
             return ResponseEntity.status(400).body(e.getMessage());
-        } catch (Exception e) {
-            return ResponseEntity.status(500).body("Error al modificar el trámite.");
         }
     }
 
+    @PutMapping("/{idTramite}/cambiar-etapa/{nuevaEtapa}")
+    public ResponseEntity<?> cambiarEtapa(@PathVariable Long idTramite, @PathVariable Integer nuevaEtapa) {
+        try {
+            tramiteService.cambiarEtapa(idTramite, nuevaEtapa);
+            HashMap<String, String> map = new HashMap<>();
+            map.put("message", "Etapa cambiada correctamente.");
+            return ResponseEntity.ok(map);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(400).body(e.getMessage());
+        }
+    }
 
     @CrossOrigin
     @PostMapping("/{idTramite}/aceptar")
@@ -138,14 +148,33 @@ public class TramiteController {
                 return ResponseEntity.status(400).body("Número de radicado y llave son requeridos.");
             }
 
-            // Llamar al servicio para actualizar el trámite con el número de radicado y la llave
+            // Llamar al servicio para actualizar el trámite con el número de radicado y la
+            // llave
             tramiteService.asociarNumeroRadicadoYLLave(idTramite, numeroRadicado, llave);
 
-            return ResponseEntity.ok(Collections.singletonMap("message", "Trámite aceptado y número de radicado asignado."));
+            return ResponseEntity
+                    .ok(Collections.singletonMap("message", "Trámite aceptado y número de radicado asignado."));
         } catch (IllegalArgumentException e) {
             return ResponseEntity.status(404).body(e.getMessage());
         } catch (Exception e) {
             return ResponseEntity.status(500).body("Error al aceptar el trámite.");
+        }
+    }
+
+    // Nuevo endpoint para actualizar el estado del trámite
+    // Endpoint en el controlador
+    @PutMapping("/{idTramite}/update-status")
+    public ResponseEntity<?> updateTramiteStatus(
+            @PathVariable Long idTramite,
+            @RequestBody UpdateStatusRequest request) {
+        try {
+            tramiteService.updateStatus(idTramite, request.getStatus(), request.getRejectionReason());
+            return ResponseEntity
+                    .ok(Collections.singletonMap("message", "Estado del trámite actualizado correctamente."));
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(404).body(e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body("Error al actualizar el estado del trámite.");
         }
     }
 
@@ -160,6 +189,42 @@ public class TramiteController {
             return ResponseEntity.ok(reporte);
         } catch (Exception e) {
             return ResponseEntity.status(500).body("Error al generar el reporte.");
+        }
+    }
+
+    @PostMapping("/{idTramite}/rechazar")
+    public ResponseEntity<?> rechazarTramite(
+            @PathVariable Long idTramite) {
+        try {
+            tramiteService.rechazarTramite(idTramite);
+
+            return ResponseEntity.ok(Collections.singletonMap("message", "Trámite rechazado correctamente."));
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(404).body(e.getMessage());
+        }
+    }
+
+    @PostMapping("/{idTramite}/aprobar-entidad-sanitaria")
+    public ResponseEntity<?> aprobarEntidadSanitaria(
+            @PathVariable Long idTramite, @RequestBody InfoAceptacionEntidadSanitariaDTO info) {
+        try {
+            tramiteService.aprobarTramiteEntidadSanitaria(idTramite, info);
+
+            return ResponseEntity.ok(Collections.singletonMap("message", "Aprobación guardada correctamente."));
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(404).body(e.getMessage());
+        }
+    }
+
+    @PostMapping("/{idTramite}/rechazar-entidad-sanitaria")
+    public ResponseEntity<?> rchazarEntidadSanitaria(
+            @PathVariable Long idTramite, @RequestBody InfoAceptacionEntidadSanitariaDTO info) {
+        try {
+            tramiteService.rechazarTramiteEntidadSanitaria(idTramite, info);
+
+            return ResponseEntity.ok(Collections.singletonMap("message", "Aprobación guardada correctamente."));
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(404).body(e.getMessage());
         }
     }
 }

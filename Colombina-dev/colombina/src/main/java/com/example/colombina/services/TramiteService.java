@@ -7,16 +7,21 @@ import java.util.List;
 import java.util.Optional;
 
 import org.modelmapper.ModelMapper;
-import com.example.colombina.DTOs.ComentarioDTO;
-import com.example.colombina.DTOs.InfoAperturaTramiteDTO;
-import com.example.colombina.DTOs.InfoControlTramiteDTO;
-import com.example.colombina.model.*;
-import com.example.colombina.repositories.HistorialCambioRepository;
 import org.modelmapper.TypeToken;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.example.colombina.DTOs.ComentarioDTO;
+import com.example.colombina.DTOs.InfoAceptacionEntidadSanitariaDTO;
+import com.example.colombina.DTOs.InfoAperturaTramiteDTO;
+import com.example.colombina.DTOs.InfoControlTramiteDTO;
 import com.example.colombina.DTOs.TramiteDTO;
+import com.example.colombina.model.Comentario;
+import com.example.colombina.model.HistorialCambio;
+import com.example.colombina.model.Seguimiento;
+import com.example.colombina.model.Tramite;
+import com.example.colombina.model.Usuario;
+import com.example.colombina.repositories.HistorialCambioRepository;
 import com.example.colombina.repositories.SeguimientoRepository;
 import com.example.colombina.repositories.TramiteRepository;
 
@@ -33,10 +38,13 @@ public class TramiteService {
     private ModelMapper modelMapper;
 
     @Autowired
-    private SeguimientoRepository seguimientoRepository;
+    private SeguimientoRepository seguimientoRepository;    
 
     @Autowired
     private HistorialCambioRepository historialCambioRepository;
+
+    @Autowired
+    private NotificacionService notificacionService;
 
     // Cambia el estado de un trámite a EN_REVISION
     public void abrirTramite(Long idTramite, InfoAperturaTramiteDTO infoTramite) {
@@ -47,16 +55,39 @@ public class TramiteService {
         tramite.setNumProyectoSap(infoTramite.getNumProyectoSap());
         tramite.setProyecto(infoTramite.getProyecto());
         tramite.setTipoModificacion(infoTramite.getTipoModificacion());
-        tramite.setEtapa(4);
+        tramite.setNumeroRSA(infoTramite.getNumRSA().longValue());
+        tramite.setRegistroSanitario(infoTramite.getRegistroRSA());
+        tramite.setExpedienteRSA(infoTramite.getExpedienteRSA());
+        tramite.setUrgente(infoTramite.getUrgente());
+        tramite.setFechaVencimientoRSA(infoTramite.getVencimientoRSA());
+        tramite.setPlanta(infoTramite.getPlanta());
+        tramite.setObservaciones(infoTramite.getObservaciones());
+        tramite.setEtapa(5);
         tramite.setProgreso();
         tramiteRepository.save(tramite);
+
+        Long solicitudId = tramite.getId() - 1;
+        notificacionService.enviarNotificacionAperturaTramite(solicitudId);
         log.info("Trámite abierto correctamente.");
     }
+    public void updateStatus(Long idTramite, String status, String rejectionReason) {
+        Tramite tramite = tramiteRepository.findById(idTramite)
+                .orElseThrow(() -> new IllegalArgumentException("El trámite con ID " + idTramite + " no existe."));
+        
+        tramite.setEstado(Tramite.EstadoTramite.valueOf(status));  // Actualizar el estado
+        if ("REJECTED".equals(status)) { // Si es rechazado, añadir razón de rechazo
+            tramite.setRejectionReason(rejectionReason); // Asegúrate de que este método exista en la clase Tramite
+        }
+        
+        tramiteRepository.save(tramite); // Guardar los cambios en la base de datos
+        log.info("Estado del trámite actualizado correctamente.");
+    }
+    
 
     public void documentacionRevisada(Long idTramite) {
         Tramite tramite = tramiteRepository.findById(idTramite)
                 .orElseThrow(() -> new IllegalArgumentException("El trámite con ID " + idTramite + " no existe."));
-        tramite.setEtapa(5);
+        tramite.setEtapa(4);
         tramite.setProgreso();
         tramiteRepository.save(tramite);
         log.info("Documentación revisada correctamente.");
@@ -66,15 +97,8 @@ public class TramiteService {
         Tramite tramite = tramiteRepository.findById(idTramite)
                 .orElseThrow(() -> new IllegalArgumentException("El trámite con ID " + idTramite + " no existe."));
 
-        tramite.setFechaTerminacion(infoTramite.getFechaTerminacion());
-        tramite.setFechaNotificacion(infoTramite.getFechaNotificacion());
+        tramite.setFechaEnvioDocumentos(infoTramite.getFechaEnvioDocumnetos());
         tramite.setIdSeguimiento(infoTramite.getIdSeguimiento());
-        tramite.setRegistroSanitario(infoTramite.getRegistroSanitario());
-        tramite.setExpedienteRSA(infoTramite.getExpedienteRSA());
-        tramite.setNumeroRSA(infoTramite.getNumeroRSA());
-        tramite.setFechaVencimientoRSA(infoTramite.getFechaVencimientoRSA());
-        tramite.setPlanta(infoTramite.getPlanta());
-        tramite.setNumeroFactura(infoTramite.getNumeroFactura());
         tramite.setObservaciones(infoTramite.getObservaciones());
         tramite.setEtapa(6);
         tramite.setProgreso();
@@ -96,6 +120,14 @@ public class TramiteService {
 
         // Elimina el trámite
         tramiteRepository.delete(tramite);
+    }
+
+    public void cambiarEtapa(Long idTramite, Integer etapa) {
+        Tramite tramite = tramiteRepository.findById(idTramite)
+                .orElseThrow(() -> new IllegalArgumentException("El trámite con ID " + idTramite + " no existe."));
+        tramite.setEtapa(etapa);
+        tramite.setProgreso();
+        tramiteRepository.save(tramite);
     }
 
     /*//Traer todos los tramites
@@ -124,6 +156,11 @@ public class TramiteService {
         System.out.println("Entidad sanitaria: " + tramite.getEntidadSanitaria().getId());
         tramiteDTO.setEntidadSanitariaId(tramite.getEntidadSanitaria().getId());
         return tramiteDTO;
+    }
+
+    public Tramite findByIdEntity(Long id) {
+        return tramiteRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("El trámite con ID " + id + " no existe."));
     }
 
 
@@ -226,10 +263,12 @@ public void modificarTramite(Long idTramite, String nuevoEstado) {
 
         // Asociar el número de radicado y la llave
         tramite.setExpedienteRSA(numeroRadicado);
-        tramite.setLlave(llave);
 
         // Guardar los cambios en la base de datos
         tramiteRepository.save(tramite);
+
+        Long idSolicitud = tramite.getId()-1;
+        notificacionService.enviarNotificacionTramiteAceptadoInvima(idSolicitud);
     }
 
     public void agregarInfoControl(Long idTramite, TramiteDTO tramiteDTO) {
@@ -253,9 +292,39 @@ public void modificarTramite(Long idTramite, String nuevoEstado) {
     }
     
     public Tramite actualizarTramite(Long id, Tramite detallesTramite) {
-    
-        // Guardar el trámite actualizado en el repositorio
         return tramiteRepository.save(detallesTramite);
     }
     
+    public void rechazarTramite(Long idTramite) {
+        Tramite tramite = tramiteRepository.findById(idTramite)
+                .orElseThrow(() -> new IllegalArgumentException("El trámite con ID " + idTramite + " no existe."));
+
+        tramite.setEstado(Tramite.EstadoTramite.RECHAZADO);
+        tramite.setProgreso();
+        tramiteRepository.save(tramite);
+    }
+
+    public void aprobarTramiteEntidadSanitaria(Long idTramite, InfoAceptacionEntidadSanitariaDTO infoAceptacion) {
+        Tramite tramite = tramiteRepository.findById(idTramite)
+                .orElseThrow(() -> new IllegalArgumentException("El trámite con ID " + idTramite + " no existe."));
+        
+        tramite.setLlave(infoAceptacion.getLlaveRSA());
+        tramite.setNumExpediente(infoAceptacion.getNumExp());
+        tramite.setFechaRadicacion(infoAceptacion.getFechaRadicacion());
+        tramite.setEtapa(8);
+        tramite.setProgreso();
+        tramiteRepository.save(tramite);
+    }
+
+    public void rechazarTramiteEntidadSanitaria(Long idTramite, InfoAceptacionEntidadSanitariaDTO infoAceptacion) {
+        Tramite tramite = tramiteRepository.findById(idTramite)
+                .orElseThrow(() -> new IllegalArgumentException("El trámite con ID " + idTramite + " no existe."));
+        
+        tramite.setLlave(infoAceptacion.getLlaveRSA());
+        tramite.setNumExpediente(infoAceptacion.getNumExp());
+        tramite.setFechaRadicacion(infoAceptacion.getFechaRadicacion());
+        tramite.setEstado(Tramite.EstadoTramite.RECHAZADO);
+        tramite.setProgreso();
+        tramiteRepository.save(tramite);
+    }
 }

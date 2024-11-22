@@ -25,6 +25,9 @@ public class Tramite {
     @Column(nullable = false, unique = true)
     private String numeroRadicado;
 
+    @Column()
+    private String rejectionReason; 
+
     @Column(nullable = false)
     private String nombreProducto;
 
@@ -78,7 +81,7 @@ public class Tramite {
     private double progreso;
 
     @Column()
-    private double llave;
+    private String llave;
 
     @Column()
     private String pt;
@@ -102,7 +105,7 @@ public class Tramite {
     private Date fechaNotificacion;
     
     @Column()
-    private Long idSeguimiento;
+    private String idSeguimiento;
     
     @Column()
     private String registroSanitario;
@@ -115,15 +118,24 @@ public class Tramite {
     
     @Column()
     private Date fechaVencimientoRSA;
+
+    @Column()
+    private Date fechaEnvioDocumentos;
     
     @Column()
     private String planta;
+
+    @Column()
+    private Integer numExpediente;
     
     @Column()
     private String numeroFactura;
     
     @Column()
     private String observaciones;
+
+    @Column()
+    private Boolean urgente;
 
     @OneToOne
     @JoinColumn(name = "solicitud_id")
@@ -147,7 +159,7 @@ public class Tramite {
         this.etapa = etapa;
         this.entidadSanitaria = entidadSanitaria;
         this.solicitud = solicitud;
-        this.llave = 0;
+        this.llave = null;
         this.documentos = null;
         this.pagos = null;
         this.seguimientos = null;
@@ -159,6 +171,16 @@ public class Tramite {
     public String getEtapa() {
         return this.tipoTramite == TipoTramite.NACIONAL ? "A" + etapa.intValue() : "B" + etapa.intValue();
     }
+
+    public String getRejectionReason() {
+        return rejectionReason;
+    }
+    
+    public void setRejectionReason(String rejectionReason) {
+        this.rejectionReason = rejectionReason;
+    }
+    
+    
 
     public Double getProgreso() {
         return this.progreso;
